@@ -1,0 +1,575 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title>Docs For Class DAVACL</title>
+			<link rel="stylesheet" href="../media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+			<div class="page-body">			
+<h2 class="class-name">Class DAVACL</h2>
+
+<a name="sec-description"></a>
+<div class="info-box">
+	<div class="info-box-title">Description</div>
+	<div class="nav-bar">
+					<span class="disabled">Description</span> |
+													<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+						|											<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+						
+											<a href="#sec-const-summary">Constants</a> (<a href="#sec-consts">details</a>)
+						
+			</div>
+	<div class="info-box-body">
+        		<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Just a namespace for constants and helper functions</p>
+		<p class="notes">
+			Located in <a class="field" href="_davacl.php.html">/davacl.php</a> (line <span class="field">30</span>)
+		</p>
+		
+				
+		<pre></pre>
+	
+			</div>
+</div>
+
+
+	<a name="sec-const-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Class Constant Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+						<span class="disabled">Constants</span> (<a href="#sec-consts">details</a>)
+												<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+				 
+				|
+										| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+					</div>
+		<div class="info-box-body">
+			<div class="const-summary">
+								<div class="const-title">
+					<a href="#PRINCIPAL_ALL" title="details" class="const-name">PRINCIPAL_ALL</a> = 					<span class="var-type"> 'DAV: all'</span>
+
+				</div>
+								<div class="const-title">
+					<a href="#PRINCIPAL_AUTHENTICATED" title="details" class="const-name">PRINCIPAL_AUTHENTICATED</a> = 					<span class="var-type"> 'DAV: authenticated'</span>
+
+				</div>
+								<div class="const-title">
+					<a href="#PRINCIPAL_SELF" title="details" class="const-name">PRINCIPAL_SELF</a> = 					<span class="var-type"> 'DAV: self'</span>
+
+				</div>
+								<div class="const-title">
+					<a href="#PRINCIPAL_UNAUTHENTICATED" title="details" class="const-name">PRINCIPAL_UNAUTHENTICATED</a> = 					<span class="var-type"> 'DAV: unauthenticated'</span>
+
+				</div>
+								<div class="const-title">
+					<a href="#PRIV_ALL" title="details" class="const-name">PRIV_ALL</a> = 					<span class="var-type"> 'DAV: all'</span>
+
+				</div>
+								<div class="const-title">
+					<a href="#PRIV_BIND" title="details" class="const-name">PRIV_BIND</a> = 					<span class="var-type"> 'DAV: bind'</span>
+
+				</div>
+								<div class="const-title">
+					<a href="#PRIV_READ" title="details" class="const-name">PRIV_READ</a> = 					<span class="var-type"> 'DAV: read'</span>
+
+				</div>
+								<div class="const-title">
+					<a href="#PRIV_READ_ACL" title="details" class="const-name">PRIV_READ_ACL</a> = 					<span class="var-type"> 'DAV: read-acl'</span>
+
+				</div>
+								<div class="const-title">
+					<a href="#PRIV_READ_CURRENT_USER_PRIVILEGE_SET" title="details" class="const-name">PRIV_READ_CURRENT_USER_PRIVILEGE_SET</a> = 					<span class="var-type"> 'DAV: read-current-user-privilege-set'</span>
+
+				</div>
+								<div class="const-title">
+					<a href="#PRIV_UNBIND" title="details" class="const-name">PRIV_UNBIND</a> = 					<span class="var-type"> 'DAV: unbind'</span>
+
+				</div>
+								<div class="const-title">
+					<a href="#PRIV_UNLOCK" title="details" class="const-name">PRIV_UNLOCK</a> = 					<span class="var-type"> 'DAV: unlock'</span>
+
+				</div>
+								<div class="const-title">
+					<a href="#PRIV_WRITE" title="details" class="const-name">PRIV_WRITE</a> = 					<span class="var-type"> 'DAV: write'</span>
+
+				</div>
+								<div class="const-title">
+					<a href="#PRIV_WRITE_ACL" title="details" class="const-name">PRIV_WRITE_ACL</a> = 					<span class="var-type"> 'DAV: write-acl'</span>
+
+				</div>
+								<div class="const-title">
+					<a href="#PRIV_WRITE_CONTENT" title="details" class="const-name">PRIV_WRITE_CONTENT</a> = 					<span class="var-type"> 'DAV: write-content'</span>
+
+				</div>
+								<div class="const-title">
+					<a href="#PRIV_WRITE_PROPERTIES" title="details" class="const-name">PRIV_WRITE_PROPERTIES</a> = 					<span class="var-type"> 'DAV: write-properties'</span>
+
+				</div>
+								<div class="const-title">
+					<a href="#RESTRICTION_DENY_BEFORE_GRANT" title="details" class="const-name">RESTRICTION_DENY_BEFORE_GRANT</a> = 					<span class="var-type"> 'DAV: deny-before-grant'</span>
+
+				</div>
+								<div class="const-title">
+					<a href="#RESTRICTION_GRANT_ONLY" title="details" class="const-name">RESTRICTION_GRANT_ONLY</a> = 					<span class="var-type"> 'DAV: grant-only'</span>
+
+				</div>
+								<div class="const-title">
+					<a href="#RESTRICTION_NO_INVERT" title="details" class="const-name">RESTRICTION_NO_INVERT</a> = 					<span class="var-type"> 'DAV: no-invert'</span>
+
+				</div>
+								<div class="const-title">
+					<a href="#RESTRICTION_REQUIRED_PRINCIPAL" title="details" class="const-name">RESTRICTION_REQUIRED_PRINCIPAL</a> = 					<span class="var-type"> 'DAV: required-principal'</span>
+
+				</div>
+							</div>
+		</div>
+	</div>
+
+	<a name="sec-var-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Variable Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+						<span class="disabled">Vars</span> (<a href="#sec-vars">details</a>)
+							| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+															<a href="#sec-const-summary">Constants</a> (<a href="#sec-consts">details</a>)
+							
+					</div>
+		<div class="info-box-body">
+			<div class="var-summary">
+												<div class="var-title">
+					static <span class="var-type">mixed</span>
+					<a href="#$PRINCIPALS" title="details" class="var-name">$PRINCIPALS</a>
+				</div>
+																							</div>
+		</div>
+	</div>
+
+	<a name="sec-method-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Method Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+															<a href="#sec-const-summary">Constants</a> (<a href="#sec-consts">details</a>)
+							
+															<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+				 
+				|
+						<span class="disabled">Methods</span> (<a href="#sec-methods">details</a>)
+		</div>
+		<div class="info-box-body">			
+			<div class="method-summary">
+												<div class="method-definition">
+					static 						<span class="method-result"><a href="../DAV/DAV_Element_href.html">DAV_Element_href</a></span>
+										<a href="#parse_hrefs" title="details" class="method-name">parse_hrefs</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$hrefs</span>)
+									</div>
+								
+												</div>
+		</div>
+	</div>		
+
+	<a name="sec-vars"></a>
+	<div class="info-box">
+		<div class="info-box-title">Variables</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+										<a href="#sec-var-summary">Vars</a> (<span class="disabled">details</span>)
+						
+			
+												<a href="#sec-const-summary">Constants</a> (<a href="#sec-consts">details</a>)
+							
+										| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+					</div>
+		<div class="info-box-body">
+			<a name="var$PRINCIPALS" id="$PRINCIPALS"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			static <span class="var-type">mixed</span>
+			<span class="var-name">$PRINCIPALS</span>
+			 = <span class="var-default">array(<br />  self::PRINCIPAL_ALL              =&gt; '&lt;D:all/&gt;',<br />  self::PRINCIPAL_AUTHENTICATED    =&gt; '&lt;D:authenticated/&gt;',<br />  self::PRINCIPAL_UNAUTHENTICATED  =&gt; '&lt;D:unauthenticated/&gt;',<br />  self::PRINCIPAL_SELF             =&gt; '&lt;D:self/&gt;',<br />)</span>			(line <span class="line-number">53</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+						
+		</div>
+	</div>
+	
+	<a name="sec-methods"></a>
+	<div class="info-box">
+		<div class="info-box-title">Methods</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+															<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+																			<a href="#sec-const-summary">Constants</a> (<a href="#sec-consts">details</a>)
+							
+										<a href="#sec-method-summary">Methods</a> (<span class="disabled">details</span>)
+						
+		</div>
+		<div class="info-box-body">
+			<A NAME='method_detail'></A>
+<a name="methodparse_hrefs" id="parse_hrefs"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">static method parse_hrefs</span> (line <span class="line-number">75</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">throws:</span> DAV_Status</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+	    static
+		<span class="method-result"><a href="../DAV/DAV_Element_href.html">DAV_Element_href</a></span>
+		<span class="method-name">
+			parse_hrefs
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$hrefs</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$hrefs</span>			</li>
+				</ul>
+		
+			
+	</div>
+
+						
+		</div>
+	</div>
+
+	<a name="sec-consts"></a>
+	<div class="info-box">
+		<div class="info-box-title">Class Constants</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+										<a href="#sec-var-summary">Constants</a> (<span class="disabled">details</span>)
+						
+			
+												<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+														| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+					</div>
+		<div class="info-box-body">
+			<a name="constPRINCIPAL_ALL" id="PRINCIPAL_ALL"><!-- --></A>
+<div class="evenrow">
+
+	<div class="const-header">
+		<span class="const-title">
+			<span class="const-name">PRINCIPAL_ALL</span>
+			 = <span class="const-default"> 'DAV: all'</span>
+			(line <span class="line-number">48</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+</div>
+<a name="constPRINCIPAL_AUTHENTICATED" id="PRINCIPAL_AUTHENTICATED"><!-- --></A>
+<div class="oddrow">
+
+	<div class="const-header">
+		<span class="const-title">
+			<span class="const-name">PRINCIPAL_AUTHENTICATED</span>
+			 = <span class="const-default"> 'DAV: authenticated'</span>
+			(line <span class="line-number">49</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+</div>
+<a name="constPRINCIPAL_SELF" id="PRINCIPAL_SELF"><!-- --></A>
+<div class="evenrow">
+
+	<div class="const-header">
+		<span class="const-title">
+			<span class="const-name">PRINCIPAL_SELF</span>
+			 = <span class="const-default"> 'DAV: self'</span>
+			(line <span class="line-number">51</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+</div>
+<a name="constPRINCIPAL_UNAUTHENTICATED" id="PRINCIPAL_UNAUTHENTICATED"><!-- --></A>
+<div class="oddrow">
+
+	<div class="const-header">
+		<span class="const-title">
+			<span class="const-name">PRINCIPAL_UNAUTHENTICATED</span>
+			 = <span class="const-default"> 'DAV: unauthenticated'</span>
+			(line <span class="line-number">50</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+</div>
+<a name="constPRIV_ALL" id="PRIV_ALL"><!-- --></A>
+<div class="evenrow">
+
+	<div class="const-header">
+		<span class="const-title">
+			<span class="const-name">PRIV_ALL</span>
+			 = <span class="const-default"> 'DAV: all'</span>
+			(line <span class="line-number">33</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+</div>
+<a name="constPRIV_BIND" id="PRIV_BIND"><!-- --></A>
+<div class="oddrow">
+
+	<div class="const-header">
+		<span class="const-title">
+			<span class="const-name">PRIV_BIND</span>
+			 = <span class="const-default"> 'DAV: bind'</span>
+			(line <span class="line-number">34</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+</div>
+<a name="constPRIV_READ" id="PRIV_READ"><!-- --></A>
+<div class="evenrow">
+
+	<div class="const-header">
+		<span class="const-title">
+			<span class="const-name">PRIV_READ</span>
+			 = <span class="const-default"> 'DAV: read'</span>
+			(line <span class="line-number">35</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+</div>
+<a name="constPRIV_READ_ACL" id="PRIV_READ_ACL"><!-- --></A>
+<div class="oddrow">
+
+	<div class="const-header">
+		<span class="const-title">
+			<span class="const-name">PRIV_READ_ACL</span>
+			 = <span class="const-default"> 'DAV: read-acl'</span>
+			(line <span class="line-number">36</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+</div>
+<a name="constPRIV_READ_CURRENT_USER_PRIVILEGE_SET" id="PRIV_READ_CURRENT_USER_PRIVILEGE_SET"><!-- --></A>
+<div class="evenrow">
+
+	<div class="const-header">
+		<span class="const-title">
+			<span class="const-name">PRIV_READ_CURRENT_USER_PRIVILEGE_SET</span>
+			 = <span class="const-default"> 'DAV: read-current-user-privilege-set'</span>
+			(line <span class="line-number">37</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+</div>
+<a name="constPRIV_UNBIND" id="PRIV_UNBIND"><!-- --></A>
+<div class="oddrow">
+
+	<div class="const-header">
+		<span class="const-title">
+			<span class="const-name">PRIV_UNBIND</span>
+			 = <span class="const-default"> 'DAV: unbind'</span>
+			(line <span class="line-number">38</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+</div>
+<a name="constPRIV_UNLOCK" id="PRIV_UNLOCK"><!-- --></A>
+<div class="evenrow">
+
+	<div class="const-header">
+		<span class="const-title">
+			<span class="const-name">PRIV_UNLOCK</span>
+			 = <span class="const-default"> 'DAV: unlock'</span>
+			(line <span class="line-number">39</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+</div>
+<a name="constPRIV_WRITE" id="PRIV_WRITE"><!-- --></A>
+<div class="oddrow">
+
+	<div class="const-header">
+		<span class="const-title">
+			<span class="const-name">PRIV_WRITE</span>
+			 = <span class="const-default"> 'DAV: write'</span>
+			(line <span class="line-number">40</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+</div>
+<a name="constPRIV_WRITE_ACL" id="PRIV_WRITE_ACL"><!-- --></A>
+<div class="evenrow">
+
+	<div class="const-header">
+		<span class="const-title">
+			<span class="const-name">PRIV_WRITE_ACL</span>
+			 = <span class="const-default"> 'DAV: write-acl'</span>
+			(line <span class="line-number">41</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+</div>
+<a name="constPRIV_WRITE_CONTENT" id="PRIV_WRITE_CONTENT"><!-- --></A>
+<div class="oddrow">
+
+	<div class="const-header">
+		<span class="const-title">
+			<span class="const-name">PRIV_WRITE_CONTENT</span>
+			 = <span class="const-default"> 'DAV: write-content'</span>
+			(line <span class="line-number">42</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+</div>
+<a name="constPRIV_WRITE_PROPERTIES" id="PRIV_WRITE_PROPERTIES"><!-- --></A>
+<div class="evenrow">
+
+	<div class="const-header">
+		<span class="const-title">
+			<span class="const-name">PRIV_WRITE_PROPERTIES</span>
+			 = <span class="const-default"> 'DAV: write-properties'</span>
+			(line <span class="line-number">43</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+</div>
+<a name="constRESTRICTION_DENY_BEFORE_GRANT" id="RESTRICTION_DENY_BEFORE_GRANT"><!-- --></A>
+<div class="oddrow">
+
+	<div class="const-header">
+		<span class="const-title">
+			<span class="const-name">RESTRICTION_DENY_BEFORE_GRANT</span>
+			 = <span class="const-default"> 'DAV: deny-before-grant'</span>
+			(line <span class="line-number">62</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+</div>
+<a name="constRESTRICTION_GRANT_ONLY" id="RESTRICTION_GRANT_ONLY"><!-- --></A>
+<div class="evenrow">
+
+	<div class="const-header">
+		<span class="const-title">
+			<span class="const-name">RESTRICTION_GRANT_ONLY</span>
+			 = <span class="const-default"> 'DAV: grant-only'</span>
+			(line <span class="line-number">61</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+</div>
+<a name="constRESTRICTION_NO_INVERT" id="RESTRICTION_NO_INVERT"><!-- --></A>
+<div class="oddrow">
+
+	<div class="const-header">
+		<span class="const-title">
+			<span class="const-name">RESTRICTION_NO_INVERT</span>
+			 = <span class="const-default"> 'DAV: no-invert'</span>
+			(line <span class="line-number">63</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+</div>
+<a name="constRESTRICTION_REQUIRED_PRINCIPAL" id="RESTRICTION_REQUIRED_PRINCIPAL"><!-- --></A>
+<div class="evenrow">
+
+	<div class="const-header">
+		<span class="const-title">
+			<span class="const-name">RESTRICTION_REQUIRED_PRINCIPAL</span>
+			 = <span class="const-default"> 'DAV: required-principal'</span>
+			(line <span class="line-number">64</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+</div>
+						
+		</div>
+	</div>
+
+	<p class="notes" id="credit">
+		Documentation generated on Wed, 08 Aug 2012 23:01:25 +0200 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.4</a>
+	</p>
+	</div></body>
+</html>

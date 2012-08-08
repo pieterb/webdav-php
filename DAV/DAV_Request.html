@@ -1,0 +1,896 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title>Docs For Class DAV_Request</title>
+			<link rel="stylesheet" href="../media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+			<div class="page-body">			
+<h2 class="class-name">Class DAV_Request</h2>
+
+<a name="sec-description"></a>
+<div class="info-box">
+	<div class="info-box-title">Description</div>
+	<div class="nav-bar">
+					<span class="disabled">Description</span> |
+							<a href="#sec-descendents">Descendents</a>
+			|											<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+						|											<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+						
+					</div>
+	<div class="info-box-body">
+        		<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Abstract base class for all Request classes.</p>
+	<ul class="tags">
+				<li><span class="field">abstract:</span> </li>
+			</ul>
+		<p class="notes">
+			Located in <a class="field" href="_dav_request.php.html">/dav_request.php</a> (line <span class="field">29</span>)
+		</p>
+		
+				
+		<pre></pre>
+	
+			</div>
+</div>
+
+	<a name="sec-descendents"></a>
+	<div class="info-box">
+		<div class="info-box-title">Direct descendents</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+			<span class="disabled">Descendents</span>
+			|												<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+								|															<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+								</div>
+		<div class="info-box-body">
+			<table cellpadding="2" cellspacing="0" class="class-table">
+				<tr>
+					<th class="class-table-header">Class</th>
+					<th class="class-table-header">Description</th>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../DAV/DAV_Request_ACL.html">DAV_Request_ACL</a></td>
+					<td>
+											Helper class for parsing PROPPATCH request bodies.
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../DAV/DAV_Request_COPY.html">DAV_Request_COPY</a></td>
+					<td>
+											Helper class for handling COPY requests.
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../DAV/DAV_Request_DEFAULT.html">DAV_Request_DEFAULT</a></td>
+					<td>
+											
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../DAV/DAV_Request_DELETE.html">DAV_Request_DELETE</a></td>
+					<td>
+											Helper class for parsing LOCK request bodies.
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../DAV/DAV_Request_HEAD.html">DAV_Request_HEAD</a></td>
+					<td>
+											HEAD.
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../DAV/DAV_Request_LOCK.html">DAV_Request_LOCK</a></td>
+					<td>
+											Helper class for parsing LOCK request bodies.
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../DAV/DAV_Request_MKCOL.html">DAV_Request_MKCOL</a></td>
+					<td>
+											Helper class for parsing LOCK request bodies.
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../DAV/DAV_Request_OPTIONS.html">DAV_Request_OPTIONS</a></td>
+					<td>
+											
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../DAV/DAV_Request_POST.html">DAV_Request_POST</a></td>
+					<td>
+											
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../DAV/DAV_Request_PROPFIND.html">DAV_Request_PROPFIND</a></td>
+					<td>
+											Helper class for parsing PROPFIND request bodies.
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../DAV/DAV_Request_PROPPATCH.html">DAV_Request_PROPPATCH</a></td>
+					<td>
+											Helper class for parsing PROPPATCH request bodies.
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../DAV/DAV_Request_PUT.html">DAV_Request_PUT</a></td>
+					<td>
+											
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../DAV/DAV_Request_REPORT.html">DAV_Request_REPORT</a></td>
+					<td>
+											Helper class for parsing REPORT request bodies.
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../DAV/DAV_Request_UNLOCK.html">DAV_Request_UNLOCK</a></td>
+					<td>
+											Helper class for parsing LOCK request bodies.
+										</td>
+				</tr>
+							</table>
+		</div>
+	</div>
+
+
+	<a name="sec-var-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Variable Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+							<a href="#sec-descendents">Descendents</a> |
+						<span class="disabled">Vars</span> (<a href="#sec-vars">details</a>)
+							| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+								</div>
+		<div class="info-box-body">
+			<div class="var-summary">
+												<div class="var-title">
+					static <span class="var-type">array</span>
+					<a href="#$ALLOWED_METHODS" title="details" class="var-name">$ALLOWED_METHODS</a>
+				</div>
+																																<div class="var-title">
+					static <span class="var-type"><a href="../DAV/DAV_Request.html">DAV_Request</a></span>
+					<a href="#$inst" title="details" class="var-name">$inst</a>
+				</div>
+																												<div class="var-title">
+					<span class="var-type">array</span>
+					<a href="#$if_header" title="details" class="var-name">$if_header</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">string</span>
+					<a href="#$inputstring" title="details" class="var-name">$inputstring</a>
+				</div>
+																			</div>
+		</div>
+	</div>
+
+	<a name="sec-method-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Method Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+							<a href="#sec-descendents">Descendents</a> |
+																		<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+				 
+				|
+						<span class="disabled">Methods</span> (<a href="#sec-methods">details</a>)
+		</div>
+		<div class="info-box-body">			
+			<div class="method-summary">
+																																																												<div class="method-definition">
+					static 						<span class="method-result">string</span>
+										<a href="#destination" title="details" class="method-name">destination</a>
+										()
+									</div>
+																<div class="method-definition">
+					static 						<span class="method-result">mixed</span>
+										<a href="#equalETags" title="details" class="method-name">equalETags</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$a</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$b</span>)
+									</div>
+																																<div class="method-definition">
+					static 						<span class="method-result">array|null</span>
+										<a href="#if_header_lexer" title="details" class="method-name">if_header_lexer</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">&$pos</span>, <span class="var-type">int</span>&nbsp;<span class="var-name">1</span>)
+									</div>
+																								<div class="method-definition">
+					static 						<span class="method-result">string</span>
+										<a href="#inputstring" title="details" class="method-name">inputstring</a>
+										()
+									</div>
+																<div class="method-definition">
+					static 						<span class="method-result"><a href="../DAV/DAV_Request.html">DAV_Request</a></span>
+										<a href="#inst" title="details" class="method-name">inst</a>
+										()
+									</div>
+																
+												<div class="method-definition">
+											<span class="method-result">DAV_Request</span>
+										<a href="#__construct" title="details" class="method-name">__construct</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$path</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#check_if_header" title="details" class="method-name">check_if_header</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">boolean</span>
+										<a href="#check_if_headers" title="details" class="method-name">check_if_headers</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#check_if_match_header" title="details" class="method-name">check_if_match_header</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#check_if_modified_since_header" title="details" class="method-name">check_if_modified_since_header</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#depth" title="details" class="method-name">depth</a>
+										()
+									</div>
+																																<div class="method-definition">
+											<span class="method-result">bool</span>
+										<a href="#handle" title="details" class="method-name">handle</a>
+											(<span class="var-type">Resource</span>&nbsp;<span class="var-name">$resource</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#handleRequest" title="details" class="method-name">handleRequest</a>
+											(<span class="var-type"><a href="../DAV/DAV_Registry.html">DAV_Registry</a></span>&nbsp;<span class="var-name">$registry</span>)
+									</div>
+																								<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#init_if_header" title="details" class="method-name">init_if_header</a>
+										()
+									</div>
+																																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#overwrite" title="details" class="method-name">overwrite</a>
+										()
+									</div>
+								</div>
+		</div>
+	</div>		
+
+	<a name="sec-vars"></a>
+	<div class="info-box">
+		<div class="info-box-title">Variables</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+							<a href="#sec-descendents">Descendents</a> |
+										<a href="#sec-var-summary">Vars</a> (<span class="disabled">details</span>)
+						
+			
+										| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+					</div>
+		<div class="info-box-body">
+			<a name="var$ALLOWED_METHODS" id="$ALLOWED_METHODS"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			static <span class="var-type">array</span>
+			<span class="var-name">$ALLOWED_METHODS</span>
+			 = <span class="var-default">array(<br />  'ACL', 'COPY', 'DELETE', 'GET', 'HEAD', 'LOCK', 'MKCOL', 'MOVE', 'OPTIONS',<br />  'POST', 'PROPFIND', 'PROPPATCH', 'PUT', 'REPORT', 'UNLOCK'<br />)</span>			(line <span class="line-number">48</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	
+	
+		
+		
+
+</div>
+<a name="var$inst" id="$inst"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			static <span class="var-type"><a href="../DAV/DAV_Request.html">DAV_Request</a></span>
+			<span class="var-name">$inst</span>
+			 = <span class="var-default"> null</span>			(line <span class="line-number">57</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> private</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$if_header" id="$if_header"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">array</span>
+			<span class="var-name">$if_header</span>
+			 = <span class="var-default">array()</span>			(line <span class="line-number">193</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Parsed If: header.</p>
+	<ul class="tags">
+				<li><span class="field">var:</span> with elements 'etag', 'notetags', 'lock' and 'notlocks'.</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$inputstring" id="$inputstring"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">string</span>
+			<span class="var-name">$inputstring</span>
+			 = <span class="var-default"> null</span>			(line <span class="line-number">92</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> private</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+						
+		</div>
+	</div>
+	
+	<a name="sec-methods"></a>
+	<div class="info-box">
+		<div class="info-box-title">Methods</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+							<a href="#sec-descendents">Descendents</a> |
+															<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+																	<a href="#sec-method-summary">Methods</a> (<span class="disabled">details</span>)
+						
+		</div>
+		<div class="info-box-body">
+			<A NAME='method_detail'></A>
+<a name="methoddestination" id="destination"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">static method destination</span> (line <span class="line-number">107</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">return:</span> either an (internal) path or an external URI.</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+	    static
+		<span class="method-result">string</span>
+		<span class="method-name">
+			destination
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodequalETags" id="equalETags"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">static method equalETags</span> (line <span class="line-number">582</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Compares two ETag values.</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> null if both ETags are malformed, true if equal, otherwise false</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+	    static
+		<span class="method-result">mixed</span>
+		<span class="method-name">
+			equalETags
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$a</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$b</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$a</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$b</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodif_header_lexer" id="if_header_lexer"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">static method if_header_lexer</span> (line <span class="line-number">143</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">return:</span> next token (type and value)</li>
+				<li><span class="field">throws:</span> DAV_Status on lexer error</li>
+				<li><span class="field">access:</span> private</li>
+			</ul>
+	
+	<div class="method-signature">
+	    static
+		<span class="method-result">array|null</span>
+		<span class="method-name">
+			if_header_lexer
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">&$pos</span>, <span class="var-type">int</span>&nbsp;<span class="var-name">1</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">int</span>
+				<span class="var-name">1</span><span class="var-description">: current parsing position</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">&$pos</span><span class="var-description">: header string to parse</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodinputstring" id="inputstring"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">static method inputstring</span> (line <span class="line-number">96</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	<div class="method-signature">
+	    static
+		<span class="method-result">string</span>
+		<span class="method-name">
+			inputstring
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodinst" id="inst"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">static method inst</span> (line <span class="line-number">62</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">return:</span> or null if some error occured.</li>
+				<li><span class="field">throws:</span> void</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+	    static
+		<span class="method-result"><a href="../DAV/DAV_Request.html">DAV_Request</a></span>
+		<span class="method-name">
+			inst
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+
+<a name="method__construct" id="__construct"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">Constructor __construct</span> (line <span class="line-number">305</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Enter description here...</p>
+	<ul class="tags">
+				<li><span class="field">throws:</span> DAV_Status</li>
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">DAV_Request</span>
+		<span class="method-name">
+			__construct
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$path</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$path</span>			</li>
+				</ul>
+		
+			
+			<hr class="separator" />
+		<div class="notes">Redefined in descendants as:</div>
+		<ul class="redefinitions">
+					<li>
+				<a href="../DAV/DAV_Request_ACL.html#method__construct">DAV_Request_ACL::__construct()</a>
+								: Enter description here...
+							</li>
+					<li>
+				<a href="../DAV/DAV_Request_HEAD.html#method__construct">DAV_Request_HEAD::__construct()</a>
+								: Enter description here...
+							</li>
+					<li>
+				<a href="../DAV/DAV_Request_LOCK.html#method__construct">DAV_Request_LOCK::__construct()</a>
+								: Enter description here...
+							</li>
+					<li>
+				<a href="../DAV/DAV_Request_PROPFIND.html#method__construct">DAV_Request_PROPFIND::__construct()</a>
+								: Constructor.
+							</li>
+					<li>
+				<a href="../DAV/DAV_Request_PROPPATCH.html#method__construct">DAV_Request_PROPPATCH::__construct()</a>
+								: Enter description here...
+							</li>
+					<li>
+				<a href="../DAV/DAV_Request_PUT.html#method__construct">DAV_Request_PUT::__construct()</a>
+								: Enter description here...
+							</li>
+					<li>
+				<a href="../DAV/DAV_Request_REPORT.html#method__construct">DAV_Request_REPORT::__construct()</a>
+								: Constructor.
+							</li>
+					<li>
+				<a href="../DAV/DAV_Request_UNLOCK.html#method__construct">DAV_Request_UNLOCK::__construct()</a>
+								: Enter description here...
+							</li>
+				</ul>
+	</div>
+<a name="methodcheck_if_header" id="check_if_header"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">check_if_header</span> (line <span class="line-number">459</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Parses AND checks the If: header</p>
+	<ul class="tags">
+				<li><span class="field">throws:</span> DAV_Status</li>
+				<li><span class="field">access:</span> private</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			check_if_header
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodcheck_if_headers" id="check_if_headers"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">check_if_headers</span> (line <span class="line-number">378</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">return:</span> TRUE if shallowLock() was called;</li>
+				<li><span class="field">access:</span> private</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">boolean</span>
+		<span class="method-name">
+			check_if_headers
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodcheck_if_match_header" id="check_if_match_header"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">check_if_match_header</span> (line <span class="line-number">525</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> private</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			check_if_match_header
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodcheck_if_modified_since_header" id="check_if_modified_since_header"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">check_if_modified_since_header</span> (line <span class="line-number">505</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Parses AND checks the If-(Un)Modified-Since: header.</p>
+	<ul class="tags">
+				<li><span class="field">throws:</span> DAV_Status particularly 304 Not Modified and 412 Precondition Failed</li>
+				<li><span class="field">access:</span> private</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			check_if_modified_since_header
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methoddepth" id="depth"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">depth</span> (line <span class="line-number">121</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			depth
+		</span>
+				()
+			</div>
+	
+		
+			
+			<hr class="separator" />
+		<div class="notes">Redefined in descendants as:</div>
+		<ul class="redefinitions">
+					<li>
+				<a href="../DAV/DAV_Request_COPY.html#methoddepth">DAV_Request_COPY::depth()</a>
+							</li>
+					<li>
+				<a href="../DAV/DAV_Request_DELETE.html#methoddepth">DAV_Request_DELETE::depth()</a>
+							</li>
+					<li>
+				<a href="../DAV/DAV_Request_LOCK.html#methoddepth">DAV_Request_LOCK::depth()</a>
+							</li>
+					<li>
+				<a href="../DAV/DAV_Request_PROPFIND.html#methoddepth">DAV_Request_PROPFIND::depth()</a>
+							</li>
+				</ul>
+	</div>
+<a name="methodhandle" id="handle"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">handle</span> (line <span class="line-number">324</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">abstract:</span> </li>
+				<li><span class="field">throws:</span> DAV_Status</li>
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">bool</span>
+		<span class="method-name">
+			handle
+		</span>
+					(<span class="var-type">Resource</span>&nbsp;<span class="var-name">$resource</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">Resource</span>
+				<span class="var-name">$resource</span>			</li>
+				</ul>
+		
+			
+			<hr class="separator" />
+		<div class="notes">Redefined in descendants as:</div>
+		<ul class="redefinitions">
+					<li>
+				<a href="../DAV/DAV_Request_ACL.html#methodhandle">DAV_Request_ACL::handle()</a>
+							</li>
+					<li>
+				<a href="../DAV/DAV_Request_COPY.html#methodhandle">DAV_Request_COPY::handle()</a>
+							</li>
+					<li>
+				<a href="../DAV/DAV_Request_DEFAULT.html#methodhandle">DAV_Request_DEFAULT::handle()</a>
+							</li>
+					<li>
+				<a href="../DAV/DAV_Request_DELETE.html#methodhandle">DAV_Request_DELETE::handle()</a>
+							</li>
+					<li>
+				<a href="../DAV/DAV_Request_HEAD.html#methodhandle">DAV_Request_HEAD::handle()</a>
+							</li>
+					<li>
+				<a href="../DAV/DAV_Request_GET.html#methodhandle">DAV_Request_GET::handle()</a>
+							</li>
+					<li>
+				<a href="../DAV/DAV_Request_LOCK.html#methodhandle">DAV_Request_LOCK::handle()</a>
+							</li>
+					<li>
+				<a href="../DAV/DAV_Request_MKCOL.html#methodhandle">DAV_Request_MKCOL::handle()</a>
+							</li>
+					<li>
+				<a href="../DAV/DAV_Request_OPTIONS.html#methodhandle">DAV_Request_OPTIONS::handle()</a>
+							</li>
+					<li>
+				<a href="../DAV/DAV_Request_POST.html#methodhandle">DAV_Request_POST::handle()</a>
+							</li>
+					<li>
+				<a href="../DAV/DAV_Request_PROPFIND.html#methodhandle">DAV_Request_PROPFIND::handle()</a>
+							</li>
+					<li>
+				<a href="../DAV/DAV_Request_PROPPATCH.html#methodhandle">DAV_Request_PROPPATCH::handle()</a>
+							</li>
+					<li>
+				<a href="../DAV/DAV_Request_PUT.html#methodhandle">DAV_Request_PUT::handle()</a>
+							</li>
+					<li>
+				<a href="../DAV/DAV_Request_REPORT.html#methodhandle">DAV_Request_REPORT::handle()</a>
+							</li>
+					<li>
+				<a href="../DAV/DAV_Request_UNLOCK.html#methodhandle">DAV_Request_UNLOCK::handle()</a>
+							</li>
+				</ul>
+	</div>
+<a name="methodhandleRequest" id="handleRequest"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">handleRequest</span> (line <span class="line-number">331</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Serve WebDAV HTTP request.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			handleRequest
+		</span>
+					(<span class="var-type"><a href="../DAV/DAV_Registry.html">DAV_Registry</a></span>&nbsp;<span class="var-name">$registry</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"><a href="../DAV/DAV_Registry.html">DAV_Registry</a></span>
+				<span class="var-name">$registry</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodinit_if_header" id="init_if_header"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">init_if_header</span> (line <span class="line-number">202</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Parses the If: header.</p>
+<p class="description"><p>Puts its results into $this-&gt;if_header.</p></p>
+	<ul class="tags">
+				<li><span class="field">throws:</span> DAV_Status if there's a parse error.</li>
+				<li><span class="field">access:</span> private</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			init_if_header
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodoverwrite" id="overwrite"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">overwrite</span> (line <span class="line-number">116</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			overwrite
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+						
+		</div>
+	</div>
+
+
+	<p class="notes" id="credit">
+		Documentation generated on Wed, 08 Aug 2012 23:01:23 +0200 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.4</a>
+	</p>
+	</div></body>
+</html>
