@@ -1,0 +1,936 @@
+<!DOCTYPE html><html xmlns:date="http://exslt.org/dates-and-times" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+<meta charset="utf-8">
+<title>DAV_Server Documentation » \DAV_Resource</title>
+<meta name="author" content="Mike van Riel">
+<meta name="description" content="">
+<link href="../css/template.css" rel="stylesheet" media="all">
+<script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script><script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script><script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script><script src="../js/bootstrap.js" type="text/javascript"></script><script src="../js/template.js" type="text/javascript"></script><script src="../js/prettify/prettify.min.js" type="text/javascript"></script><link rel="shortcut icon" href="../img/favicon.ico">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png">
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner"><div class="container">
+<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><a class="brand" href="../index.html">DAV_Server Documentation</a><div class="nav-collapse"><ul class="nav">
+<li class="dropdown">
+<a href="#api" class="dropdown-toggle" data-toggle="dropdown">
+                                    API Documentation <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a>Packages</a></li>
+<li><a href="../packages/DAV.html"><i class="icon-folder-open"></i> DAV</a></li>
+<li><a href="../packages/DAVACL.html"><i class="icon-folder-open"></i> DAVACL</a></li>
+</ul>
+</li>
+<li class="dropdown" id="charts-menu">
+<a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
+                                    Charts <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="../graph_class.html"><i class="icon-list-alt"></i> Class hierarchy diagram</a></li></ul>
+</li>
+<li class="dropdown" id="reports-menu">
+<a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
+                                    Reports <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a href="../errors.html"><i class="icon-remove-sign"></i> Errors 
+                <span class="label label-info">272</span></a></li>
+<li><a href="../markers.html"><i class="icon-map-marker"></i> Markers 
+                <ul><li>todo 
+                <span class="label label-info">2</span>
+</li></ul></a></li>
+<li><a href="../deprecated.html"><i class="icon-stop"></i> Deprecated elements 
+                <span class="label label-info">1</span></a></li>
+</ul>
+</li>
+</ul></div>
+</div></div>
+<div class="go_to_top"><a href="#___" style="color: inherit">Back to top  <i class="icon-upload icon-white"></i></a></div>
+</div>
+<div id="___" class="container">
+<noscript><div class="alert alert-warning">
+                            Javascript is disabled; several features are only available
+                            if Javascript is enabled.
+                        </div></noscript>
+<div class="row">
+<div class="span4">
+<span class="btn-group visibility" data-toggle="buttons-checkbox"><button class="btn public active" title="Show public elements">Public</button><button class="btn protected" title="Show protected elements">Protected</button><button class="btn private" title="Show private elements">Private</button><button class="btn inherited active" title="Show inherited elements">Inherited</button></span><div class="btn-group view pull-right" data-toggle="buttons-radio">
+<button class="btn details" title="Show descriptions and method names"><i class="icon-list"></i></button><button class="btn simple" title="Show only method names"><i class="icon-align-justify"></i></button>
+</div>
+<ul class="side-nav nav nav-list">
+<li class="nav-header">
+<i class="icon-custom icon-method"></i> Methods</li>
+<li class="method public "><a href="#__construct" title="__construct :: Constructor"><span class="description">Constructor</span><pre>__construct()</pre></a></li>
+<li class="method public "><a href="#collection" title="collection :: "><span class="description">collection()
+        </span><pre>collection()</pre></a></li>
+<li class="method public "><a href="#isVisible" title="isVisible :: "><span class="description">isVisible()
+        </span><pre>isVisible()</pre></a></li>
+<li class="method public "><a href="#method_COPY" title="method_COPY :: Handle the COPY request."><span class="description">Handle the COPY request.</span><pre>method_COPY()</pre></a></li>
+<li class="method public "><a href="#method_COPY_external" title="method_COPY_external :: Handle the COPY request."><span class="description">Handle the COPY request.</span><pre>method_COPY_external()</pre></a></li>
+<li class="method public "><a href="#method_GET" title="method_GET :: Handle a GET request."><span class="description">Handle a GET request.</span><pre>method_GET()</pre></a></li>
+<li class="method public "><a href="#method_HEAD" title="method_HEAD :: Extra HTTP headers for GET and HEAD requests."><span class="description">Extra HTTP headers for GET and HEAD requests.</span><pre>method_HEAD()</pre></a></li>
+<li class="method public "><a href="#method_OPTIONS" title="method_OPTIONS :: "><span class="description">method_OPTIONS()
+        </span><pre>method_OPTIONS()</pre></a></li>
+<li class="method public "><a href="#method_POST" title="method_POST :: Handle a POST request."><span class="description">Handle a POST request.</span><pre>method_POST()</pre></a></li>
+<li class="method public "><a href="#method_PROPPATCH" title="method_PROPPATCH :: "><span class="description">method_PROPPATCH()
+        </span><pre>method_PROPPATCH()</pre></a></li>
+<li class="method public "><a href="#method_PUT" title="method_PUT :: Handle a PUT request."><span class="description">Handle a PUT request.</span><pre>method_PUT()</pre></a></li>
+<li class="method public "><a href="#method_PUT_range" title="method_PUT_range :: Handle a PUT request."><span class="description">Handle a PUT request.</span><pre>method_PUT_range()</pre></a></li>
+<li class="method public "><a href="#prop" title="prop :: "><span class="description">prop()
+        </span><pre>prop()</pre></a></li>
+<li class="method public "><a href="#prop_creationdate" title="prop_creationdate :: "><span class="description">prop_creationdate()
+        </span><pre>prop_creationdate()</pre></a></li>
+<li class="method public "><a href="#prop_displayname" title="prop_displayname :: "><span class="description">prop_displayname()
+        </span><pre>prop_displayname()</pre></a></li>
+<li class="method public "><a href="#prop_executable" title="prop_executable :: "><span class="description">prop_executable()
+        </span><pre>prop_executable()</pre></a></li>
+<li class="method public "><a href="#prop_getcontentlanguage" title="prop_getcontentlanguage :: "><span class="description">prop_getcontentlanguage()
+        </span><pre>prop_getcontentlanguage()</pre></a></li>
+<li class="method public "><a href="#prop_getcontentlength" title="prop_getcontentlength :: "><span class="description">prop_getcontentlength()
+        </span><pre>prop_getcontentlength()</pre></a></li>
+<li class="method public "><a href="#prop_getcontenttype" title="prop_getcontenttype :: "><span class="description">prop_getcontenttype()
+        </span><pre>prop_getcontenttype()</pre></a></li>
+<li class="method public "><a href="#prop_getetag" title="prop_getetag :: "><span class="description">prop_getetag()
+        </span><pre>prop_getetag()</pre></a></li>
+<li class="method public "><a href="#prop_getlastmodified" title="prop_getlastmodified :: "><span class="description">prop_getlastmodified()
+        </span><pre>prop_getlastmodified()</pre></a></li>
+<li class="method public "><a href="#prop_ishidden" title="prop_ishidden :: "><span class="description">prop_ishidden()
+        </span><pre>prop_ishidden()</pre></a></li>
+<li class="method public "><a href="#prop_lockdiscovery" title="prop_lockdiscovery :: "><span class="description">prop_lockdiscovery()
+        </span><pre>prop_lockdiscovery()</pre></a></li>
+<li class="method public "><a href="#prop_resourcetype" title="prop_resourcetype :: "><span class="description">prop_resourcetype()
+        </span><pre>prop_resourcetype()</pre></a></li>
+<li class="method public "><a href="#prop_supported_report_set" title="prop_supported_report_set :: "><span class="description">prop_supported_report_set()
+        </span><pre>prop_supported_report_set()</pre></a></li>
+<li class="method public "><a href="#prop_supportedlock" title="prop_supportedlock :: "><span class="description">prop_supportedlock()
+        </span><pre>prop_supportedlock()</pre></a></li>
+<li class="method public "><a href="#propname" title="propname :: All available properties of the current resource."><span class="description">All available properties of the current resource.</span><pre>propname()</pre></a></li>
+<li class="method public "><a href="#set_displayname" title="set_displayname :: "><span class="description">set_displayname()
+        </span><pre>set_displayname()</pre></a></li>
+<li class="method public "><a href="#set_executable" title="set_executable :: "><span class="description">set_executable()
+        </span><pre>set_executable()</pre></a></li>
+<li class="method public "><a href="#set_getcontentlanguage" title="set_getcontentlanguage :: "><span class="description">set_getcontentlanguage()
+        </span><pre>set_getcontentlanguage()</pre></a></li>
+<li class="method public "><a href="#set_getcontenttype" title="set_getcontenttype :: "><span class="description">set_getcontenttype()
+        </span><pre>set_getcontenttype()</pre></a></li>
+<li class="method public "><a href="#set_ishidden" title="set_ishidden :: "><span class="description">set_ishidden()
+        </span><pre>set_ishidden()</pre></a></li>
+<li class="method public "><a href="#storeProperties" title="storeProperties :: Stores properties set earlier by set()."><span class="description">Stores properties set earlier by set().</span><pre>storeProperties()</pre></a></li>
+<li class="method public "><a href="#user_prop_creationdate" title="user_prop_creationdate :: "><span class="description">user_prop_creationdate()
+        </span><pre>user_prop_creationdate()</pre></a></li>
+<li class="method public "><a href="#user_prop_displayname" title="user_prop_displayname :: "><span class="description">user_prop_displayname()
+        </span><pre>user_prop_displayname()</pre></a></li>
+<li class="method public "><a href="#user_prop_executable" title="user_prop_executable :: "><span class="description">user_prop_executable()
+        </span><pre>user_prop_executable()</pre></a></li>
+<li class="method public "><a href="#user_prop_getcontentlanguage" title="user_prop_getcontentlanguage :: "><span class="description">user_prop_getcontentlanguage()
+        </span><pre>user_prop_getcontentlanguage()</pre></a></li>
+<li class="method public "><a href="#user_prop_getcontentlength" title="user_prop_getcontentlength :: "><span class="description">user_prop_getcontentlength()
+        </span><pre>user_prop_getcontentlength()</pre></a></li>
+<li class="method public "><a href="#user_prop_getcontenttype" title="user_prop_getcontenttype :: "><span class="description">user_prop_getcontenttype()
+        </span><pre>user_prop_getcontenttype()</pre></a></li>
+<li class="method public "><a href="#user_prop_getetag" title="user_prop_getetag :: "><span class="description">user_prop_getetag()
+        </span><pre>user_prop_getetag()</pre></a></li>
+<li class="method public "><a href="#user_prop_getlastmodified" title="user_prop_getlastmodified :: "><span class="description">user_prop_getlastmodified()
+        </span><pre>user_prop_getlastmodified()</pre></a></li>
+<li class="method public "><a href="#user_prop_resourcetype" title="user_prop_resourcetype :: Type of resource."><span class="description">Type of resource.</span><pre>user_prop_resourcetype()</pre></a></li>
+<li class="nav-header protected">» Protected</li>
+<li class="method protected "><a href="#user_prop" title="user_prop :: "><span class="description">user_prop()
+        </span><pre>user_prop()</pre></a></li>
+<li class="method protected "><a href="#user_propname" title="user_propname :: All available properties of the current resource."><span class="description">All available properties of the current resource.</span><pre>user_propname()</pre></a></li>
+<li class="method protected "><a href="#user_set" title="user_set :: "><span class="description">user_set()
+        </span><pre>user_set()</pre></a></li>
+<li class="method protected "><a href="#user_set_displayname" title="user_set_displayname :: "><span class="description">user_set_displayname()
+        </span><pre>user_set_displayname()</pre></a></li>
+<li class="method protected "><a href="#user_set_executable" title="user_set_executable :: "><span class="description">user_set_executable()
+        </span><pre>user_set_executable()</pre></a></li>
+<li class="method protected "><a href="#user_set_getcontentlanguage" title="user_set_getcontentlanguage :: "><span class="description">user_set_getcontentlanguage()
+        </span><pre>user_set_getcontentlanguage()</pre></a></li>
+<li class="method protected "><a href="#user_set_getcontenttype" title="user_set_getcontenttype :: "><span class="description">user_set_getcontenttype()
+        </span><pre>user_set_getcontenttype()</pre></a></li>
+<li class="nav-header">
+<i class="icon-custom icon-property"></i> Properties</li>
+<li class="property public "><a href="#%24path" title="$path :: "><span class="description">&lt;p&gt;a properly slashified path.&lt;/p&gt;</span><pre>$path</pre></a></li>
+</ul>
+</div>
+<div class="span8">
+<a name="%5CDAV_Resource" id="\DAV_Resource"></a><ul class="breadcrumb">
+<li>
+<a href="../index.html"><i class="icon-custom icon-class"></i></a><span class="divider">\</span>
+</li>
+<li><a href="../namespaces/global.html">global</a></li>
+<li class="active">
+<span class="divider">\</span><a href="../classes/DAV_Resource.html">DAV_Resource</a>
+</li>
+</ul>
+<div href="../classes/DAV_Resource.html" class="element class">
+<p class="short_description">Resource to be disclosed through WebDAV</p>
+<div class="details">
+<p class="long_description"></p>
+<table class="table table-bordered"><tr>
+<th>package</th>
+<td><a href="../packages/DAV.html">DAV</a></td>
+</tr></table>
+<h3>
+<i class="icon-custom icon-method"></i> Methods</h3>
+<a name="__construct" id="__construct"></a><div class="element clickable method public __construct" data-toggle="collapse" data-target=".__construct .collapse">
+<h2>Constructor</h2>
+<pre>__construct(string $path) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"></p>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$path</h4>
+<code>string</code><p>a properly slashified path.</p></div>
+</div></div>
+</div>
+<a name="collection" id="collection"></a><div class="element clickable method public collection" data-toggle="collapse" data-target=".collection .collapse">
+<h2>collection()
+        </h2>
+<pre>collection() : <a href="../classes/DAV_Resource.html">\DAV_Resource</a></pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"></p>
+<h3>Returns</h3>
+<div class="subelement response"><code><a href="../classes/DAV_Resource.html">\DAV_Resource</a></code></div>
+</div></div>
+</div>
+<a name="isVisible" id="isVisible"></a><div class="element clickable method public isVisible" data-toggle="collapse" data-target=".isVisible .collapse">
+<h2>isVisible()
+        </h2>
+<pre>isVisible() : bool</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"></p>
+<h3>Returns</h3>
+<div class="subelement response"><code>bool</code></div>
+</div></div>
+</div>
+<a name="method_COPY" id="method_COPY"></a><div class="element clickable method public method_COPY" data-toggle="collapse" data-target=".method_COPY .collapse">
+<h2>Handle the COPY request.</h2>
+<pre>method_COPY(string $path) : void</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"><p>This function should call DAV_Multistatus::inst()->addStatus() to report
+partial failure. DAV_Status Sec.9.8.5 mentions the following status codes:
+- 403 Forbidden - also applicable if source and destination are equal,
+  but this case is automatically handled for you.
+- 409 Conflict - one or more intermediate collections are missing at the
+  destination.
+- 412 Precondition Failed - also applicable if the Overwrite: header was
+  set to 'F' and the destination resource was mapped.
+- 423 Locked - The destination (or members therein) are locked
+- 507 Insufficient Storage</p></p>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$path</h4>
+<code>string</code><p>the destination</p></div>
+<h3>Exceptions</h3>
+<table class="table table-bordered"><tr>
+<th><code><a href="../classes/DAV_Status.html">\DAV_Status</a></code></th>
+<td>if the request fails entirely</td>
+</tr></table>
+</div></div>
+</div>
+<a name="method_COPY_external" id="method_COPY_external"></a><div class="element clickable method public method_COPY_external" data-toggle="collapse" data-target=".method_COPY_external .collapse">
+<h2>Handle the COPY request.</h2>
+<pre>method_COPY_external(string $destination, bool $overwrite) : bool</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"></p>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$destination</h4>
+<code>string</code><p>URL</p></div>
+<div class="subelement argument">
+<h4>$overwrite</h4>
+<code>bool</code>
+</div>
+<h3>Exceptions</h3>
+<table class="table table-bordered"><tr>
+<th><code><a href="../classes/DAV_Status.html">\DAV_Status</a></code></th>
+<td>Sec.9.8.5 mentions the following status codes: - 403 Forbidden - also applicable if source and destination are equal, but this case is automatically handled for you. - 409 Conflict - one or more intermediate collections are missing at the destination. - 412 Precondition Failed - also applicable if the Overwrite: header was set to 'F' and the destination resource was mapped. - 423 Locked - The destination (or members therein) are locked - 502 Bad Gateway - the external server cannot be reached. - 507 Insufficient Storage</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>bool</code>true if the destination was overwritten, false if it was newly created</div>
+</div></div>
+</div>
+<a name="method_GET" id="method_GET"></a><div class="element clickable method public method_GET" data-toggle="collapse" data-target=".method_GET .collapse">
+<h2>Handle a GET request.</h2>
+<pre>method_GET() : resource | string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"></p>
+<h3>Exceptions</h3>
+<table class="table table-bordered"><tr>
+<th><code><a href="../classes/DAV_Status.html">\DAV_Status</a></code></th>
+<td></td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>resource</code><code>string</code>a stream or a string, or null if no content.</div>
+</div></div>
+</div>
+<a name="method_HEAD" id="method_HEAD"></a><div class="element clickable method public method_HEAD" data-toggle="collapse" data-target=".method_HEAD .collapse">
+<h2>Extra HTTP headers for GET and HEAD requests.</h2>
+<pre>method_HEAD() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"><p>The following headers are set automatically if you don't return them:
+- Content-Type
+- Content-Length
+- ETag
+- Last-Modified</p></p>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>An associative array of HTTP-headers.</div>
+</div></div>
+</div>
+<a name="method_OPTIONS" id="method_OPTIONS"></a><div class="element clickable method public method_OPTIONS" data-toggle="collapse" data-target=".method_OPTIONS .collapse">
+<h2>method_OPTIONS()
+        </h2>
+<pre>method_OPTIONS(array $headers) : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"></p>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$headers</h4>
+<code>array</code><p>By default, DAV_Server returns same standard response to an OPTIONS request. This method allows you to filter this response. Especially, you may want to override the default Allow: and DAV: headers.</p></div>
+<h3>Exceptions</h3>
+<table class="table table-bordered"><tr>
+<th><code><a href="../classes/DAV_Status.html">\DAV_Status</a></code></th>
+<td>You could throw a DAV_Status if you think this is appropriate, eg. because of access rights limitations.</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>the $headers array</div>
+</div></div>
+</div>
+<a name="method_POST" id="method_POST"></a><div class="element clickable method public method_POST" data-toggle="collapse" data-target=".method_POST .collapse">
+<h2>Handle a POST request.</h2>
+<pre>method_POST(array $headers) : mixed</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"></p>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$headers</h4>
+<code>array</code><p>Headers you want to submit in the HTTP response.</p></div>
+<h3>Exceptions</h3>
+<table class="table table-bordered"><tr>
+<th><code><a href="../classes/DAV_Status.html">\DAV_Status</a></code></th>
+<td></td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>mixed</code>either a valid stream, a string, or null (in which case the default status code will be '204 No Content'.</div>
+</div></div>
+</div>
+<a name="method_PROPPATCH" id="method_PROPPATCH"></a><div class="element clickable method public method_PROPPATCH" data-toggle="collapse" data-target=".method_PROPPATCH .collapse">
+<h2>method_PROPPATCH()
+        </h2>
+<pre>method_PROPPATCH(string $propname, string $value) : void</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"></p>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$propname</h4>
+<code>string</code><p>the name of the property to be set.</p></div>
+<div class="subelement argument">
+<h4>$value</h4>
+<code>string</code><p>an XML fragment, or null to unset the property.</p></div>
+<h3>Exceptions</h3>
+<table class="table table-bordered"><tr>
+<th><code><a href="../classes/DAV_Status.html">\DAV_Status</a></code></th>
+<td>§9.2.1 specifically mentions o.a. the following statusses. - 403 (Forbidden): The client, for reasons the server chooses not to specify, cannot alter one of the properties. - 403 (Forbidden): The client has attempted to set a protected property, such as DAV:getetag. If returning this error, the server SHOULD use the precondition code 'cannot-modify-protected-property' inside the response body. - 409 (Conflict): The client has provided a value whose semantics are not appropriate for the property. - 507 (Insufficient Storage): The server did not have sufficient space to record the property.</td>
+</tr></table>
+</div></div>
+</div>
+<a name="method_PUT" id="method_PUT"></a><div class="element clickable method public method_PUT" data-toggle="collapse" data-target=".method_PUT .collapse">
+<h2>Handle a PUT request.</h2>
+<pre>method_PUT(resource $stream) : void</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"><p>This method SHOULD be implemented by non-collections.</p></p>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$stream</h4>
+<code>resource</code>
+</div>
+</div></div>
+</div>
+<a name="method_PUT_range" id="method_PUT_range"></a><div class="element clickable method public method_PUT_range" data-toggle="collapse" data-target=".method_PUT_range .collapse">
+<h2>Handle a PUT request.</h2>
+<pre>method_PUT_range(resource $stream, int $start, int $end, int $total) : void</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"><p>This method SHOULD be implemented by non-collections.</p></p>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$stream</h4>
+<code>resource</code>
+</div>
+<div class="subelement argument">
+<h4>$start</h4>
+<code>int</code>
+</div>
+<div class="subelement argument">
+<h4>$end</h4>
+<code>int</code>
+</div>
+<div class="subelement argument">
+<h4>$total</h4>
+<code>int</code>
+</div>
+</div></div>
+</div>
+<a name="prop" id="prop"></a><div class="element clickable method public prop" data-toggle="collapse" data-target=".prop .collapse">
+<h2>prop()
+        </h2>
+<pre>prop(string $propname) : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"></p>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$propname</h4>
+<code>string</code><p>the name of the property to be returned, eg. "mynamespace: myprop"</p>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>XML or NULL if the property is not defined.</div>
+</div></div>
+</div>
+<a name="prop_creationdate" id="prop_creationdate"></a><div class="element clickable method public prop_creationdate" data-toggle="collapse" data-target=".prop_creationdate .collapse">
+<h2>prop_creationdate()
+        </h2>
+<pre>prop_creationdate() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"></p>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>XML</div>
+</div></div>
+</div>
+<a name="prop_displayname" id="prop_displayname"></a><div class="element clickable method public prop_displayname" data-toggle="collapse" data-target=".prop_displayname .collapse">
+<h2>prop_displayname()
+        </h2>
+<pre>prop_displayname() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"></p>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>XML</div>
+</div></div>
+</div>
+<a name="prop_executable" id="prop_executable"></a><div class="element clickable method public prop_executable" data-toggle="collapse" data-target=".prop_executable .collapse">
+<h2>prop_executable()
+        </h2>
+<pre>prop_executable() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"></p>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>XML</div>
+</div></div>
+</div>
+<a name="prop_getcontentlanguage" id="prop_getcontentlanguage"></a><div class="element clickable method public prop_getcontentlanguage" data-toggle="collapse" data-target=".prop_getcontentlanguage .collapse">
+<h2>prop_getcontentlanguage()
+        </h2>
+<pre>prop_getcontentlanguage() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"></p>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>XML</div>
+</div></div>
+</div>
+<a name="prop_getcontentlength" id="prop_getcontentlength"></a><div class="element clickable method public prop_getcontentlength" data-toggle="collapse" data-target=".prop_getcontentlength .collapse">
+<h2>prop_getcontentlength()
+        </h2>
+<pre>prop_getcontentlength() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"></p>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>XML</div>
+</div></div>
+</div>
+<a name="prop_getcontenttype" id="prop_getcontenttype"></a><div class="element clickable method public prop_getcontenttype" data-toggle="collapse" data-target=".prop_getcontenttype .collapse">
+<h2>prop_getcontenttype()
+        </h2>
+<pre>prop_getcontenttype() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"></p>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>XML</div>
+</div></div>
+</div>
+<a name="prop_getetag" id="prop_getetag"></a><div class="element clickable method public prop_getetag" data-toggle="collapse" data-target=".prop_getetag .collapse">
+<h2>prop_getetag()
+        </h2>
+<pre>prop_getetag() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"></p>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>XML</div>
+</div></div>
+</div>
+<a name="prop_getlastmodified" id="prop_getlastmodified"></a><div class="element clickable method public prop_getlastmodified" data-toggle="collapse" data-target=".prop_getlastmodified .collapse">
+<h2>prop_getlastmodified()
+        </h2>
+<pre>prop_getlastmodified() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"></p>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>XML</div>
+</div></div>
+</div>
+<a name="prop_ishidden" id="prop_ishidden"></a><div class="element clickable method public prop_ishidden" data-toggle="collapse" data-target=".prop_ishidden .collapse">
+<h2>prop_ishidden()
+        </h2>
+<pre>prop_ishidden() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"></p>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>XML</div>
+</div></div>
+</div>
+<a name="prop_lockdiscovery" id="prop_lockdiscovery"></a><div class="element clickable method public prop_lockdiscovery" data-toggle="collapse" data-target=".prop_lockdiscovery .collapse">
+<h2>prop_lockdiscovery()
+        </h2>
+<pre>prop_lockdiscovery() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"></p>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>XML</div>
+</div></div>
+</div>
+<a name="prop_resourcetype" id="prop_resourcetype"></a><div class="element clickable method public prop_resourcetype" data-toggle="collapse" data-target=".prop_resourcetype .collapse">
+<h2>prop_resourcetype()
+        </h2>
+<pre>prop_resourcetype() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"></p>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>XML</div>
+</div></div>
+</div>
+<a name="prop_supported_report_set" id="prop_supported_report_set"></a><div class="element clickable method public prop_supported_report_set" data-toggle="collapse" data-target=".prop_supported_report_set .collapse">
+<h2>prop_supported_report_set()
+        </h2>
+<pre>prop_supported_report_set() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"></p>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>XML</div>
+</div></div>
+</div>
+<a name="prop_supportedlock" id="prop_supportedlock"></a><div class="element clickable method public prop_supportedlock" data-toggle="collapse" data-target=".prop_supportedlock .collapse">
+<h2>prop_supportedlock()
+        </h2>
+<pre>prop_supportedlock() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"></p>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>XML</div>
+</div></div>
+</div>
+<a name="propname" id="propname"></a><div class="element clickable method public propname" data-toggle="collapse" data-target=".propname .collapse">
+<h2>All available properties of the current resource.</h2>
+<pre>propname() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"><p>This method must return an array with ALL property names as keys and a
+boolean as value, indicating if the property should be returned in an
+&lt;allprop/> PROPFIND request.</p></p>
+<h3>Returns</h3>
+<div class="subelement response"><code>array</code></div>
+</div></div>
+</div>
+<a name="set_displayname" id="set_displayname"></a><div class="element clickable method public set_displayname" data-toggle="collapse" data-target=".set_displayname .collapse">
+<h2>set_displayname()
+        </h2>
+<pre>set_displayname($value) : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"></p>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$value</h4>
+<code></code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>XML</div>
+</div></div>
+</div>
+<a name="set_executable" id="set_executable"></a><div class="element clickable method public set_executable" data-toggle="collapse" data-target=".set_executable .collapse">
+<h2>set_executable()
+        </h2>
+<pre>set_executable($value) : void</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"></p>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$value</h4>
+<code></code>
+</div>
+<h3>Exceptions</h3>
+<table class="table table-bordered"><tr>
+<th><code><a href="../classes/DAV_Status.html">\DAV_Status</a></code></th>
+<td></td>
+</tr></table>
+</div></div>
+</div>
+<a name="set_getcontentlanguage" id="set_getcontentlanguage"></a><div class="element clickable method public set_getcontentlanguage" data-toggle="collapse" data-target=".set_getcontentlanguage .collapse">
+<h2>set_getcontentlanguage()
+        </h2>
+<pre>set_getcontentlanguage($value) : void</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"></p>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$value</h4>
+<code></code>
+</div>
+<h3>Exceptions</h3>
+<table class="table table-bordered"><tr>
+<th><code><a href="../classes/DAV_Status.html">\DAV_Status</a></code></th>
+<td></td>
+</tr></table>
+</div></div>
+</div>
+<a name="set_getcontenttype" id="set_getcontenttype"></a><div class="element clickable method public set_getcontenttype" data-toggle="collapse" data-target=".set_getcontenttype .collapse">
+<h2>set_getcontenttype()
+        </h2>
+<pre>set_getcontenttype($value) : void</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"></p>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$value</h4>
+<code></code>
+</div>
+<h3>Exceptions</h3>
+<table class="table table-bordered"><tr>
+<th><code><a href="../classes/DAV_Status.html">\DAV_Status</a></code></th>
+<td></td>
+</tr></table>
+</div></div>
+</div>
+<a name="set_ishidden" id="set_ishidden"></a><div class="element clickable method public set_ishidden" data-toggle="collapse" data-target=".set_ishidden .collapse">
+<h2>set_ishidden()
+        </h2>
+<pre>set_ishidden(string $value) : void</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"></p>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$value</h4>
+<code>string</code><p>null, 'true' or 'false'</p>
+</div>
+<h3>Exceptions</h3>
+<table class="table table-bordered"><tr>
+<th><code><a href="../classes/DAV_Status.html">\DAV_Status</a></code></th>
+<td></td>
+</tr></table>
+</div></div>
+</div>
+<a name="storeProperties" id="storeProperties"></a><div class="element clickable method public storeProperties" data-toggle="collapse" data-target=".storeProperties .collapse">
+<h2>Stores properties set earlier by set().</h2>
+<pre>storeProperties() : void</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"></p>
+<h3>Exceptions</h3>
+<table class="table table-bordered"><tr>
+<th><code><a href="../classes/DAV_Status.html">\DAV_Status</a></code></th>
+<td>in particular 507 (Insufficient Storage)</td>
+</tr></table>
+</div></div>
+</div>
+<a name="user_prop_creationdate" id="user_prop_creationdate"></a><div class="element clickable method public user_prop_creationdate" data-toggle="collapse" data-target=".user_prop_creationdate .collapse">
+<h2>user_prop_creationdate()
+        </h2>
+<pre>user_prop_creationdate() : int</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"></p>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>int</code>UNIX timestamp</div>
+</div></div>
+</div>
+<a name="user_prop_displayname" id="user_prop_displayname"></a><div class="element clickable method public user_prop_displayname" data-toggle="collapse" data-target=".user_prop_displayname .collapse">
+<h2>user_prop_displayname()
+        </h2>
+<pre>user_prop_displayname() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"></p>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>not XML, just UTF-8 text</div>
+</div></div>
+</div>
+<a name="user_prop_executable" id="user_prop_executable"></a><div class="element clickable method public user_prop_executable" data-toggle="collapse" data-target=".user_prop_executable .collapse">
+<h2>user_prop_executable()
+        </h2>
+<pre>user_prop_executable() : bool</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"></p>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>bool</code>true if executable</div>
+</div></div>
+</div>
+<a name="user_prop_getcontentlanguage" id="user_prop_getcontentlanguage"></a><div class="element clickable method public user_prop_getcontentlanguage" data-toggle="collapse" data-target=".user_prop_getcontentlanguage .collapse">
+<h2>user_prop_getcontentlanguage()
+        </h2>
+<pre>user_prop_getcontentlanguage() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"></p>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>not XML, just UTF-8 text</div>
+</div></div>
+</div>
+<a name="user_prop_getcontentlength" id="user_prop_getcontentlength"></a><div class="element clickable method public user_prop_getcontentlength" data-toggle="collapse" data-target=".user_prop_getcontentlength .collapse">
+<h2>user_prop_getcontentlength()
+        </h2>
+<pre>user_prop_getcontentlength() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"></p>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>not XML, just UTF-8 text</div>
+</div></div>
+</div>
+<a name="user_prop_getcontenttype" id="user_prop_getcontenttype"></a><div class="element clickable method public user_prop_getcontenttype" data-toggle="collapse" data-target=".user_prop_getcontenttype .collapse">
+<h2>user_prop_getcontenttype()
+        </h2>
+<pre>user_prop_getcontenttype() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"></p>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>not XML, just UTF-8 text</div>
+</div></div>
+</div>
+<a name="user_prop_getetag" id="user_prop_getetag"></a><div class="element clickable method public user_prop_getetag" data-toggle="collapse" data-target=".user_prop_getetag .collapse">
+<h2>user_prop_getetag()
+        </h2>
+<pre>user_prop_getetag() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"></p>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>(W/)?"<etag>" not XML, just UTF-8 text</div>
+</div></div>
+</div>
+<a name="user_prop_getlastmodified" id="user_prop_getlastmodified"></a><div class="element clickable method public user_prop_getlastmodified" data-toggle="collapse" data-target=".user_prop_getlastmodified .collapse">
+<h2>user_prop_getlastmodified()
+        </h2>
+<pre>user_prop_getlastmodified() : int</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"></p>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>int</code>UNIX timestamp</div>
+</div></div>
+</div>
+<a name="user_prop_resourcetype" id="user_prop_resourcetype"></a><div class="element clickable method public user_prop_resourcetype" data-toggle="collapse" data-target=".user_prop_resourcetype .collapse">
+<h2>Type of resource.</h2>
+<pre>user_prop_resourcetype() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"><p>RFC4918 defines &lt;D:collection/>.
+RFC3744 adds <D:principle>.</p></p>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>an XML fragment</div>
+</div></div>
+</div>
+<a name="user_prop" id="user_prop"></a><div class="element clickable method protected user_prop" data-toggle="collapse" data-target=".user_prop .collapse">
+<h2>user_prop()
+        </h2>
+<pre>user_prop(string $propname) : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"></p>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$propname</h4>
+<code>string</code><p>the name of the property to be returned, eg. "mynamespace: myprop"</p>
+</div>
+<h3>Exceptions</h3>
+<table class="table table-bordered"><tr>
+<th><code><a href="../classes/DAV_Status.html">\DAV_Status</a></code></th>
+<td>if the property is not defined.</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>XML element</div>
+</div></div>
+</div>
+<a name="user_propname" id="user_propname"></a><div class="element clickable method protected user_propname" data-toggle="collapse" data-target=".user_propname .collapse">
+<h2>All available properties of the current resource.</h2>
+<pre>user_propname() : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"><p>This method must return an array with ALL property names as keys and a
+boolean as value, indicating if the property should be returned in an
+&lt;allprop/> PROPFIND request.</p></p>
+<h3>Returns</h3>
+<div class="subelement response"><code>array</code></div>
+</div></div>
+</div>
+<a name="user_set" id="user_set"></a><div class="element clickable method protected user_set" data-toggle="collapse" data-target=".user_set .collapse">
+<h2>user_set()
+        </h2>
+<pre>user_set(string $propname, string $value) : void</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"></p>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$propname</h4>
+<code>string</code><p>the name of the property to be set.</p></div>
+<div class="subelement argument">
+<h4>$value</h4>
+<code>string</code><p>an XML fragment, or null to unset the property.</p></div>
+<h3>Exceptions</h3>
+<table class="table table-bordered"><tr>
+<th><code><a href="../classes/DAV_Status.html">\DAV_Status</a></code></th>
+<td>§9.2.1 specifically mentions the following statusses. - 200 (OK): The property set or change succeeded. Note that if this appears for one property, it appears for every property in the response, due to the atomicity of PROPPATCH. - 403 (Forbidden): The client, for reasons the server chooses not to specify, cannot alter one of the properties. - 403 (Forbidden): The client has attempted to set a protected property, such as DAV:getetag. If returning this error, the server SHOULD use the precondition code 'cannot-modify-protected-property' inside the response body. - 409 (Conflict): The client has provided a value whose semantics are not appropriate for the property. - 424 (Failed Dependency): The property change could not be made because of another property change that failed. - 507 (Insufficient Storage): The server did not have sufficient space to record the property.</td>
+</tr></table>
+</div></div>
+</div>
+<a name="user_set_displayname" id="user_set_displayname"></a><div class="element clickable method protected user_set_displayname" data-toggle="collapse" data-target=".user_set_displayname .collapse">
+<h2>user_set_displayname()
+        </h2>
+<pre>user_set_displayname($value) : void</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"></p>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$value</h4>
+<code></code>
+</div>
+<h3>Exceptions</h3>
+<table class="table table-bordered"><tr>
+<th><code><a href="../classes/DAV_Status.html">\DAV_Status</a></code></th>
+<td></td>
+</tr></table>
+</div></div>
+</div>
+<a name="user_set_executable" id="user_set_executable"></a><div class="element clickable method protected user_set_executable" data-toggle="collapse" data-target=".user_set_executable .collapse">
+<h2>user_set_executable()
+        </h2>
+<pre>user_set_executable($value) : void</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"></p>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$value</h4>
+<code></code>
+</div>
+<h3>Exceptions</h3>
+<table class="table table-bordered"><tr>
+<th><code><a href="../classes/DAV_Status.html">\DAV_Status</a></code></th>
+<td></td>
+</tr></table>
+</div></div>
+</div>
+<a name="user_set_getcontentlanguage" id="user_set_getcontentlanguage"></a><div class="element clickable method protected user_set_getcontentlanguage" data-toggle="collapse" data-target=".user_set_getcontentlanguage .collapse">
+<h2>user_set_getcontentlanguage()
+        </h2>
+<pre>user_set_getcontentlanguage($value) : void</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"></p>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$value</h4>
+<code></code>
+</div>
+<h3>Exceptions</h3>
+<table class="table table-bordered"><tr>
+<th><code><a href="../classes/DAV_Status.html">\DAV_Status</a></code></th>
+<td></td>
+</tr></table>
+</div></div>
+</div>
+<a name="user_set_getcontenttype" id="user_set_getcontenttype"></a><div class="element clickable method protected user_set_getcontenttype" data-toggle="collapse" data-target=".user_set_getcontenttype .collapse">
+<h2>user_set_getcontenttype()
+        </h2>
+<pre>user_set_getcontenttype($value) : void</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"></p>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$value</h4>
+<code></code>
+</div>
+<h3>Exceptions</h3>
+<table class="table table-bordered"><tr>
+<th><code><a href="../classes/DAV_Status.html">\DAV_Status</a></code></th>
+<td></td>
+</tr></table>
+</div></div>
+</div>
+<h3>
+<i class="icon-custom icon-property"></i> Properties</h3>
+<a name="%24path" id="$path"> </a><div class="element clickable property public $path" data-toggle="collapse" data-target=".$path .collapse">
+<h2>&lt;p&gt;a properly slashified path.&lt;/p&gt;</h2>
+<pre>$path : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="row"><footer class="span12">
+            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by <a href="http://glyphicons.com/">Glyphicons</a>.<br>
+            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor 2.0.0a8</a> and<br>
+            generated on 2012-08-09T21:18:53+02:00.<br></footer></div>
+</div>
+</body>
+</html>

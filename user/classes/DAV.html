@@ -1,0 +1,1358 @@
+<!DOCTYPE html><html xmlns:date="http://exslt.org/dates-and-times" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+<meta charset="utf-8">
+<title>DAV_Server Documentation » \DAV</title>
+<meta name="author" content="Mike van Riel">
+<meta name="description" content="">
+<link href="../css/template.css" rel="stylesheet" media="all">
+<script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script><script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script><script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script><script src="../js/bootstrap.js" type="text/javascript"></script><script src="../js/template.js" type="text/javascript"></script><script src="../js/prettify/prettify.min.js" type="text/javascript"></script><link rel="shortcut icon" href="../img/favicon.ico">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png">
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner"><div class="container">
+<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><a class="brand" href="../index.html">DAV_Server Documentation</a><div class="nav-collapse"><ul class="nav">
+<li class="dropdown">
+<a href="#api" class="dropdown-toggle" data-toggle="dropdown">
+                                    API Documentation <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a>Packages</a></li>
+<li><a href="../packages/DAV.html"><i class="icon-folder-open"></i> DAV</a></li>
+<li><a href="../packages/DAVACL.html"><i class="icon-folder-open"></i> DAVACL</a></li>
+</ul>
+</li>
+<li class="dropdown" id="charts-menu">
+<a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
+                                    Charts <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="../graph_class.html"><i class="icon-list-alt"></i> Class hierarchy diagram</a></li></ul>
+</li>
+<li class="dropdown" id="reports-menu">
+<a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
+                                    Reports <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a href="../errors.html"><i class="icon-remove-sign"></i> Errors 
+                <span class="label label-info">272</span></a></li>
+<li><a href="../markers.html"><i class="icon-map-marker"></i> Markers 
+                <ul><li>todo 
+                <span class="label label-info">2</span>
+</li></ul></a></li>
+<li><a href="../deprecated.html"><i class="icon-stop"></i> Deprecated elements 
+                <span class="label label-info">1</span></a></li>
+</ul>
+</li>
+</ul></div>
+</div></div>
+<div class="go_to_top"><a href="#___" style="color: inherit">Back to top  <i class="icon-upload icon-white"></i></a></div>
+</div>
+<div id="___" class="container">
+<noscript><div class="alert alert-warning">
+                            Javascript is disabled; several features are only available
+                            if Javascript is enabled.
+                        </div></noscript>
+<div class="row">
+<div class="span4">
+<span class="btn-group visibility" data-toggle="buttons-checkbox"><button class="btn public active" title="Show public elements">Public</button><button class="btn protected" title="Show protected elements">Protected</button><button class="btn private" title="Show private elements">Private</button><button class="btn inherited active" title="Show inherited elements">Inherited</button></span><div class="btn-group view pull-right" data-toggle="buttons-radio">
+<button class="btn details" title="Show descriptions and method names"><i class="icon-list"></i></button><button class="btn simple" title="Show only method names"><i class="icon-align-justify"></i></button>
+</div>
+<ul class="side-nav nav nav-list">
+<li class="nav-header">
+<i class="icon-custom icon-method"></i> Methods</li>
+<li class="method public "><a href="#abs2uri" title="abs2uri :: Translate an absolute path to a full URI."><span class="description">Translate an absolute path to a full URI.</span><pre>abs2uri()</pre></a></li>
+<li class="method public "><a href="#assertLock" title="assertLock :: "><span class="description">assertLock()
+        </span><pre>assertLock()</pre></a></li>
+<li class="method public "><a href="#assertMemberLocks" title="assertMemberLocks :: "><span class="description">assertMemberLocks()
+        </span><pre>assertMemberLocks()</pre></a></li>
+<li class="method public "><a href="#debug" title="debug :: Writes $string to some debug file."><span class="description">Writes $string to some debug file.</span><pre>debug()</pre></a></li>
+<li class="method public "><a href="#expand" title="expand :: "><span class="description">expand()
+        </span><pre>expand()</pre></a></li>
+<li class="method public "><a href="#forbidden" title="forbidden :: "><span class="description">forbidden()
+        </span><pre>forbidden()</pre></a></li>
+<li class="method public "><a href="#header" title="header :: Outputs HTTP/1.1 headers."><span class="description">Outputs HTTP/1.1 headers.</span><pre>header()</pre></a></li>
+<li class="method public "><a href="#httpDate" title="httpDate :: Returns an HTTP date as per HTTP/1.1 definition."><span class="description">Returns an HTTP date as per HTTP/1.1 definition.</span><pre>httpDate()</pre></a></li>
+<li class="method public "><a href="#isValidURI" title="isValidURI :: "><span class="description">isValidURI()
+        </span><pre>isValidURI()</pre></a></li>
+<li class="method public "><a href="#parseURI" title="parseURI :: Translates a URL into a DAV::$PATH-like path, if possible."><span class="description">Translates a URL into a DAV::$PATH-like path, if possible.</span><pre>parseURI()</pre></a></li>
+<li class="method public "><a href="#rawurlencode" title="rawurlencode :: Yet another URL encoder."><span class="description">Yet another URL encoder.</span><pre>rawurlencode()</pre></a></li>
+<li class="method public "><a href="#recursiveSerialize" title="recursiveSerialize :: "><span class="description">recursiveSerialize()
+        </span><pre>recursiveSerialize()</pre></a></li>
+<li class="method public "><a href="#redirect" title="redirect :: Redirects to a URL."><span class="description">Redirects to a URL.</span><pre>redirect()</pre></a></li>
+<li class="method public "><a href="#slashify" title="slashify :: Adds a trailing slash if there isn't one."><span class="description">Adds a trailing slash if there isn't one.</span><pre>slashify()</pre></a></li>
+<li class="method public "><a href="#status_code" title="status_code :: "><span class="description">status_code()
+        </span><pre>status_code()</pre></a></li>
+<li class="method public "><a href="#unslashify" title="unslashify :: Removes a trailing slash if possible."><span class="description">Removes a trailing slash if possible.</span><pre>unslashify()</pre></a></li>
+<li class="method public "><a href="#urlbase" title="urlbase :: Returns the base URI."><span class="description">Returns the base URI.</span><pre>urlbase()</pre></a></li>
+<li class="method public "><a href="#var_dump" title="var_dump :: Remake of PHP's var_dump()."><span class="description">Remake of PHP's var_dump().</span><pre>var_dump()</pre></a></li>
+<li class="method public "><a href="#xml_header" title="xml_header :: The default xml header."><span class="description">The default xml header.</span><pre>xml_header()</pre></a></li>
+<li class="method public "><a href="#xmlescape" title="xmlescape :: "><span class="description">xmlescape()
+        </span><pre>xmlescape()</pre></a></li>
+<li class="nav-header">
+<i class="icon-custom icon-property"></i> Properties</li>
+<li class="property public "><a href="#%24ACLPROVIDER" title="$ACLPROVIDER :: "><span class="description">$ACLPROVIDER</span><pre>$ACLPROVIDER</pre></a></li>
+<li class="property public "><a href="#%24ACL_PROPERTIES" title="$ACL_PROPERTIES :: "><span class="description">$ACL_PROPERTIES</span><pre>$ACL_PROPERTIES</pre></a></li>
+<li class="property public "><a href="#%24CHUNK_SIZE" title="$CHUNK_SIZE :: "><span class="description">$CHUNK_SIZE</span><pre>$CHUNK_SIZE</pre></a></li>
+<li class="property public "><a href="#%24CONDITIONS" title="$CONDITIONS :: All preconditions and postconditions mentioned in the RFCs"><span class="description">All preconditions and postconditions mentioned in the RFCs</span><pre>$CONDITIONS</pre></a></li>
+<li class="property public "><a href="#%24HIDELOCKTOKENS" title="$HIDELOCKTOKENS :: Defines if lock tokens are hidden in lockdiscovery properties."><span class="description">Defines if lock tokens are hidden in lockdiscovery properties.</span><pre>$HIDELOCKTOKENS</pre></a></li>
+<li class="property public "><a href="#%24LOCKPROVIDER" title="$LOCKPROVIDER :: "><span class="description">$LOCKPROVIDER</span><pre>$LOCKPROVIDER</pre></a></li>
+<li class="property public "><a href="#%24PATH" title="$PATH :: Initialized at bottom of file."><span class="description">Initialized at bottom of file.</span><pre>$PATH</pre></a></li>
+<li class="property public "><a href="#%24PRINCIPAL_PROPERTIES" title="$PRINCIPAL_PROPERTIES :: "><span class="description">$PRINCIPAL_PROPERTIES</span><pre>$PRINCIPAL_PROPERTIES</pre></a></li>
+<li class="property public "><a href="#%24PROTECTED_PROPERTIES" title="$PROTECTED_PROPERTIES :: "><span class="description">$PROTECTED_PROPERTIES</span><pre>$PROTECTED_PROPERTIES</pre></a></li>
+<li class="property public "><a href="#%24REGISTRY" title="$REGISTRY :: "><span class="description">$REGISTRY</span><pre>$REGISTRY</pre></a></li>
+<li class="property public "><a href="#%24REPORTS" title="$REPORTS :: "><span class="description">$REPORTS</span><pre>$REPORTS</pre></a></li>
+<li class="property public "><a href="#%24SUBMITTEDTOKENS" title="$SUBMITTEDTOKENS :: An array of all statetokens submitted by the user in the If: header."><span class="description">An array of all statetokens submitted by the user in the If: header.</span><pre>$SUBMITTEDTOKENS</pre></a></li>
+<li class="property public "><a href="#%24SUPPORTED_PROPERTIES" title="$SUPPORTED_PROPERTIES :: "><span class="description">$SUPPORTED_PROPERTIES</span><pre>$SUPPORTED_PROPERTIES</pre></a></li>
+<li class="property public "><a href="#%24WEBDAV_PROPERTIES" title="$WEBDAV_PROPERTIES :: "><span class="description">$WEBDAV_PROPERTIES</span><pre>$WEBDAV_PROPERTIES</pre></a></li>
+<li class="nav-header">
+<i class="icon-custom icon-constant"></i> Constants</li>
+<li class="constant  "><a href="#COND_ALLOWED_PRINCIPAL" title="COND_ALLOWED_PRINCIPAL :: "><span class="description">COND_ALLOWED_PRINCIPAL</span><pre>COND_ALLOWED_PRINCIPAL</pre></a></li>
+<li class="constant  "><a href="#COND_CANNOT_MODIFY_PROTECTED_PROPERTY" title="COND_CANNOT_MODIFY_PROTECTED_PROPERTY :: "><span class="description">COND_CANNOT_MODIFY_PROTECTED_PROPERTY</span><pre>COND_CANNOT_MODIFY_PROTECTED_PROPERTY</pre></a></li>
+<li class="constant  "><a href="#COND_DENY_BEFORE_GRANT" title="COND_DENY_BEFORE_GRANT :: "><span class="description">COND_DENY_BEFORE_GRANT</span><pre>COND_DENY_BEFORE_GRANT</pre></a></li>
+<li class="constant  "><a href="#COND_GRANT_ONLY" title="COND_GRANT_ONLY :: "><span class="description">COND_GRANT_ONLY</span><pre>COND_GRANT_ONLY</pre></a></li>
+<li class="constant  "><a href="#COND_LIMITED_NUMBER_OF_ACES" title="COND_LIMITED_NUMBER_OF_ACES :: "><span class="description">COND_LIMITED_NUMBER_OF_ACES</span><pre>COND_LIMITED_NUMBER_OF_ACES</pre></a></li>
+<li class="constant  "><a href="#COND_LOCK_TOKEN_MATCHES_REQUEST_URI" title="COND_LOCK_TOKEN_MATCHES_REQUEST_URI :: "><span class="description">COND_LOCK_TOKEN_MATCHES_REQUEST_URI</span><pre>COND_LOCK_TOKEN_MATCHES_REQUEST_URI</pre></a></li>
+<li class="constant  "><a href="#COND_LOCK_TOKEN_SUBMITTED" title="COND_LOCK_TOKEN_SUBMITTED :: "><span class="description">COND_LOCK_TOKEN_SUBMITTED</span><pre>COND_LOCK_TOKEN_SUBMITTED</pre></a></li>
+<li class="constant  "><a href="#COND_MISSING_REQUIRED_PRINCIPAL" title="COND_MISSING_REQUIRED_PRINCIPAL :: "><span class="description">COND_MISSING_REQUIRED_PRINCIPAL</span><pre>COND_MISSING_REQUIRED_PRINCIPAL</pre></a></li>
+<li class="constant  "><a href="#COND_NEED_PRIVILEGES" title="COND_NEED_PRIVILEGES :: "><span class="description">COND_NEED_PRIVILEGES</span><pre>COND_NEED_PRIVILEGES</pre></a></li>
+<li class="constant  "><a href="#COND_NOT_SUPPORTED_PRIVILEGE" title="COND_NOT_SUPPORTED_PRIVILEGE :: "><span class="description">COND_NOT_SUPPORTED_PRIVILEGE</span><pre>COND_NOT_SUPPORTED_PRIVILEGE</pre></a></li>
+<li class="constant  "><a href="#COND_NO_ABSTRACT" title="COND_NO_ABSTRACT :: "><span class="description">COND_NO_ABSTRACT</span><pre>COND_NO_ABSTRACT</pre></a></li>
+<li class="constant  "><a href="#COND_NO_ACE_CONFLICT" title="COND_NO_ACE_CONFLICT :: "><span class="description">COND_NO_ACE_CONFLICT</span><pre>COND_NO_ACE_CONFLICT</pre></a></li>
+<li class="constant  "><a href="#COND_NO_CONFLICTING_LOCK" title="COND_NO_CONFLICTING_LOCK :: "><span class="description">COND_NO_CONFLICTING_LOCK</span><pre>COND_NO_CONFLICTING_LOCK</pre></a></li>
+<li class="constant  "><a href="#COND_NO_EXTERNAL_ENTITIES" title="COND_NO_EXTERNAL_ENTITIES :: "><span class="description">COND_NO_EXTERNAL_ENTITIES</span><pre>COND_NO_EXTERNAL_ENTITIES</pre></a></li>
+<li class="constant  "><a href="#COND_NO_INHERITED_ACE_CONFLICT" title="COND_NO_INHERITED_ACE_CONFLICT :: "><span class="description">COND_NO_INHERITED_ACE_CONFLICT</span><pre>COND_NO_INHERITED_ACE_CONFLICT</pre></a></li>
+<li class="constant  "><a href="#COND_NO_INVERT" title="COND_NO_INVERT :: "><span class="description">COND_NO_INVERT</span><pre>COND_NO_INVERT</pre></a></li>
+<li class="constant  "><a href="#COND_NO_PROTECTED_ACE_CONFLICT" title="COND_NO_PROTECTED_ACE_CONFLICT :: "><span class="description">COND_NO_PROTECTED_ACE_CONFLICT</span><pre>COND_NO_PROTECTED_ACE_CONFLICT</pre></a></li>
+<li class="constant  "><a href="#COND_NUMBER_OF_MATCHES_WITHIN_LIMITS" title="COND_NUMBER_OF_MATCHES_WITHIN_LIMITS :: "><span class="description">COND_NUMBER_OF_MATCHES_WITHIN_LIMITS</span><pre>COND_NUMBER_OF_MATCHES_WITHIN_LIMITS</pre></a></li>
+<li class="constant  "><a href="#COND_PRESERVED_LIVE_PROPERTIES" title="COND_PRESERVED_LIVE_PROPERTIES :: "><span class="description">COND_PRESERVED_LIVE_PROPERTIES</span><pre>COND_PRESERVED_LIVE_PROPERTIES</pre></a></li>
+<li class="constant  "><a href="#COND_PROPFIND_FINITE_DEPTH" title="COND_PROPFIND_FINITE_DEPTH :: "><span class="description">COND_PROPFIND_FINITE_DEPTH</span><pre>COND_PROPFIND_FINITE_DEPTH</pre></a></li>
+<li class="constant  "><a href="#COND_RECOGNIZED_PRINCIPAL" title="COND_RECOGNIZED_PRINCIPAL :: "><span class="description">COND_RECOGNIZED_PRINCIPAL</span><pre>COND_RECOGNIZED_PRINCIPAL</pre></a></li>
+<li class="constant  "><a href="#DEPTH_0" title="DEPTH_0 :: "><span class="description">DEPTH_0</span><pre>DEPTH_0</pre></a></li>
+<li class="constant  "><a href="#DEPTH_1" title="DEPTH_1 :: "><span class="description">DEPTH_1</span><pre>DEPTH_1</pre></a></li>
+<li class="constant  "><a href="#DEPTH_INF" title="DEPTH_INF :: "><span class="description">DEPTH_INF</span><pre>DEPTH_INF</pre></a></li>
+<li class="constant  "><a href="#HTTP_ACCEPTED" title="HTTP_ACCEPTED :: "><span class="description">HTTP_ACCEPTED</span><pre>HTTP_ACCEPTED</pre></a></li>
+<li class="constant  "><a href="#HTTP_BAD_GATEWAY" title="HTTP_BAD_GATEWAY :: "><span class="description">HTTP_BAD_GATEWAY</span><pre>HTTP_BAD_GATEWAY</pre></a></li>
+<li class="constant  "><a href="#HTTP_BAD_REQUEST" title="HTTP_BAD_REQUEST :: "><span class="description">HTTP_BAD_REQUEST</span><pre>HTTP_BAD_REQUEST</pre></a></li>
+<li class="constant  "><a href="#HTTP_BANDWIDTH_LIMIT_EXCEEDED" title="HTTP_BANDWIDTH_LIMIT_EXCEEDED :: "><span class="description">HTTP_BANDWIDTH_LIMIT_EXCEEDED</span><pre>HTTP_BANDWIDTH_LIMIT_EXCEEDED</pre></a></li>
+<li class="constant  "><a href="#HTTP_CONFLICT" title="HTTP_CONFLICT :: "><span class="description">HTTP_CONFLICT</span><pre>HTTP_CONFLICT</pre></a></li>
+<li class="constant  "><a href="#HTTP_CONTINUE" title="HTTP_CONTINUE :: "><span class="description">HTTP_CONTINUE</span><pre>HTTP_CONTINUE</pre></a></li>
+<li class="constant  "><a href="#HTTP_CREATED" title="HTTP_CREATED :: "><span class="description">HTTP_CREATED</span><pre>HTTP_CREATED</pre></a></li>
+<li class="constant  "><a href="#HTTP_EXPECTATION_FAILED" title="HTTP_EXPECTATION_FAILED :: "><span class="description">HTTP_EXPECTATION_FAILED</span><pre>HTTP_EXPECTATION_FAILED</pre></a></li>
+<li class="constant  "><a href="#HTTP_FAILED_DEPENDENCY" title="HTTP_FAILED_DEPENDENCY :: "><span class="description">HTTP_FAILED_DEPENDENCY</span><pre>HTTP_FAILED_DEPENDENCY</pre></a></li>
+<li class="constant  "><a href="#HTTP_FORBIDDEN" title="HTTP_FORBIDDEN :: "><span class="description">HTTP_FORBIDDEN</span><pre>HTTP_FORBIDDEN</pre></a></li>
+<li class="constant  "><a href="#HTTP_FOUND" title="HTTP_FOUND :: "><span class="description">HTTP_FOUND</span><pre>HTTP_FOUND</pre></a></li>
+<li class="constant  "><a href="#HTTP_GATEWAY_TIMEOUT" title="HTTP_GATEWAY_TIMEOUT :: "><span class="description">HTTP_GATEWAY_TIMEOUT</span><pre>HTTP_GATEWAY_TIMEOUT</pre></a></li>
+<li class="constant  "><a href="#HTTP_GONE" title="HTTP_GONE :: "><span class="description">HTTP_GONE</span><pre>HTTP_GONE</pre></a></li>
+<li class="constant  "><a href="#HTTP_HTTP_VERSION_NOT_SUPPORTED" title="HTTP_HTTP_VERSION_NOT_SUPPORTED :: "><span class="description">HTTP_HTTP_VERSION_NOT_SUPPORTED</span><pre>HTTP_HTTP_VERSION_NOT_SUPPORTED</pre></a></li>
+<li class="constant  "><a href="#HTTP_INSUFFICIENT_STORAGE" title="HTTP_INSUFFICIENT_STORAGE :: "><span class="description">HTTP_INSUFFICIENT_STORAGE</span><pre>HTTP_INSUFFICIENT_STORAGE</pre></a></li>
+<li class="constant  "><a href="#HTTP_INTERNAL_SERVER_ERROR" title="HTTP_INTERNAL_SERVER_ERROR :: "><span class="description">HTTP_INTERNAL_SERVER_ERROR</span><pre>HTTP_INTERNAL_SERVER_ERROR</pre></a></li>
+<li class="constant  "><a href="#HTTP_LENGTH_REQUIRED" title="HTTP_LENGTH_REQUIRED :: "><span class="description">HTTP_LENGTH_REQUIRED</span><pre>HTTP_LENGTH_REQUIRED</pre></a></li>
+<li class="constant  "><a href="#HTTP_LOCKED" title="HTTP_LOCKED :: "><span class="description">HTTP_LOCKED</span><pre>HTTP_LOCKED</pre></a></li>
+<li class="constant  "><a href="#HTTP_METHOD_NOT_ALLOWED" title="HTTP_METHOD_NOT_ALLOWED :: "><span class="description">HTTP_METHOD_NOT_ALLOWED</span><pre>HTTP_METHOD_NOT_ALLOWED</pre></a></li>
+<li class="constant  "><a href="#HTTP_MOVED_PERMANENTLY" title="HTTP_MOVED_PERMANENTLY :: "><span class="description">HTTP_MOVED_PERMANENTLY</span><pre>HTTP_MOVED_PERMANENTLY</pre></a></li>
+<li class="constant  "><a href="#HTTP_MULTIPLE_CHOICES" title="HTTP_MULTIPLE_CHOICES :: "><span class="description">HTTP_MULTIPLE_CHOICES</span><pre>HTTP_MULTIPLE_CHOICES</pre></a></li>
+<li class="constant  "><a href="#HTTP_MULTI_STATUS" title="HTTP_MULTI_STATUS :: "><span class="description">HTTP_MULTI_STATUS</span><pre>HTTP_MULTI_STATUS</pre></a></li>
+<li class="constant  "><a href="#HTTP_NON_AUTHORITATIVE_INFORMATION" title="HTTP_NON_AUTHORITATIVE_INFORMATION :: "><span class="description">HTTP_NON_AUTHORITATIVE_INFORMATION</span><pre>HTTP_NON_AUTHORITATIVE_INFORMATION</pre></a></li>
+<li class="constant  "><a href="#HTTP_NOT_ACCEPTABLE" title="HTTP_NOT_ACCEPTABLE :: "><span class="description">HTTP_NOT_ACCEPTABLE</span><pre>HTTP_NOT_ACCEPTABLE</pre></a></li>
+<li class="constant  "><a href="#HTTP_NOT_EXTENDED" title="HTTP_NOT_EXTENDED :: "><span class="description">HTTP_NOT_EXTENDED</span><pre>HTTP_NOT_EXTENDED</pre></a></li>
+<li class="constant  "><a href="#HTTP_NOT_FOUND" title="HTTP_NOT_FOUND :: "><span class="description">HTTP_NOT_FOUND</span><pre>HTTP_NOT_FOUND</pre></a></li>
+<li class="constant  "><a href="#HTTP_NOT_IMPLEMENTED" title="HTTP_NOT_IMPLEMENTED :: "><span class="description">HTTP_NOT_IMPLEMENTED</span><pre>HTTP_NOT_IMPLEMENTED</pre></a></li>
+<li class="constant  "><a href="#HTTP_NOT_MODIFIED" title="HTTP_NOT_MODIFIED :: "><span class="description">HTTP_NOT_MODIFIED</span><pre>HTTP_NOT_MODIFIED</pre></a></li>
+<li class="constant  "><a href="#HTTP_NO_CONTENT" title="HTTP_NO_CONTENT :: "><span class="description">HTTP_NO_CONTENT</span><pre>HTTP_NO_CONTENT</pre></a></li>
+<li class="constant  "><a href="#HTTP_OK" title="HTTP_OK :: "><span class="description">HTTP_OK</span><pre>HTTP_OK</pre></a></li>
+<li class="constant  "><a href="#HTTP_PARTIAL_CONTENT" title="HTTP_PARTIAL_CONTENT :: "><span class="description">HTTP_PARTIAL_CONTENT</span><pre>HTTP_PARTIAL_CONTENT</pre></a></li>
+<li class="constant  "><a href="#HTTP_PAYMENT_REQUIRED" title="HTTP_PAYMENT_REQUIRED :: "><span class="description">HTTP_PAYMENT_REQUIRED</span><pre>HTTP_PAYMENT_REQUIRED</pre></a></li>
+<li class="constant  "><a href="#HTTP_PRECONDITION_FAILED" title="HTTP_PRECONDITION_FAILED :: "><span class="description">HTTP_PRECONDITION_FAILED</span><pre>HTTP_PRECONDITION_FAILED</pre></a></li>
+<li class="constant  "><a href="#HTTP_PROCESSING" title="HTTP_PROCESSING :: "><span class="description">HTTP_PROCESSING</span><pre>HTTP_PROCESSING</pre></a></li>
+<li class="constant  "><a href="#HTTP_PROXY_AUTHENTICATION_REQUIRED" title="HTTP_PROXY_AUTHENTICATION_REQUIRED :: "><span class="description">HTTP_PROXY_AUTHENTICATION_REQUIRED</span><pre>HTTP_PROXY_AUTHENTICATION_REQUIRED</pre></a></li>
+<li class="constant  "><a href="#HTTP_REQUESTED_RANGE_NOT_SATISFIABLE" title="HTTP_REQUESTED_RANGE_NOT_SATISFIABLE :: "><span class="description">HTTP_REQUESTED_RANGE_NOT_SATISFIABLE</span><pre>HTTP_REQUESTED_RANGE_NOT_SATISFIABLE</pre></a></li>
+<li class="constant  "><a href="#HTTP_REQUEST_ENTITY_TOO_LARGE" title="HTTP_REQUEST_ENTITY_TOO_LARGE :: "><span class="description">HTTP_REQUEST_ENTITY_TOO_LARGE</span><pre>HTTP_REQUEST_ENTITY_TOO_LARGE</pre></a></li>
+<li class="constant  "><a href="#HTTP_REQUEST_TIMEOUT" title="HTTP_REQUEST_TIMEOUT :: "><span class="description">HTTP_REQUEST_TIMEOUT</span><pre>HTTP_REQUEST_TIMEOUT</pre></a></li>
+<li class="constant  "><a href="#HTTP_REQUEST_URI_TOO_LONG" title="HTTP_REQUEST_URI_TOO_LONG :: "><span class="description">HTTP_REQUEST_URI_TOO_LONG</span><pre>HTTP_REQUEST_URI_TOO_LONG</pre></a></li>
+<li class="constant  "><a href="#HTTP_RESET_CONTENT" title="HTTP_RESET_CONTENT :: "><span class="description">HTTP_RESET_CONTENT</span><pre>HTTP_RESET_CONTENT</pre></a></li>
+<li class="constant  "><a href="#HTTP_RETRY_WITH" title="HTTP_RETRY_WITH :: "><span class="description">HTTP_RETRY_WITH</span><pre>HTTP_RETRY_WITH</pre></a></li>
+<li class="constant  "><a href="#HTTP_SEE_OTHER" title="HTTP_SEE_OTHER :: "><span class="description">HTTP_SEE_OTHER</span><pre>HTTP_SEE_OTHER</pre></a></li>
+<li class="constant  "><a href="#HTTP_SERVICE_UNAVAILABLE" title="HTTP_SERVICE_UNAVAILABLE :: "><span class="description">HTTP_SERVICE_UNAVAILABLE</span><pre>HTTP_SERVICE_UNAVAILABLE</pre></a></li>
+<li class="constant  "><a href="#HTTP_SWITCHING_PROTOCOLS" title="HTTP_SWITCHING_PROTOCOLS :: "><span class="description">HTTP_SWITCHING_PROTOCOLS</span><pre>HTTP_SWITCHING_PROTOCOLS</pre></a></li>
+<li class="constant  "><a href="#HTTP_SWITCH_PROXY" title="HTTP_SWITCH_PROXY :: "><span class="description">HTTP_SWITCH_PROXY</span><pre>HTTP_SWITCH_PROXY</pre></a></li>
+<li class="constant  "><a href="#HTTP_TEMPORARY_REDIRECT" title="HTTP_TEMPORARY_REDIRECT :: "><span class="description">HTTP_TEMPORARY_REDIRECT</span><pre>HTTP_TEMPORARY_REDIRECT</pre></a></li>
+<li class="constant  "><a href="#HTTP_UNAUTHORIZED" title="HTTP_UNAUTHORIZED :: "><span class="description">HTTP_UNAUTHORIZED</span><pre>HTTP_UNAUTHORIZED</pre></a></li>
+<li class="constant  "><a href="#HTTP_UNORDERED_COLLECTION" title="HTTP_UNORDERED_COLLECTION :: "><span class="description">HTTP_UNORDERED_COLLECTION</span><pre>HTTP_UNORDERED_COLLECTION</pre></a></li>
+<li class="constant  "><a href="#HTTP_UNPROCESSABLE_ENTITY" title="HTTP_UNPROCESSABLE_ENTITY :: "><span class="description">HTTP_UNPROCESSABLE_ENTITY</span><pre>HTTP_UNPROCESSABLE_ENTITY</pre></a></li>
+<li class="constant  "><a href="#HTTP_UNSUPPORTED_MEDIA_TYPE" title="HTTP_UNSUPPORTED_MEDIA_TYPE :: "><span class="description">HTTP_UNSUPPORTED_MEDIA_TYPE</span><pre>HTTP_UNSUPPORTED_MEDIA_TYPE</pre></a></li>
+<li class="constant  "><a href="#HTTP_UPGRADE_REQUIRED" title="HTTP_UPGRADE_REQUIRED :: "><span class="description">HTTP_UPGRADE_REQUIRED</span><pre>HTTP_UPGRADE_REQUIRED</pre></a></li>
+<li class="constant  "><a href="#HTTP_USE_PROXY" title="HTTP_USE_PROXY :: "><span class="description">HTTP_USE_PROXY</span><pre>HTTP_USE_PROXY</pre></a></li>
+<li class="constant  "><a href="#HTTP_VARIANT_ALSO_VARIES" title="HTTP_VARIANT_ALSO_VARIES :: "><span class="description">HTTP_VARIANT_ALSO_VARIES</span><pre>HTTP_VARIANT_ALSO_VARIES</pre></a></li>
+<li class="constant  "><a href="#LOCKSCOPE_BOTH" title="LOCKSCOPE_BOTH :: "><span class="description">LOCKSCOPE_BOTH</span><pre>LOCKSCOPE_BOTH</pre></a></li>
+<li class="constant  "><a href="#LOCKSCOPE_EXCLUSIVE" title="LOCKSCOPE_EXCLUSIVE :: "><span class="description">LOCKSCOPE_EXCLUSIVE</span><pre>LOCKSCOPE_EXCLUSIVE</pre></a></li>
+<li class="constant  "><a href="#LOCKSCOPE_NONE" title="LOCKSCOPE_NONE :: "><span class="description">LOCKSCOPE_NONE</span><pre>LOCKSCOPE_NONE</pre></a></li>
+<li class="constant  "><a href="#LOCKSCOPE_SHARED" title="LOCKSCOPE_SHARED :: "><span class="description">LOCKSCOPE_SHARED</span><pre>LOCKSCOPE_SHARED</pre></a></li>
+<li class="constant  "><a href="#PROP_ACL" title="PROP_ACL :: "><span class="description">PROP_ACL</span><pre>PROP_ACL</pre></a></li>
+<li class="constant  "><a href="#PROP_ACL_RESTRICTIONS" title="PROP_ACL_RESTRICTIONS :: "><span class="description">PROP_ACL_RESTRICTIONS</span><pre>PROP_ACL_RESTRICTIONS</pre></a></li>
+<li class="constant  "><a href="#PROP_ALTERNATE_URI_SET" title="PROP_ALTERNATE_URI_SET :: "><span class="description">PROP_ALTERNATE_URI_SET</span><pre>PROP_ALTERNATE_URI_SET</pre></a></li>
+<li class="constant  "><a href="#PROP_CREATIONDATE" title="PROP_CREATIONDATE :: "><span class="description">PROP_CREATIONDATE</span><pre>PROP_CREATIONDATE</pre></a></li>
+<li class="constant  "><a href="#PROP_CURRENT_USER_PRINCIPAL" title="PROP_CURRENT_USER_PRINCIPAL :: "><span class="description">PROP_CURRENT_USER_PRINCIPAL</span><pre>PROP_CURRENT_USER_PRINCIPAL</pre></a></li>
+<li class="constant  "><a href="#PROP_CURRENT_USER_PRIVILEGE_SET" title="PROP_CURRENT_USER_PRIVILEGE_SET :: "><span class="description">PROP_CURRENT_USER_PRIVILEGE_SET</span><pre>PROP_CURRENT_USER_PRIVILEGE_SET</pre></a></li>
+<li class="constant  "><a href="#PROP_DISPLAYNAME" title="PROP_DISPLAYNAME :: "><span class="description">PROP_DISPLAYNAME</span><pre>PROP_DISPLAYNAME</pre></a></li>
+<li class="constant  "><a href="#PROP_EXECUTABLE" title="PROP_EXECUTABLE :: "><span class="description">PROP_EXECUTABLE</span><pre>PROP_EXECUTABLE</pre></a></li>
+<li class="constant  "><a href="#PROP_EXECUTABLE2" title="PROP_EXECUTABLE2 :: "><span class="description">PROP_EXECUTABLE2</span><pre>PROP_EXECUTABLE2</pre></a></li>
+<li class="constant  "><a href="#PROP_GETCONTENTLANGUAGE" title="PROP_GETCONTENTLANGUAGE :: "><span class="description">PROP_GETCONTENTLANGUAGE</span><pre>PROP_GETCONTENTLANGUAGE</pre></a></li>
+<li class="constant  "><a href="#PROP_GETCONTENTLENGTH" title="PROP_GETCONTENTLENGTH :: "><span class="description">PROP_GETCONTENTLENGTH</span><pre>PROP_GETCONTENTLENGTH</pre></a></li>
+<li class="constant  "><a href="#PROP_GETCONTENTTYPE" title="PROP_GETCONTENTTYPE :: "><span class="description">PROP_GETCONTENTTYPE</span><pre>PROP_GETCONTENTTYPE</pre></a></li>
+<li class="constant  "><a href="#PROP_GETETAG" title="PROP_GETETAG :: "><span class="description">PROP_GETETAG</span><pre>PROP_GETETAG</pre></a></li>
+<li class="constant  "><a href="#PROP_GETLASTMODIFIED" title="PROP_GETLASTMODIFIED :: "><span class="description">PROP_GETLASTMODIFIED</span><pre>PROP_GETLASTMODIFIED</pre></a></li>
+<li class="constant  "><a href="#PROP_GROUP" title="PROP_GROUP :: "><span class="description">PROP_GROUP</span><pre>PROP_GROUP</pre></a></li>
+<li class="constant  "><a href="#PROP_GROUP_MEMBERSHIP" title="PROP_GROUP_MEMBERSHIP :: "><span class="description">PROP_GROUP_MEMBERSHIP</span><pre>PROP_GROUP_MEMBERSHIP</pre></a></li>
+<li class="constant  "><a href="#PROP_GROUP_MEMBER_SET" title="PROP_GROUP_MEMBER_SET :: "><span class="description">PROP_GROUP_MEMBER_SET</span><pre>PROP_GROUP_MEMBER_SET</pre></a></li>
+<li class="constant  "><a href="#PROP_INHERITED_ACL_SET" title="PROP_INHERITED_ACL_SET :: "><span class="description">PROP_INHERITED_ACL_SET</span><pre>PROP_INHERITED_ACL_SET</pre></a></li>
+<li class="constant  "><a href="#PROP_LOCKDISCOVERY" title="PROP_LOCKDISCOVERY :: "><span class="description">PROP_LOCKDISCOVERY</span><pre>PROP_LOCKDISCOVERY</pre></a></li>
+<li class="constant  "><a href="#PROP_OWNER" title="PROP_OWNER :: "><span class="description">PROP_OWNER</span><pre>PROP_OWNER</pre></a></li>
+<li class="constant  "><a href="#PROP_PRINCIPAL_COLLECTION_SET" title="PROP_PRINCIPAL_COLLECTION_SET :: "><span class="description">PROP_PRINCIPAL_COLLECTION_SET</span><pre>PROP_PRINCIPAL_COLLECTION_SET</pre></a></li>
+<li class="constant  "><a href="#PROP_PRINCIPAL_URL" title="PROP_PRINCIPAL_URL :: "><span class="description">PROP_PRINCIPAL_URL</span><pre>PROP_PRINCIPAL_URL</pre></a></li>
+<li class="constant  "><a href="#PROP_RESOURCETYPE" title="PROP_RESOURCETYPE :: "><span class="description">PROP_RESOURCETYPE</span><pre>PROP_RESOURCETYPE</pre></a></li>
+<li class="constant  "><a href="#PROP_SUPPORTEDLOCK" title="PROP_SUPPORTEDLOCK :: "><span class="description">PROP_SUPPORTEDLOCK</span><pre>PROP_SUPPORTEDLOCK</pre></a></li>
+<li class="constant  "><a href="#PROP_SUPPORTED_PRIVILEGE_SET" title="PROP_SUPPORTED_PRIVILEGE_SET :: "><span class="description">PROP_SUPPORTED_PRIVILEGE_SET</span><pre>PROP_SUPPORTED_PRIVILEGE_SET</pre></a></li>
+<li class="constant  "><a href="#PROP_SUPPORTED_REPORT_SET" title="PROP_SUPPORTED_REPORT_SET :: "><span class="description">PROP_SUPPORTED_REPORT_SET</span><pre>PROP_SUPPORTED_REPORT_SET</pre></a></li>
+<li class="constant  "><a href="#REPORT_ACL_PRINCIPAL_PROP_SET" title="REPORT_ACL_PRINCIPAL_PROP_SET :: "><span class="description">REPORT_ACL_PRINCIPAL_PROP_SET</span><pre>REPORT_ACL_PRINCIPAL_PROP_SET</pre></a></li>
+<li class="constant  "><a href="#REPORT_EXPAND_PROPERTY" title="REPORT_EXPAND_PROPERTY :: "><span class="description">REPORT_EXPAND_PROPERTY</span><pre>REPORT_EXPAND_PROPERTY</pre></a></li>
+<li class="constant  "><a href="#REPORT_PRINCIPAL_MATCH" title="REPORT_PRINCIPAL_MATCH :: "><span class="description">REPORT_PRINCIPAL_MATCH</span><pre>REPORT_PRINCIPAL_MATCH</pre></a></li>
+<li class="constant  "><a href="#REPORT_PRINCIPAL_PROPERTY_SEARCH" title="REPORT_PRINCIPAL_PROPERTY_SEARCH :: "><span class="description">REPORT_PRINCIPAL_PROPERTY_SEARCH</span><pre>REPORT_PRINCIPAL_PROPERTY_SEARCH</pre></a></li>
+<li class="constant  "><a href="#REPORT_PRINCIPAL_SEARCH_PROPERTY_SET" title="REPORT_PRINCIPAL_SEARCH_PROPERTY_SET :: "><span class="description">REPORT_PRINCIPAL_SEARCH_PROPERTY_SET</span><pre>REPORT_PRINCIPAL_SEARCH_PROPERTY_SET</pre></a></li>
+</ul>
+</div>
+<div class="span8">
+<a name="%5CDAV" id="\DAV"></a><ul class="breadcrumb">
+<li>
+<a href="../index.html"><i class="icon-custom icon-class"></i></a><span class="divider">\</span>
+</li>
+<li><a href="../namespaces/global.html">global</a></li>
+<li class="active">
+<span class="divider">\</span><a href="../classes/DAV.html">DAV</a>
+</li>
+</ul>
+<div href="../classes/DAV.html" class="element class">
+<p class="short_description">Just a namespace for constants and helper functions</p>
+<div class="details">
+<p class="long_description"></p>
+<table class="table table-bordered"><tr>
+<th>package</th>
+<td><a href="../packages/DAV.html">DAV</a></td>
+</tr></table>
+<h3>
+<i class="icon-custom icon-method"></i> Methods</h3>
+<a name="abs2uri" id="abs2uri"></a><div class="element clickable method public abs2uri" data-toggle="collapse" data-target=".abs2uri .collapse">
+<h2>Translate an absolute path to a full URI.</h2>
+<pre>abs2uri(string $absolutePath) : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"></p>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$absolutePath</h4>
+<code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a name="assertLock" id="assertLock"></a><div class="element clickable method public assertLock" data-toggle="collapse" data-target=".assertLock .collapse">
+<h2>assertLock()
+        </h2>
+<pre>assertLock(string $path) : mixed</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"></p>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$path</h4>
+<code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>mixed</code>one of the following: - DAV_Element_href of the lockroot of the missing token - null if no lock was found.</div>
+</div></div>
+</div>
+<a name="assertMemberLocks" id="assertMemberLocks"></a><div class="element clickable method public assertMemberLocks" data-toggle="collapse" data-target=".assertMemberLocks .collapse">
+<h2>assertMemberLocks()
+        </h2>
+<pre>assertMemberLocks(string $path) : mixed</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"></p>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$path</h4>
+<code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>mixed</code>one of the following: - DAV_Element_href of the lockroot of the missing token - null if no lock was found.</div>
+</div></div>
+</div>
+<a name="debug" id="debug"></a><div class="element clickable method public debug" data-toggle="collapse" data-target=".debug .collapse">
+<h2>Writes $string to some debug file.</h2>
+<pre>debug() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"></p>
+<table class="table table-bordered"><tr>
+<th>see</th>
+<td>\global\DAV::$DEBUG_FILE</td>
+</tr></table>
+</div></div>
+</div>
+<a name="expand" id="expand"></a><div class="element clickable method public expand" data-toggle="collapse" data-target=".expand .collapse">
+<h2>expand()
+        </h2>
+<pre>expand(string $property) : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"></p>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$property</h4>
+<code>string</code>
+</div>
+<h3>Exceptions</h3>
+<table class="table table-bordered"><tr>
+<th><code><a href="../classes/DAV_Status.html">\DAV_Status</a></code></th>
+<td></td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>XML</div>
+</div></div>
+</div>
+<a name="forbidden" id="forbidden"></a><div class="element clickable method public forbidden" data-toggle="collapse" data-target=".forbidden .collapse">
+<h2>forbidden()
+        </h2>
+<pre>forbidden() </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="header" id="header"></a><div class="element clickable method public header" data-toggle="collapse" data-target=".header .collapse">
+<h2>Outputs HTTP/1.1 headers.</h2>
+<pre>header(\$properties $properties) : void</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"></p>
+<table class="table table-bordered"><tr>
+<th>see</th>
+<td>\global\status_code()</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$properties</h4>
+<code>\$properties</code><p>array|string An array of headers to print, e.g. <code>array( 'Content-Language' => 'en-us' )</code> If there's a key «status» in the array, it is used for the 'HTTP/1.X ...' status header, e.g.<code>array( 'status' => DAV::HTTP_CREATED, 'Content-Type' => 'text/plain' )</code> If <var>$properties</var> is a string, it is taken as the Content-Type, e.g.<code>$rest->header('text/plain')</code> is exactly equivalent to <code>$rest->header( array( 'Content-Type' => 'text/plain' ) );</code></p>
+</div>
+</div></div>
+</div>
+<a name="httpDate" id="httpDate"></a><div class="element clickable method public httpDate" data-toggle="collapse" data-target=".httpDate .collapse">
+<h2>Returns an HTTP date as per HTTP/1.1 definition.</h2>
+<pre>httpDate(int $timestamp) : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"></p>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$timestamp</h4>
+<code>int</code><p>A unix timestamp</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a name="isValidURI" id="isValidURI"></a><div class="element clickable method public isValidURI" data-toggle="collapse" data-target=".isValidURI .collapse">
+<h2>isValidURI()
+        </h2>
+<pre>isValidURI(\$uri $uri) : boolean</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"></p>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$uri</h4>
+<code>\$uri</code><p>string</p></div>
+<h3>Returns</h3>
+<div class="subelement response"><code>boolean</code></div>
+</div></div>
+</div>
+<a name="parseURI" id="parseURI"></a><div class="element clickable method public parseURI" data-toggle="collapse" data-target=".parseURI .collapse">
+<h2>Translates a URL into a DAV::$PATH-like path, if possible.</h2>
+<pre>parseURI(string $url, bool $fail) : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"></p>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$url</h4>
+<code>string</code><p>the URL to translate</p></div>
+<div class="subelement argument">
+<h4>$fail</h4>
+<code>bool</code><p>Should this method fail if the URL is outside this server's realm?</p>
+</div>
+<h3>Exceptions</h3>
+<table class="table table-bordered"><tr>
+<th><code><a href="../classes/DAV_Status.html">\DAV_Status</a></code></th>
+<td></td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a name="rawurlencode" id="rawurlencode"></a><div class="element clickable method public rawurlencode" data-toggle="collapse" data-target=".rawurlencode .collapse">
+<h2>Yet another URL encoder.</h2>
+<pre>rawurlencode(string $path) : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"></p>
+<table class="table table-bordered"><tr>
+<th>deprecated</th>
+<td>PHP's built-in rawurlencode is correctly implemented since 5.3.</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$path</h4>
+<code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a name="recursiveSerialize" id="recursiveSerialize"></a><div class="element clickable method public recursiveSerialize" data-toggle="collapse" data-target=".recursiveSerialize .collapse">
+<h2>recursiveSerialize()
+        </h2>
+<pre>recursiveSerialize(<a href="http://php.net/manual/en/class.domnode.php">\DOMNode</a> $node, <a href="../classes/DAV_Namespaces.html">\DAV_Namespaces</a> $p_namespaces) : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"></p>
+<table class="table table-bordered"><tr>
+<th>internal</th>
+<td></td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$node</h4>
+<code><a href="http://php.net/manual/en/class.domnode.php">\DOMNode</a></code>
+</div>
+<div class="subelement argument">
+<h4>$p_namespaces</h4>
+<code><a href="../classes/DAV_Namespaces.html">\DAV_Namespaces</a></code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a name="redirect" id="redirect"></a><div class="element clickable method public redirect" data-toggle="collapse" data-target=".redirect .collapse">
+<h2>Redirects to a URL.</h2>
+<pre>redirect(int $status, $uri) </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"></p>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$status</h4>
+<code>int</code>
+</div>
+<div class="subelement argument">
+<h4>$uri</h4>
+<code></code>
+</div>
+</div></div>
+</div>
+<a name="slashify" id="slashify"></a><div class="element clickable method public slashify" data-toggle="collapse" data-target=".slashify .collapse">
+<h2>Adds a trailing slash if there isn't one.</h2>
+<pre>slashify(string $string) : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"></p>
+<table class="table table-bordered"><tr>
+<th>internal</th>
+<td></td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$string</h4>
+<code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a name="status_code" id="status_code"></a><div class="element clickable method public status_code" data-toggle="collapse" data-target=".status_code .collapse">
+<h2>status_code()
+        </h2>
+<pre>status_code(\$code $code) : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"></p>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$code</h4>
+<code>\$code</code><p>int some code</p></div>
+<h3>Exceptions</h3>
+<table class="table table-bordered"><tr>
+<th><code><a href="http://php.net/manual/en/class.exception.php">\Exception</a></code></th>
+<td>if $code is unknown.</td>
+</tr></table>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a name="unslashify" id="unslashify"></a><div class="element clickable method public unslashify" data-toggle="collapse" data-target=".unslashify .collapse">
+<h2>Removes a trailing slash if possible.</h2>
+<pre>unslashify(string $string) : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"></p>
+<table class="table table-bordered"><tr>
+<th>internal</th>
+<td></td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$string</h4>
+<code>string</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a name="urlbase" id="urlbase"></a><div class="element clickable method public urlbase" data-toggle="collapse" data-target=".urlbase .collapse">
+<h2>Returns the base URI.</h2>
+<pre>urlbase() : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"><p>The base URI is 'protocol://server.name:port'</p></p>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a name="var_dump" id="var_dump"></a><div class="element clickable method public var_dump" data-toggle="collapse" data-target=".var_dump .collapse">
+<h2>Remake of PHP's var_dump().</h2>
+<pre>var_dump(mixed $var) : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"><p>Returns the output instead of outputting it.</p></p>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$var</h4>
+<code>mixed</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response"><code>string</code></div>
+</div></div>
+</div>
+<a name="xml_header" id="xml_header"></a><div class="element clickable method public xml_header" data-toggle="collapse" data-target=".xml_header .collapse">
+<h2>The default xml header.</h2>
+<pre>xml_header($encoding, $version) : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"></p>
+<table class="table table-bordered"><tr>
+<th>internal</th>
+<td></td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$encoding</h4>
+<code></code>
+</div>
+<div class="subelement argument">
+<h4>$version</h4>
+<code></code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>The xml header with proper version and encoding</div>
+</div></div>
+</div>
+<a name="xmlescape" id="xmlescape"></a><div class="element clickable method public xmlescape" data-toggle="collapse" data-target=".xmlescape .collapse">
+<h2>xmlescape()
+        </h2>
+<pre>xmlescape(string $utf8text, bool $isAttribute) : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description">
+<p class="long_description"></p>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$utf8text</h4>
+<code>string</code>
+</div>
+<div class="subelement argument">
+<h4>$isAttribute</h4>
+<code>bool</code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>string</code>the utf8text, escaped for use in an XML text or attribute element.</div>
+</div></div>
+</div>
+<h3>
+<i class="icon-custom icon-property"></i> Properties</h3>
+<a name="%24ACLPROVIDER" id="$ACLPROVIDER"> </a><div class="element clickable property public $ACLPROVIDER" data-toggle="collapse" data-target=".$ACLPROVIDER .collapse">
+<h2>$ACLPROVIDER</h2>
+<pre>$ACLPROVIDER : <a href="../classes/DAVACL_ACL_Provider.html">\DAVACL_ACL_Provider</a></pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="%24ACL_PROPERTIES" id="$ACL_PROPERTIES"> </a><div class="element clickable property public $ACL_PROPERTIES" data-toggle="collapse" data-target=".$ACL_PROPERTIES .collapse">
+<h2>$ACL_PROPERTIES</h2>
+<pre>$ACL_PROPERTIES </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="%24CHUNK_SIZE" id="$CHUNK_SIZE"> </a><div class="element clickable property public $CHUNK_SIZE" data-toggle="collapse" data-target=".$CHUNK_SIZE .collapse">
+<h2>$CHUNK_SIZE</h2>
+<pre>$CHUNK_SIZE </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="%24CONDITIONS" id="$CONDITIONS"> </a><div class="element clickable property public $CONDITIONS" data-toggle="collapse" data-target=".$CONDITIONS .collapse">
+<h2>All preconditions and postconditions mentioned in the RFCs</h2>
+<pre>$CONDITIONS : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="%24HIDELOCKTOKENS" id="$HIDELOCKTOKENS"> </a><div class="element clickable property public $HIDELOCKTOKENS" data-toggle="collapse" data-target=".$HIDELOCKTOKENS .collapse">
+<h2>Defines if lock tokens are hidden in lockdiscovery properties.</h2>
+<pre>$HIDELOCKTOKENS : boolean</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="%24LOCKPROVIDER" id="$LOCKPROVIDER"> </a><div class="element clickable property public $LOCKPROVIDER" data-toggle="collapse" data-target=".$LOCKPROVIDER .collapse">
+<h2>$LOCKPROVIDER</h2>
+<pre>$LOCKPROVIDER : <a href="../classes/DAV_Lock_Provider.html">\DAV_Lock_Provider</a></pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="%24PATH" id="$PATH"> </a><div class="element clickable property public $PATH" data-toggle="collapse" data-target=".$PATH .collapse">
+<h2>Initialized at bottom of file.</h2>
+<pre>$PATH : string</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="%24PRINCIPAL_PROPERTIES" id="$PRINCIPAL_PROPERTIES"> </a><div class="element clickable property public $PRINCIPAL_PROPERTIES" data-toggle="collapse" data-target=".$PRINCIPAL_PROPERTIES .collapse">
+<h2>$PRINCIPAL_PROPERTIES</h2>
+<pre>$PRINCIPAL_PROPERTIES </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="%24PROTECTED_PROPERTIES" id="$PROTECTED_PROPERTIES"> </a><div class="element clickable property public $PROTECTED_PROPERTIES" data-toggle="collapse" data-target=".$PROTECTED_PROPERTIES .collapse">
+<h2>$PROTECTED_PROPERTIES</h2>
+<pre>$PROTECTED_PROPERTIES </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="%24REGISTRY" id="$REGISTRY"> </a><div class="element clickable property public $REGISTRY" data-toggle="collapse" data-target=".$REGISTRY .collapse">
+<h2>$REGISTRY</h2>
+<pre>$REGISTRY : <a href="../classes/DAV_Registry.html">\DAV_Registry</a></pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="%24REPORTS" id="$REPORTS"> </a><div class="element clickable property public $REPORTS" data-toggle="collapse" data-target=".$REPORTS .collapse">
+<h2>$REPORTS</h2>
+<pre>$REPORTS </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="%24SUBMITTEDTOKENS" id="$SUBMITTEDTOKENS"> </a><div class="element clickable property public $SUBMITTEDTOKENS" data-toggle="collapse" data-target=".$SUBMITTEDTOKENS .collapse">
+<h2>An array of all statetokens submitted by the user in the If: header.</h2>
+<pre>$SUBMITTEDTOKENS : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="%24SUPPORTED_PROPERTIES" id="$SUPPORTED_PROPERTIES"> </a><div class="element clickable property public $SUPPORTED_PROPERTIES" data-toggle="collapse" data-target=".$SUPPORTED_PROPERTIES .collapse">
+<h2>$SUPPORTED_PROPERTIES</h2>
+<pre>$SUPPORTED_PROPERTIES </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="%24WEBDAV_PROPERTIES" id="$WEBDAV_PROPERTIES"> </a><div class="element clickable property public $WEBDAV_PROPERTIES" data-toggle="collapse" data-target=".$WEBDAV_PROPERTIES .collapse">
+<h2>$WEBDAV_PROPERTIES</h2>
+<pre>$WEBDAV_PROPERTIES </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<h3>
+<i class="icon-custom icon-constant"></i> Constants</h3>
+<a name="COND_ALLOWED_PRINCIPAL" id="COND_ALLOWED_PRINCIPAL"> </a><div class="element clickable constant  COND_ALLOWED_PRINCIPAL" data-toggle="collapse" data-target=".COND_ALLOWED_PRINCIPAL .collapse">
+<h2>COND_ALLOWED_PRINCIPAL</h2>
+<pre>COND_ALLOWED_PRINCIPAL </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="COND_CANNOT_MODIFY_PROTECTED_PROPERTY" id="COND_CANNOT_MODIFY_PROTECTED_PROPERTY"> </a><div class="element clickable constant  COND_CANNOT_MODIFY_PROTECTED_PROPERTY" data-toggle="collapse" data-target=".COND_CANNOT_MODIFY_PROTECTED_PROPERTY .collapse">
+<h2>COND_CANNOT_MODIFY_PROTECTED_PROPERTY</h2>
+<pre>COND_CANNOT_MODIFY_PROTECTED_PROPERTY </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="COND_DENY_BEFORE_GRANT" id="COND_DENY_BEFORE_GRANT"> </a><div class="element clickable constant  COND_DENY_BEFORE_GRANT" data-toggle="collapse" data-target=".COND_DENY_BEFORE_GRANT .collapse">
+<h2>COND_DENY_BEFORE_GRANT</h2>
+<pre>COND_DENY_BEFORE_GRANT </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="COND_GRANT_ONLY" id="COND_GRANT_ONLY"> </a><div class="element clickable constant  COND_GRANT_ONLY" data-toggle="collapse" data-target=".COND_GRANT_ONLY .collapse">
+<h2>COND_GRANT_ONLY</h2>
+<pre>COND_GRANT_ONLY </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="COND_LIMITED_NUMBER_OF_ACES" id="COND_LIMITED_NUMBER_OF_ACES"> </a><div class="element clickable constant  COND_LIMITED_NUMBER_OF_ACES" data-toggle="collapse" data-target=".COND_LIMITED_NUMBER_OF_ACES .collapse">
+<h2>COND_LIMITED_NUMBER_OF_ACES</h2>
+<pre>COND_LIMITED_NUMBER_OF_ACES </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="COND_LOCK_TOKEN_MATCHES_REQUEST_URI" id="COND_LOCK_TOKEN_MATCHES_REQUEST_URI"> </a><div class="element clickable constant  COND_LOCK_TOKEN_MATCHES_REQUEST_URI" data-toggle="collapse" data-target=".COND_LOCK_TOKEN_MATCHES_REQUEST_URI .collapse">
+<h2>COND_LOCK_TOKEN_MATCHES_REQUEST_URI</h2>
+<pre>COND_LOCK_TOKEN_MATCHES_REQUEST_URI </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="COND_LOCK_TOKEN_SUBMITTED" id="COND_LOCK_TOKEN_SUBMITTED"> </a><div class="element clickable constant  COND_LOCK_TOKEN_SUBMITTED" data-toggle="collapse" data-target=".COND_LOCK_TOKEN_SUBMITTED .collapse">
+<h2>COND_LOCK_TOKEN_SUBMITTED</h2>
+<pre>COND_LOCK_TOKEN_SUBMITTED </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="COND_MISSING_REQUIRED_PRINCIPAL" id="COND_MISSING_REQUIRED_PRINCIPAL"> </a><div class="element clickable constant  COND_MISSING_REQUIRED_PRINCIPAL" data-toggle="collapse" data-target=".COND_MISSING_REQUIRED_PRINCIPAL .collapse">
+<h2>COND_MISSING_REQUIRED_PRINCIPAL</h2>
+<pre>COND_MISSING_REQUIRED_PRINCIPAL </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="COND_NEED_PRIVILEGES" id="COND_NEED_PRIVILEGES"> </a><div class="element clickable constant  COND_NEED_PRIVILEGES" data-toggle="collapse" data-target=".COND_NEED_PRIVILEGES .collapse">
+<h2>COND_NEED_PRIVILEGES</h2>
+<pre>COND_NEED_PRIVILEGES </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="COND_NOT_SUPPORTED_PRIVILEGE" id="COND_NOT_SUPPORTED_PRIVILEGE"> </a><div class="element clickable constant  COND_NOT_SUPPORTED_PRIVILEGE" data-toggle="collapse" data-target=".COND_NOT_SUPPORTED_PRIVILEGE .collapse">
+<h2>COND_NOT_SUPPORTED_PRIVILEGE</h2>
+<pre>COND_NOT_SUPPORTED_PRIVILEGE </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="COND_NO_ABSTRACT" id="COND_NO_ABSTRACT"> </a><div class="element clickable constant  COND_NO_ABSTRACT" data-toggle="collapse" data-target=".COND_NO_ABSTRACT .collapse">
+<h2>COND_NO_ABSTRACT</h2>
+<pre>COND_NO_ABSTRACT </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="COND_NO_ACE_CONFLICT" id="COND_NO_ACE_CONFLICT"> </a><div class="element clickable constant  COND_NO_ACE_CONFLICT" data-toggle="collapse" data-target=".COND_NO_ACE_CONFLICT .collapse">
+<h2>COND_NO_ACE_CONFLICT</h2>
+<pre>COND_NO_ACE_CONFLICT </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="COND_NO_CONFLICTING_LOCK" id="COND_NO_CONFLICTING_LOCK"> </a><div class="element clickable constant  COND_NO_CONFLICTING_LOCK" data-toggle="collapse" data-target=".COND_NO_CONFLICTING_LOCK .collapse">
+<h2>COND_NO_CONFLICTING_LOCK</h2>
+<pre>COND_NO_CONFLICTING_LOCK </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="COND_NO_EXTERNAL_ENTITIES" id="COND_NO_EXTERNAL_ENTITIES"> </a><div class="element clickable constant  COND_NO_EXTERNAL_ENTITIES" data-toggle="collapse" data-target=".COND_NO_EXTERNAL_ENTITIES .collapse">
+<h2>COND_NO_EXTERNAL_ENTITIES</h2>
+<pre>COND_NO_EXTERNAL_ENTITIES </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="COND_NO_INHERITED_ACE_CONFLICT" id="COND_NO_INHERITED_ACE_CONFLICT"> </a><div class="element clickable constant  COND_NO_INHERITED_ACE_CONFLICT" data-toggle="collapse" data-target=".COND_NO_INHERITED_ACE_CONFLICT .collapse">
+<h2>COND_NO_INHERITED_ACE_CONFLICT</h2>
+<pre>COND_NO_INHERITED_ACE_CONFLICT </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="COND_NO_INVERT" id="COND_NO_INVERT"> </a><div class="element clickable constant  COND_NO_INVERT" data-toggle="collapse" data-target=".COND_NO_INVERT .collapse">
+<h2>COND_NO_INVERT</h2>
+<pre>COND_NO_INVERT </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="COND_NO_PROTECTED_ACE_CONFLICT" id="COND_NO_PROTECTED_ACE_CONFLICT"> </a><div class="element clickable constant  COND_NO_PROTECTED_ACE_CONFLICT" data-toggle="collapse" data-target=".COND_NO_PROTECTED_ACE_CONFLICT .collapse">
+<h2>COND_NO_PROTECTED_ACE_CONFLICT</h2>
+<pre>COND_NO_PROTECTED_ACE_CONFLICT </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="COND_NUMBER_OF_MATCHES_WITHIN_LIMITS" id="COND_NUMBER_OF_MATCHES_WITHIN_LIMITS"> </a><div class="element clickable constant  COND_NUMBER_OF_MATCHES_WITHIN_LIMITS" data-toggle="collapse" data-target=".COND_NUMBER_OF_MATCHES_WITHIN_LIMITS .collapse">
+<h2>COND_NUMBER_OF_MATCHES_WITHIN_LIMITS</h2>
+<pre>COND_NUMBER_OF_MATCHES_WITHIN_LIMITS </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="COND_PRESERVED_LIVE_PROPERTIES" id="COND_PRESERVED_LIVE_PROPERTIES"> </a><div class="element clickable constant  COND_PRESERVED_LIVE_PROPERTIES" data-toggle="collapse" data-target=".COND_PRESERVED_LIVE_PROPERTIES .collapse">
+<h2>COND_PRESERVED_LIVE_PROPERTIES</h2>
+<pre>COND_PRESERVED_LIVE_PROPERTIES </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="COND_PROPFIND_FINITE_DEPTH" id="COND_PROPFIND_FINITE_DEPTH"> </a><div class="element clickable constant  COND_PROPFIND_FINITE_DEPTH" data-toggle="collapse" data-target=".COND_PROPFIND_FINITE_DEPTH .collapse">
+<h2>COND_PROPFIND_FINITE_DEPTH</h2>
+<pre>COND_PROPFIND_FINITE_DEPTH </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="COND_RECOGNIZED_PRINCIPAL" id="COND_RECOGNIZED_PRINCIPAL"> </a><div class="element clickable constant  COND_RECOGNIZED_PRINCIPAL" data-toggle="collapse" data-target=".COND_RECOGNIZED_PRINCIPAL .collapse">
+<h2>COND_RECOGNIZED_PRINCIPAL</h2>
+<pre>COND_RECOGNIZED_PRINCIPAL </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="DEPTH_0" id="DEPTH_0"> </a><div class="element clickable constant  DEPTH_0" data-toggle="collapse" data-target=".DEPTH_0 .collapse">
+<h2>DEPTH_0</h2>
+<pre>DEPTH_0 </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="DEPTH_1" id="DEPTH_1"> </a><div class="element clickable constant  DEPTH_1" data-toggle="collapse" data-target=".DEPTH_1 .collapse">
+<h2>DEPTH_1</h2>
+<pre>DEPTH_1 </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="DEPTH_INF" id="DEPTH_INF"> </a><div class="element clickable constant  DEPTH_INF" data-toggle="collapse" data-target=".DEPTH_INF .collapse">
+<h2>DEPTH_INF</h2>
+<pre>DEPTH_INF </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="HTTP_ACCEPTED" id="HTTP_ACCEPTED"> </a><div class="element clickable constant  HTTP_ACCEPTED" data-toggle="collapse" data-target=".HTTP_ACCEPTED .collapse">
+<h2>HTTP_ACCEPTED</h2>
+<pre>HTTP_ACCEPTED </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="HTTP_BAD_GATEWAY" id="HTTP_BAD_GATEWAY"> </a><div class="element clickable constant  HTTP_BAD_GATEWAY" data-toggle="collapse" data-target=".HTTP_BAD_GATEWAY .collapse">
+<h2>HTTP_BAD_GATEWAY</h2>
+<pre>HTTP_BAD_GATEWAY </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="HTTP_BAD_REQUEST" id="HTTP_BAD_REQUEST"> </a><div class="element clickable constant  HTTP_BAD_REQUEST" data-toggle="collapse" data-target=".HTTP_BAD_REQUEST .collapse">
+<h2>HTTP_BAD_REQUEST</h2>
+<pre>HTTP_BAD_REQUEST </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="HTTP_BANDWIDTH_LIMIT_EXCEEDED" id="HTTP_BANDWIDTH_LIMIT_EXCEEDED"> </a><div class="element clickable constant  HTTP_BANDWIDTH_LIMIT_EXCEEDED" data-toggle="collapse" data-target=".HTTP_BANDWIDTH_LIMIT_EXCEEDED .collapse">
+<h2>HTTP_BANDWIDTH_LIMIT_EXCEEDED</h2>
+<pre>HTTP_BANDWIDTH_LIMIT_EXCEEDED </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="HTTP_CONFLICT" id="HTTP_CONFLICT"> </a><div class="element clickable constant  HTTP_CONFLICT" data-toggle="collapse" data-target=".HTTP_CONFLICT .collapse">
+<h2>HTTP_CONFLICT</h2>
+<pre>HTTP_CONFLICT </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="HTTP_CONTINUE" id="HTTP_CONTINUE"> </a><div class="element clickable constant  HTTP_CONTINUE" data-toggle="collapse" data-target=".HTTP_CONTINUE .collapse">
+<h2>HTTP_CONTINUE</h2>
+<pre>HTTP_CONTINUE </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="HTTP_CREATED" id="HTTP_CREATED"> </a><div class="element clickable constant  HTTP_CREATED" data-toggle="collapse" data-target=".HTTP_CREATED .collapse">
+<h2>HTTP_CREATED</h2>
+<pre>HTTP_CREATED </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="HTTP_EXPECTATION_FAILED" id="HTTP_EXPECTATION_FAILED"> </a><div class="element clickable constant  HTTP_EXPECTATION_FAILED" data-toggle="collapse" data-target=".HTTP_EXPECTATION_FAILED .collapse">
+<h2>HTTP_EXPECTATION_FAILED</h2>
+<pre>HTTP_EXPECTATION_FAILED </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="HTTP_FAILED_DEPENDENCY" id="HTTP_FAILED_DEPENDENCY"> </a><div class="element clickable constant  HTTP_FAILED_DEPENDENCY" data-toggle="collapse" data-target=".HTTP_FAILED_DEPENDENCY .collapse">
+<h2>HTTP_FAILED_DEPENDENCY</h2>
+<pre>HTTP_FAILED_DEPENDENCY </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="HTTP_FORBIDDEN" id="HTTP_FORBIDDEN"> </a><div class="element clickable constant  HTTP_FORBIDDEN" data-toggle="collapse" data-target=".HTTP_FORBIDDEN .collapse">
+<h2>HTTP_FORBIDDEN</h2>
+<pre>HTTP_FORBIDDEN </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="HTTP_FOUND" id="HTTP_FOUND"> </a><div class="element clickable constant  HTTP_FOUND" data-toggle="collapse" data-target=".HTTP_FOUND .collapse">
+<h2>HTTP_FOUND</h2>
+<pre>HTTP_FOUND </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="HTTP_GATEWAY_TIMEOUT" id="HTTP_GATEWAY_TIMEOUT"> </a><div class="element clickable constant  HTTP_GATEWAY_TIMEOUT" data-toggle="collapse" data-target=".HTTP_GATEWAY_TIMEOUT .collapse">
+<h2>HTTP_GATEWAY_TIMEOUT</h2>
+<pre>HTTP_GATEWAY_TIMEOUT </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="HTTP_GONE" id="HTTP_GONE"> </a><div class="element clickable constant  HTTP_GONE" data-toggle="collapse" data-target=".HTTP_GONE .collapse">
+<h2>HTTP_GONE</h2>
+<pre>HTTP_GONE </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="HTTP_HTTP_VERSION_NOT_SUPPORTED" id="HTTP_HTTP_VERSION_NOT_SUPPORTED"> </a><div class="element clickable constant  HTTP_HTTP_VERSION_NOT_SUPPORTED" data-toggle="collapse" data-target=".HTTP_HTTP_VERSION_NOT_SUPPORTED .collapse">
+<h2>HTTP_HTTP_VERSION_NOT_SUPPORTED</h2>
+<pre>HTTP_HTTP_VERSION_NOT_SUPPORTED </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="HTTP_INSUFFICIENT_STORAGE" id="HTTP_INSUFFICIENT_STORAGE"> </a><div class="element clickable constant  HTTP_INSUFFICIENT_STORAGE" data-toggle="collapse" data-target=".HTTP_INSUFFICIENT_STORAGE .collapse">
+<h2>HTTP_INSUFFICIENT_STORAGE</h2>
+<pre>HTTP_INSUFFICIENT_STORAGE </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="HTTP_INTERNAL_SERVER_ERROR" id="HTTP_INTERNAL_SERVER_ERROR"> </a><div class="element clickable constant  HTTP_INTERNAL_SERVER_ERROR" data-toggle="collapse" data-target=".HTTP_INTERNAL_SERVER_ERROR .collapse">
+<h2>HTTP_INTERNAL_SERVER_ERROR</h2>
+<pre>HTTP_INTERNAL_SERVER_ERROR </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="HTTP_LENGTH_REQUIRED" id="HTTP_LENGTH_REQUIRED"> </a><div class="element clickable constant  HTTP_LENGTH_REQUIRED" data-toggle="collapse" data-target=".HTTP_LENGTH_REQUIRED .collapse">
+<h2>HTTP_LENGTH_REQUIRED</h2>
+<pre>HTTP_LENGTH_REQUIRED </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="HTTP_LOCKED" id="HTTP_LOCKED"> </a><div class="element clickable constant  HTTP_LOCKED" data-toggle="collapse" data-target=".HTTP_LOCKED .collapse">
+<h2>HTTP_LOCKED</h2>
+<pre>HTTP_LOCKED </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="HTTP_METHOD_NOT_ALLOWED" id="HTTP_METHOD_NOT_ALLOWED"> </a><div class="element clickable constant  HTTP_METHOD_NOT_ALLOWED" data-toggle="collapse" data-target=".HTTP_METHOD_NOT_ALLOWED .collapse">
+<h2>HTTP_METHOD_NOT_ALLOWED</h2>
+<pre>HTTP_METHOD_NOT_ALLOWED </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="HTTP_MOVED_PERMANENTLY" id="HTTP_MOVED_PERMANENTLY"> </a><div class="element clickable constant  HTTP_MOVED_PERMANENTLY" data-toggle="collapse" data-target=".HTTP_MOVED_PERMANENTLY .collapse">
+<h2>HTTP_MOVED_PERMANENTLY</h2>
+<pre>HTTP_MOVED_PERMANENTLY </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="HTTP_MULTIPLE_CHOICES" id="HTTP_MULTIPLE_CHOICES"> </a><div class="element clickable constant  HTTP_MULTIPLE_CHOICES" data-toggle="collapse" data-target=".HTTP_MULTIPLE_CHOICES .collapse">
+<h2>HTTP_MULTIPLE_CHOICES</h2>
+<pre>HTTP_MULTIPLE_CHOICES </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="HTTP_MULTI_STATUS" id="HTTP_MULTI_STATUS"> </a><div class="element clickable constant  HTTP_MULTI_STATUS" data-toggle="collapse" data-target=".HTTP_MULTI_STATUS .collapse">
+<h2>HTTP_MULTI_STATUS</h2>
+<pre>HTTP_MULTI_STATUS </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="HTTP_NON_AUTHORITATIVE_INFORMATION" id="HTTP_NON_AUTHORITATIVE_INFORMATION"> </a><div class="element clickable constant  HTTP_NON_AUTHORITATIVE_INFORMATION" data-toggle="collapse" data-target=".HTTP_NON_AUTHORITATIVE_INFORMATION .collapse">
+<h2>HTTP_NON_AUTHORITATIVE_INFORMATION</h2>
+<pre>HTTP_NON_AUTHORITATIVE_INFORMATION </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="HTTP_NOT_ACCEPTABLE" id="HTTP_NOT_ACCEPTABLE"> </a><div class="element clickable constant  HTTP_NOT_ACCEPTABLE" data-toggle="collapse" data-target=".HTTP_NOT_ACCEPTABLE .collapse">
+<h2>HTTP_NOT_ACCEPTABLE</h2>
+<pre>HTTP_NOT_ACCEPTABLE </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="HTTP_NOT_EXTENDED" id="HTTP_NOT_EXTENDED"> </a><div class="element clickable constant  HTTP_NOT_EXTENDED" data-toggle="collapse" data-target=".HTTP_NOT_EXTENDED .collapse">
+<h2>HTTP_NOT_EXTENDED</h2>
+<pre>HTTP_NOT_EXTENDED </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="HTTP_NOT_FOUND" id="HTTP_NOT_FOUND"> </a><div class="element clickable constant  HTTP_NOT_FOUND" data-toggle="collapse" data-target=".HTTP_NOT_FOUND .collapse">
+<h2>HTTP_NOT_FOUND</h2>
+<pre>HTTP_NOT_FOUND </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="HTTP_NOT_IMPLEMENTED" id="HTTP_NOT_IMPLEMENTED"> </a><div class="element clickable constant  HTTP_NOT_IMPLEMENTED" data-toggle="collapse" data-target=".HTTP_NOT_IMPLEMENTED .collapse">
+<h2>HTTP_NOT_IMPLEMENTED</h2>
+<pre>HTTP_NOT_IMPLEMENTED </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="HTTP_NOT_MODIFIED" id="HTTP_NOT_MODIFIED"> </a><div class="element clickable constant  HTTP_NOT_MODIFIED" data-toggle="collapse" data-target=".HTTP_NOT_MODIFIED .collapse">
+<h2>HTTP_NOT_MODIFIED</h2>
+<pre>HTTP_NOT_MODIFIED </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="HTTP_NO_CONTENT" id="HTTP_NO_CONTENT"> </a><div class="element clickable constant  HTTP_NO_CONTENT" data-toggle="collapse" data-target=".HTTP_NO_CONTENT .collapse">
+<h2>HTTP_NO_CONTENT</h2>
+<pre>HTTP_NO_CONTENT </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="HTTP_OK" id="HTTP_OK"> </a><div class="element clickable constant  HTTP_OK" data-toggle="collapse" data-target=".HTTP_OK .collapse">
+<h2>HTTP_OK</h2>
+<pre>HTTP_OK </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="HTTP_PARTIAL_CONTENT" id="HTTP_PARTIAL_CONTENT"> </a><div class="element clickable constant  HTTP_PARTIAL_CONTENT" data-toggle="collapse" data-target=".HTTP_PARTIAL_CONTENT .collapse">
+<h2>HTTP_PARTIAL_CONTENT</h2>
+<pre>HTTP_PARTIAL_CONTENT </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="HTTP_PAYMENT_REQUIRED" id="HTTP_PAYMENT_REQUIRED"> </a><div class="element clickable constant  HTTP_PAYMENT_REQUIRED" data-toggle="collapse" data-target=".HTTP_PAYMENT_REQUIRED .collapse">
+<h2>HTTP_PAYMENT_REQUIRED</h2>
+<pre>HTTP_PAYMENT_REQUIRED </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="HTTP_PRECONDITION_FAILED" id="HTTP_PRECONDITION_FAILED"> </a><div class="element clickable constant  HTTP_PRECONDITION_FAILED" data-toggle="collapse" data-target=".HTTP_PRECONDITION_FAILED .collapse">
+<h2>HTTP_PRECONDITION_FAILED</h2>
+<pre>HTTP_PRECONDITION_FAILED </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="HTTP_PROCESSING" id="HTTP_PROCESSING"> </a><div class="element clickable constant  HTTP_PROCESSING" data-toggle="collapse" data-target=".HTTP_PROCESSING .collapse">
+<h2>HTTP_PROCESSING</h2>
+<pre>HTTP_PROCESSING </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="HTTP_PROXY_AUTHENTICATION_REQUIRED" id="HTTP_PROXY_AUTHENTICATION_REQUIRED"> </a><div class="element clickable constant  HTTP_PROXY_AUTHENTICATION_REQUIRED" data-toggle="collapse" data-target=".HTTP_PROXY_AUTHENTICATION_REQUIRED .collapse">
+<h2>HTTP_PROXY_AUTHENTICATION_REQUIRED</h2>
+<pre>HTTP_PROXY_AUTHENTICATION_REQUIRED </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="HTTP_REQUESTED_RANGE_NOT_SATISFIABLE" id="HTTP_REQUESTED_RANGE_NOT_SATISFIABLE"> </a><div class="element clickable constant  HTTP_REQUESTED_RANGE_NOT_SATISFIABLE" data-toggle="collapse" data-target=".HTTP_REQUESTED_RANGE_NOT_SATISFIABLE .collapse">
+<h2>HTTP_REQUESTED_RANGE_NOT_SATISFIABLE</h2>
+<pre>HTTP_REQUESTED_RANGE_NOT_SATISFIABLE </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="HTTP_REQUEST_ENTITY_TOO_LARGE" id="HTTP_REQUEST_ENTITY_TOO_LARGE"> </a><div class="element clickable constant  HTTP_REQUEST_ENTITY_TOO_LARGE" data-toggle="collapse" data-target=".HTTP_REQUEST_ENTITY_TOO_LARGE .collapse">
+<h2>HTTP_REQUEST_ENTITY_TOO_LARGE</h2>
+<pre>HTTP_REQUEST_ENTITY_TOO_LARGE </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="HTTP_REQUEST_TIMEOUT" id="HTTP_REQUEST_TIMEOUT"> </a><div class="element clickable constant  HTTP_REQUEST_TIMEOUT" data-toggle="collapse" data-target=".HTTP_REQUEST_TIMEOUT .collapse">
+<h2>HTTP_REQUEST_TIMEOUT</h2>
+<pre>HTTP_REQUEST_TIMEOUT </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="HTTP_REQUEST_URI_TOO_LONG" id="HTTP_REQUEST_URI_TOO_LONG"> </a><div class="element clickable constant  HTTP_REQUEST_URI_TOO_LONG" data-toggle="collapse" data-target=".HTTP_REQUEST_URI_TOO_LONG .collapse">
+<h2>HTTP_REQUEST_URI_TOO_LONG</h2>
+<pre>HTTP_REQUEST_URI_TOO_LONG </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="HTTP_RESET_CONTENT" id="HTTP_RESET_CONTENT"> </a><div class="element clickable constant  HTTP_RESET_CONTENT" data-toggle="collapse" data-target=".HTTP_RESET_CONTENT .collapse">
+<h2>HTTP_RESET_CONTENT</h2>
+<pre>HTTP_RESET_CONTENT </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="HTTP_RETRY_WITH" id="HTTP_RETRY_WITH"> </a><div class="element clickable constant  HTTP_RETRY_WITH" data-toggle="collapse" data-target=".HTTP_RETRY_WITH .collapse">
+<h2>HTTP_RETRY_WITH</h2>
+<pre>HTTP_RETRY_WITH </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="HTTP_SEE_OTHER" id="HTTP_SEE_OTHER"> </a><div class="element clickable constant  HTTP_SEE_OTHER" data-toggle="collapse" data-target=".HTTP_SEE_OTHER .collapse">
+<h2>HTTP_SEE_OTHER</h2>
+<pre>HTTP_SEE_OTHER </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="HTTP_SERVICE_UNAVAILABLE" id="HTTP_SERVICE_UNAVAILABLE"> </a><div class="element clickable constant  HTTP_SERVICE_UNAVAILABLE" data-toggle="collapse" data-target=".HTTP_SERVICE_UNAVAILABLE .collapse">
+<h2>HTTP_SERVICE_UNAVAILABLE</h2>
+<pre>HTTP_SERVICE_UNAVAILABLE </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="HTTP_SWITCHING_PROTOCOLS" id="HTTP_SWITCHING_PROTOCOLS"> </a><div class="element clickable constant  HTTP_SWITCHING_PROTOCOLS" data-toggle="collapse" data-target=".HTTP_SWITCHING_PROTOCOLS .collapse">
+<h2>HTTP_SWITCHING_PROTOCOLS</h2>
+<pre>HTTP_SWITCHING_PROTOCOLS </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="HTTP_SWITCH_PROXY" id="HTTP_SWITCH_PROXY"> </a><div class="element clickable constant  HTTP_SWITCH_PROXY" data-toggle="collapse" data-target=".HTTP_SWITCH_PROXY .collapse">
+<h2>HTTP_SWITCH_PROXY</h2>
+<pre>HTTP_SWITCH_PROXY </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="HTTP_TEMPORARY_REDIRECT" id="HTTP_TEMPORARY_REDIRECT"> </a><div class="element clickable constant  HTTP_TEMPORARY_REDIRECT" data-toggle="collapse" data-target=".HTTP_TEMPORARY_REDIRECT .collapse">
+<h2>HTTP_TEMPORARY_REDIRECT</h2>
+<pre>HTTP_TEMPORARY_REDIRECT </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="HTTP_UNAUTHORIZED" id="HTTP_UNAUTHORIZED"> </a><div class="element clickable constant  HTTP_UNAUTHORIZED" data-toggle="collapse" data-target=".HTTP_UNAUTHORIZED .collapse">
+<h2>HTTP_UNAUTHORIZED</h2>
+<pre>HTTP_UNAUTHORIZED </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="HTTP_UNORDERED_COLLECTION" id="HTTP_UNORDERED_COLLECTION"> </a><div class="element clickable constant  HTTP_UNORDERED_COLLECTION" data-toggle="collapse" data-target=".HTTP_UNORDERED_COLLECTION .collapse">
+<h2>HTTP_UNORDERED_COLLECTION</h2>
+<pre>HTTP_UNORDERED_COLLECTION </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="HTTP_UNPROCESSABLE_ENTITY" id="HTTP_UNPROCESSABLE_ENTITY"> </a><div class="element clickable constant  HTTP_UNPROCESSABLE_ENTITY" data-toggle="collapse" data-target=".HTTP_UNPROCESSABLE_ENTITY .collapse">
+<h2>HTTP_UNPROCESSABLE_ENTITY</h2>
+<pre>HTTP_UNPROCESSABLE_ENTITY </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="HTTP_UNSUPPORTED_MEDIA_TYPE" id="HTTP_UNSUPPORTED_MEDIA_TYPE"> </a><div class="element clickable constant  HTTP_UNSUPPORTED_MEDIA_TYPE" data-toggle="collapse" data-target=".HTTP_UNSUPPORTED_MEDIA_TYPE .collapse">
+<h2>HTTP_UNSUPPORTED_MEDIA_TYPE</h2>
+<pre>HTTP_UNSUPPORTED_MEDIA_TYPE </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="HTTP_UPGRADE_REQUIRED" id="HTTP_UPGRADE_REQUIRED"> </a><div class="element clickable constant  HTTP_UPGRADE_REQUIRED" data-toggle="collapse" data-target=".HTTP_UPGRADE_REQUIRED .collapse">
+<h2>HTTP_UPGRADE_REQUIRED</h2>
+<pre>HTTP_UPGRADE_REQUIRED </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="HTTP_USE_PROXY" id="HTTP_USE_PROXY"> </a><div class="element clickable constant  HTTP_USE_PROXY" data-toggle="collapse" data-target=".HTTP_USE_PROXY .collapse">
+<h2>HTTP_USE_PROXY</h2>
+<pre>HTTP_USE_PROXY </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="HTTP_VARIANT_ALSO_VARIES" id="HTTP_VARIANT_ALSO_VARIES"> </a><div class="element clickable constant  HTTP_VARIANT_ALSO_VARIES" data-toggle="collapse" data-target=".HTTP_VARIANT_ALSO_VARIES .collapse">
+<h2>HTTP_VARIANT_ALSO_VARIES</h2>
+<pre>HTTP_VARIANT_ALSO_VARIES </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="LOCKSCOPE_BOTH" id="LOCKSCOPE_BOTH"> </a><div class="element clickable constant  LOCKSCOPE_BOTH" data-toggle="collapse" data-target=".LOCKSCOPE_BOTH .collapse">
+<h2>LOCKSCOPE_BOTH</h2>
+<pre>LOCKSCOPE_BOTH </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="LOCKSCOPE_EXCLUSIVE" id="LOCKSCOPE_EXCLUSIVE"> </a><div class="element clickable constant  LOCKSCOPE_EXCLUSIVE" data-toggle="collapse" data-target=".LOCKSCOPE_EXCLUSIVE .collapse">
+<h2>LOCKSCOPE_EXCLUSIVE</h2>
+<pre>LOCKSCOPE_EXCLUSIVE </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="LOCKSCOPE_NONE" id="LOCKSCOPE_NONE"> </a><div class="element clickable constant  LOCKSCOPE_NONE" data-toggle="collapse" data-target=".LOCKSCOPE_NONE .collapse">
+<h2>LOCKSCOPE_NONE</h2>
+<pre>LOCKSCOPE_NONE </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="LOCKSCOPE_SHARED" id="LOCKSCOPE_SHARED"> </a><div class="element clickable constant  LOCKSCOPE_SHARED" data-toggle="collapse" data-target=".LOCKSCOPE_SHARED .collapse">
+<h2>LOCKSCOPE_SHARED</h2>
+<pre>LOCKSCOPE_SHARED </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="PROP_ACL" id="PROP_ACL"> </a><div class="element clickable constant  PROP_ACL" data-toggle="collapse" data-target=".PROP_ACL .collapse">
+<h2>PROP_ACL</h2>
+<pre>PROP_ACL </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="PROP_ACL_RESTRICTIONS" id="PROP_ACL_RESTRICTIONS"> </a><div class="element clickable constant  PROP_ACL_RESTRICTIONS" data-toggle="collapse" data-target=".PROP_ACL_RESTRICTIONS .collapse">
+<h2>PROP_ACL_RESTRICTIONS</h2>
+<pre>PROP_ACL_RESTRICTIONS </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="PROP_ALTERNATE_URI_SET" id="PROP_ALTERNATE_URI_SET"> </a><div class="element clickable constant  PROP_ALTERNATE_URI_SET" data-toggle="collapse" data-target=".PROP_ALTERNATE_URI_SET .collapse">
+<h2>PROP_ALTERNATE_URI_SET</h2>
+<pre>PROP_ALTERNATE_URI_SET </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="PROP_CREATIONDATE" id="PROP_CREATIONDATE"> </a><div class="element clickable constant  PROP_CREATIONDATE" data-toggle="collapse" data-target=".PROP_CREATIONDATE .collapse">
+<h2>PROP_CREATIONDATE</h2>
+<pre>PROP_CREATIONDATE </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="PROP_CURRENT_USER_PRINCIPAL" id="PROP_CURRENT_USER_PRINCIPAL"> </a><div class="element clickable constant  PROP_CURRENT_USER_PRINCIPAL" data-toggle="collapse" data-target=".PROP_CURRENT_USER_PRINCIPAL .collapse">
+<h2>PROP_CURRENT_USER_PRINCIPAL</h2>
+<pre>PROP_CURRENT_USER_PRINCIPAL </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="PROP_CURRENT_USER_PRIVILEGE_SET" id="PROP_CURRENT_USER_PRIVILEGE_SET"> </a><div class="element clickable constant  PROP_CURRENT_USER_PRIVILEGE_SET" data-toggle="collapse" data-target=".PROP_CURRENT_USER_PRIVILEGE_SET .collapse">
+<h2>PROP_CURRENT_USER_PRIVILEGE_SET</h2>
+<pre>PROP_CURRENT_USER_PRIVILEGE_SET </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="PROP_DISPLAYNAME" id="PROP_DISPLAYNAME"> </a><div class="element clickable constant  PROP_DISPLAYNAME" data-toggle="collapse" data-target=".PROP_DISPLAYNAME .collapse">
+<h2>PROP_DISPLAYNAME</h2>
+<pre>PROP_DISPLAYNAME </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="PROP_EXECUTABLE" id="PROP_EXECUTABLE"> </a><div class="element clickable constant  PROP_EXECUTABLE" data-toggle="collapse" data-target=".PROP_EXECUTABLE .collapse">
+<h2>PROP_EXECUTABLE</h2>
+<pre>PROP_EXECUTABLE </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="PROP_EXECUTABLE2" id="PROP_EXECUTABLE2"> </a><div class="element clickable constant  PROP_EXECUTABLE2" data-toggle="collapse" data-target=".PROP_EXECUTABLE2 .collapse">
+<h2>PROP_EXECUTABLE2</h2>
+<pre>PROP_EXECUTABLE2 </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="PROP_GETCONTENTLANGUAGE" id="PROP_GETCONTENTLANGUAGE"> </a><div class="element clickable constant  PROP_GETCONTENTLANGUAGE" data-toggle="collapse" data-target=".PROP_GETCONTENTLANGUAGE .collapse">
+<h2>PROP_GETCONTENTLANGUAGE</h2>
+<pre>PROP_GETCONTENTLANGUAGE </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="PROP_GETCONTENTLENGTH" id="PROP_GETCONTENTLENGTH"> </a><div class="element clickable constant  PROP_GETCONTENTLENGTH" data-toggle="collapse" data-target=".PROP_GETCONTENTLENGTH .collapse">
+<h2>PROP_GETCONTENTLENGTH</h2>
+<pre>PROP_GETCONTENTLENGTH </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="PROP_GETCONTENTTYPE" id="PROP_GETCONTENTTYPE"> </a><div class="element clickable constant  PROP_GETCONTENTTYPE" data-toggle="collapse" data-target=".PROP_GETCONTENTTYPE .collapse">
+<h2>PROP_GETCONTENTTYPE</h2>
+<pre>PROP_GETCONTENTTYPE </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="PROP_GETETAG" id="PROP_GETETAG"> </a><div class="element clickable constant  PROP_GETETAG" data-toggle="collapse" data-target=".PROP_GETETAG .collapse">
+<h2>PROP_GETETAG</h2>
+<pre>PROP_GETETAG </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="PROP_GETLASTMODIFIED" id="PROP_GETLASTMODIFIED"> </a><div class="element clickable constant  PROP_GETLASTMODIFIED" data-toggle="collapse" data-target=".PROP_GETLASTMODIFIED .collapse">
+<h2>PROP_GETLASTMODIFIED</h2>
+<pre>PROP_GETLASTMODIFIED </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="PROP_GROUP" id="PROP_GROUP"> </a><div class="element clickable constant  PROP_GROUP" data-toggle="collapse" data-target=".PROP_GROUP .collapse">
+<h2>PROP_GROUP</h2>
+<pre>PROP_GROUP </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="PROP_GROUP_MEMBERSHIP" id="PROP_GROUP_MEMBERSHIP"> </a><div class="element clickable constant  PROP_GROUP_MEMBERSHIP" data-toggle="collapse" data-target=".PROP_GROUP_MEMBERSHIP .collapse">
+<h2>PROP_GROUP_MEMBERSHIP</h2>
+<pre>PROP_GROUP_MEMBERSHIP </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="PROP_GROUP_MEMBER_SET" id="PROP_GROUP_MEMBER_SET"> </a><div class="element clickable constant  PROP_GROUP_MEMBER_SET" data-toggle="collapse" data-target=".PROP_GROUP_MEMBER_SET .collapse">
+<h2>PROP_GROUP_MEMBER_SET</h2>
+<pre>PROP_GROUP_MEMBER_SET </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="PROP_INHERITED_ACL_SET" id="PROP_INHERITED_ACL_SET"> </a><div class="element clickable constant  PROP_INHERITED_ACL_SET" data-toggle="collapse" data-target=".PROP_INHERITED_ACL_SET .collapse">
+<h2>PROP_INHERITED_ACL_SET</h2>
+<pre>PROP_INHERITED_ACL_SET </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="PROP_LOCKDISCOVERY" id="PROP_LOCKDISCOVERY"> </a><div class="element clickable constant  PROP_LOCKDISCOVERY" data-toggle="collapse" data-target=".PROP_LOCKDISCOVERY .collapse">
+<h2>PROP_LOCKDISCOVERY</h2>
+<pre>PROP_LOCKDISCOVERY </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="PROP_OWNER" id="PROP_OWNER"> </a><div class="element clickable constant  PROP_OWNER" data-toggle="collapse" data-target=".PROP_OWNER .collapse">
+<h2>PROP_OWNER</h2>
+<pre>PROP_OWNER </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="PROP_PRINCIPAL_COLLECTION_SET" id="PROP_PRINCIPAL_COLLECTION_SET"> </a><div class="element clickable constant  PROP_PRINCIPAL_COLLECTION_SET" data-toggle="collapse" data-target=".PROP_PRINCIPAL_COLLECTION_SET .collapse">
+<h2>PROP_PRINCIPAL_COLLECTION_SET</h2>
+<pre>PROP_PRINCIPAL_COLLECTION_SET </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="PROP_PRINCIPAL_URL" id="PROP_PRINCIPAL_URL"> </a><div class="element clickable constant  PROP_PRINCIPAL_URL" data-toggle="collapse" data-target=".PROP_PRINCIPAL_URL .collapse">
+<h2>PROP_PRINCIPAL_URL</h2>
+<pre>PROP_PRINCIPAL_URL </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="PROP_RESOURCETYPE" id="PROP_RESOURCETYPE"> </a><div class="element clickable constant  PROP_RESOURCETYPE" data-toggle="collapse" data-target=".PROP_RESOURCETYPE .collapse">
+<h2>PROP_RESOURCETYPE</h2>
+<pre>PROP_RESOURCETYPE </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="PROP_SUPPORTEDLOCK" id="PROP_SUPPORTEDLOCK"> </a><div class="element clickable constant  PROP_SUPPORTEDLOCK" data-toggle="collapse" data-target=".PROP_SUPPORTEDLOCK .collapse">
+<h2>PROP_SUPPORTEDLOCK</h2>
+<pre>PROP_SUPPORTEDLOCK </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="PROP_SUPPORTED_PRIVILEGE_SET" id="PROP_SUPPORTED_PRIVILEGE_SET"> </a><div class="element clickable constant  PROP_SUPPORTED_PRIVILEGE_SET" data-toggle="collapse" data-target=".PROP_SUPPORTED_PRIVILEGE_SET .collapse">
+<h2>PROP_SUPPORTED_PRIVILEGE_SET</h2>
+<pre>PROP_SUPPORTED_PRIVILEGE_SET </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="PROP_SUPPORTED_REPORT_SET" id="PROP_SUPPORTED_REPORT_SET"> </a><div class="element clickable constant  PROP_SUPPORTED_REPORT_SET" data-toggle="collapse" data-target=".PROP_SUPPORTED_REPORT_SET .collapse">
+<h2>PROP_SUPPORTED_REPORT_SET</h2>
+<pre>PROP_SUPPORTED_REPORT_SET </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="REPORT_ACL_PRINCIPAL_PROP_SET" id="REPORT_ACL_PRINCIPAL_PROP_SET"> </a><div class="element clickable constant  REPORT_ACL_PRINCIPAL_PROP_SET" data-toggle="collapse" data-target=".REPORT_ACL_PRINCIPAL_PROP_SET .collapse">
+<h2>REPORT_ACL_PRINCIPAL_PROP_SET</h2>
+<pre>REPORT_ACL_PRINCIPAL_PROP_SET </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="REPORT_EXPAND_PROPERTY" id="REPORT_EXPAND_PROPERTY"> </a><div class="element clickable constant  REPORT_EXPAND_PROPERTY" data-toggle="collapse" data-target=".REPORT_EXPAND_PROPERTY .collapse">
+<h2>REPORT_EXPAND_PROPERTY</h2>
+<pre>REPORT_EXPAND_PROPERTY </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="REPORT_PRINCIPAL_MATCH" id="REPORT_PRINCIPAL_MATCH"> </a><div class="element clickable constant  REPORT_PRINCIPAL_MATCH" data-toggle="collapse" data-target=".REPORT_PRINCIPAL_MATCH .collapse">
+<h2>REPORT_PRINCIPAL_MATCH</h2>
+<pre>REPORT_PRINCIPAL_MATCH </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="REPORT_PRINCIPAL_PROPERTY_SEARCH" id="REPORT_PRINCIPAL_PROPERTY_SEARCH"> </a><div class="element clickable constant  REPORT_PRINCIPAL_PROPERTY_SEARCH" data-toggle="collapse" data-target=".REPORT_PRINCIPAL_PROPERTY_SEARCH .collapse">
+<h2>REPORT_PRINCIPAL_PROPERTY_SEARCH</h2>
+<pre>REPORT_PRINCIPAL_PROPERTY_SEARCH </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+<a name="REPORT_PRINCIPAL_SEARCH_PROPERTY_SET" id="REPORT_PRINCIPAL_SEARCH_PROPERTY_SET"> </a><div class="element clickable constant  REPORT_PRINCIPAL_SEARCH_PROPERTY_SET" data-toggle="collapse" data-target=".REPORT_PRINCIPAL_SEARCH_PROPERTY_SET .collapse">
+<h2>REPORT_PRINCIPAL_SEARCH_PROPERTY_SET</h2>
+<pre>REPORT_PRINCIPAL_SEARCH_PROPERTY_SET </pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="row"><footer class="span12">
+            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by <a href="http://glyphicons.com/">Glyphicons</a>.<br>
+            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor 2.0.0a8</a> and<br>
+            generated on 2012-08-09T21:18:55+02:00.<br></footer></div>
+</div>
+</body>
+</html>
