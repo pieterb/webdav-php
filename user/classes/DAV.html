@@ -74,16 +74,11 @@
         </span><pre>isValidURI()</pre></a></li>
 <li class="method public "><a href="#parseURI" title="parseURI :: Translates a URL into a DAV::$PATH-like path, if possible."><span class="description">Translates a URL into a DAV::$PATH-like path, if possible.</span><pre>parseURI()</pre></a></li>
 <li class="method public "><a href="#rawurlencode" title="rawurlencode :: Yet another URL encoder."><span class="description">Yet another URL encoder.</span><pre>rawurlencode()</pre></a></li>
-<li class="method public "><a href="#recursiveSerialize" title="recursiveSerialize :: "><span class="description">recursiveSerialize()
-        </span><pre>recursiveSerialize()</pre></a></li>
 <li class="method public "><a href="#redirect" title="redirect :: Redirects to a URL."><span class="description">Redirects to a URL.</span><pre>redirect()</pre></a></li>
-<li class="method public "><a href="#slashify" title="slashify :: Adds a trailing slash if there isn't one."><span class="description">Adds a trailing slash if there isn't one.</span><pre>slashify()</pre></a></li>
 <li class="method public "><a href="#status_code" title="status_code :: "><span class="description">status_code()
         </span><pre>status_code()</pre></a></li>
-<li class="method public "><a href="#unslashify" title="unslashify :: Removes a trailing slash if possible."><span class="description">Removes a trailing slash if possible.</span><pre>unslashify()</pre></a></li>
 <li class="method public "><a href="#urlbase" title="urlbase :: Returns the base URI."><span class="description">Returns the base URI.</span><pre>urlbase()</pre></a></li>
 <li class="method public "><a href="#var_dump" title="var_dump :: Remake of PHP's var_dump()."><span class="description">Remake of PHP's var_dump().</span><pre>var_dump()</pre></a></li>
-<li class="method public "><a href="#xml_header" title="xml_header :: The default xml header."><span class="description">The default xml header.</span><pre>xml_header()</pre></a></li>
 <li class="method public "><a href="#xmlescape" title="xmlescape :: "><span class="description">xmlescape()
         </span><pre>xmlescape()</pre></a></li>
 <li class="nav-header">
@@ -416,30 +411,6 @@
 <div class="subelement response"><code>string</code></div>
 </div></div>
 </div>
-<a name="recursiveSerialize" id="recursiveSerialize"></a><div class="element clickable method public recursiveSerialize" data-toggle="collapse" data-target=".recursiveSerialize .collapse">
-<h2>recursiveSerialize()
-        </h2>
-<pre>recursiveSerialize(<a href="http://php.net/manual/en/class.domnode.php">\DOMNode</a> $node, <a href="../classes/DAV_Namespaces.html">\DAV_Namespaces</a> $p_namespaces) : string</pre>
-<div class="labels"></div>
-<div class="row collapse"><div class="detail-description">
-<p class="long_description"></p>
-<table class="table table-bordered"><tr>
-<th>internal</th>
-<td></td>
-</tr></table>
-<h3>Parameters</h3>
-<div class="subelement argument">
-<h4>$node</h4>
-<code><a href="http://php.net/manual/en/class.domnode.php">\DOMNode</a></code>
-</div>
-<div class="subelement argument">
-<h4>$p_namespaces</h4>
-<code><a href="../classes/DAV_Namespaces.html">\DAV_Namespaces</a></code>
-</div>
-<h3>Returns</h3>
-<div class="subelement response"><code>string</code></div>
-</div></div>
-</div>
 <a name="redirect" id="redirect"></a><div class="element clickable method public redirect" data-toggle="collapse" data-target=".redirect .collapse">
 <h2>Redirects to a URL.</h2>
 <pre>redirect(int $status, $uri) </pre>
@@ -455,25 +426,6 @@
 <h4>$uri</h4>
 <code></code>
 </div>
-</div></div>
-</div>
-<a name="slashify" id="slashify"></a><div class="element clickable method public slashify" data-toggle="collapse" data-target=".slashify .collapse">
-<h2>Adds a trailing slash if there isn't one.</h2>
-<pre>slashify(string $string) : string</pre>
-<div class="labels"></div>
-<div class="row collapse"><div class="detail-description">
-<p class="long_description"></p>
-<table class="table table-bordered"><tr>
-<th>internal</th>
-<td></td>
-</tr></table>
-<h3>Parameters</h3>
-<div class="subelement argument">
-<h4>$string</h4>
-<code>string</code>
-</div>
-<h3>Returns</h3>
-<div class="subelement response"><code>string</code></div>
 </div></div>
 </div>
 <a name="status_code" id="status_code"></a><div class="element clickable method public status_code" data-toggle="collapse" data-target=".status_code .collapse">
@@ -492,25 +444,6 @@
 <th><code><a href="http://php.net/manual/en/class.exception.php">\Exception</a></code></th>
 <td>if $code is unknown.</td>
 </tr></table>
-<h3>Returns</h3>
-<div class="subelement response"><code>string</code></div>
-</div></div>
-</div>
-<a name="unslashify" id="unslashify"></a><div class="element clickable method public unslashify" data-toggle="collapse" data-target=".unslashify .collapse">
-<h2>Removes a trailing slash if possible.</h2>
-<pre>unslashify(string $string) : string</pre>
-<div class="labels"></div>
-<div class="row collapse"><div class="detail-description">
-<p class="long_description"></p>
-<table class="table table-bordered"><tr>
-<th>internal</th>
-<td></td>
-</tr></table>
-<h3>Parameters</h3>
-<div class="subelement argument">
-<h4>$string</h4>
-<code>string</code>
-</div>
 <h3>Returns</h3>
 <div class="subelement response"><code>string</code></div>
 </div></div>
@@ -538,30 +471,6 @@
 </div>
 <h3>Returns</h3>
 <div class="subelement response"><code>string</code></div>
-</div></div>
-</div>
-<a name="xml_header" id="xml_header"></a><div class="element clickable method public xml_header" data-toggle="collapse" data-target=".xml_header .collapse">
-<h2>The default xml header.</h2>
-<pre>xml_header($encoding, $version) : string</pre>
-<div class="labels"></div>
-<div class="row collapse"><div class="detail-description">
-<p class="long_description"></p>
-<table class="table table-bordered"><tr>
-<th>internal</th>
-<td></td>
-</tr></table>
-<h3>Parameters</h3>
-<div class="subelement argument">
-<h4>$encoding</h4>
-<code></code>
-</div>
-<div class="subelement argument">
-<h4>$version</h4>
-<code></code>
-</div>
-<h3>Returns</h3>
-<div class="subelement response">
-<code>string</code>The xml header with proper version and encoding</div>
 </div></div>
 </div>
 <a name="xmlescape" id="xmlescape"></a><div class="element clickable method public xmlescape" data-toggle="collapse" data-target=".xmlescape .collapse">
@@ -619,7 +528,7 @@
 </div>
 <a name="%24LOCKPROVIDER" id="$LOCKPROVIDER"> </a><div class="element clickable property public $LOCKPROVIDER" data-toggle="collapse" data-target=".$LOCKPROVIDER .collapse">
 <h2>$LOCKPROVIDER</h2>
-<pre>$LOCKPROVIDER : <a href="../classes/DAV_Lock_Provider.html">\DAV_Lock_Provider</a></pre>
+<pre>$LOCKPROVIDER : \DAV_Lock_Provider</pre>
 <div class="labels"></div>
 <div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
 </div>
@@ -643,7 +552,7 @@
 </div>
 <a name="%24REGISTRY" id="$REGISTRY"> </a><div class="element clickable property public $REGISTRY" data-toggle="collapse" data-target=".$REGISTRY .collapse">
 <h2>$REGISTRY</h2>
-<pre>$REGISTRY : <a href="../classes/DAV_Registry.html">\DAV_Registry</a></pre>
+<pre>$REGISTRY : \DAV_Registry</pre>
 <div class="labels"></div>
 <div class="row collapse"><div class="detail-description"><p class="long_description"></p></div></div>
 </div>
@@ -1352,7 +1261,7 @@
 <div class="row"><footer class="span12">
             Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by <a href="http://glyphicons.com/">Glyphicons</a>.<br>
             Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor 2.0.0a8</a> and<br>
-            generated on 2012-08-09T21:18:55+02:00.<br></footer></div>
+            generated on 2012-08-09T22:20:09+02:00.<br></footer></div>
 </div>
 </body>
 </html>
