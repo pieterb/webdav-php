@@ -21,25 +21,28 @@
  */
 
 /**
- * @internal
  * @package DAV
  */
-class DAV_Request_DEFAULT extends DAV_Request {
+class DAV_Request_PATCH extends DAV_Request {
+
+
+/**
+ * Enter description here...
+ *
+ * @param string $path
+ * @throws DAV_Status
+ */
+protected function __construct()
+{
+  parent::__construct();
+}
 
 
 /**
  * @param DAV_Resource $resource
- * @return void
- * @throws DAV_Status
  */
-public function handle($resource) {
-  $allow = implode(', ', self::$ALLOWED_METHODS);
-  header("Allow: $allow");
-  $status = new DAV_Status(
-    DAV::HTTP_METHOD_NOT_ALLOWED,
-    "Allowed methods: $allow"
-  );
-  $status->output();
+protected function handle( $resource ) {
+  throw DAV_Status::get(DAV::HTTP_NOT_IMPLEMENTED);
 }
 
 

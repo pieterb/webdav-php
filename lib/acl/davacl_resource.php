@@ -1,8 +1,8 @@
 <?php
 
 /*·************************************************************************
- * Copyright ©2007-2011 Pieter van Beek, Almere, The Netherlands
- * 		    <http://purl.org/net/6086052759deb18f4c0c9fb2c3d3e83e>
+ * Copyright ©2007-2012 Pieter van Beek, Almere, The Netherlands
+ *           <http://purl.org/net/6086052759deb18f4c0c9fb2c3d3e83e>
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may
  * not use this file except in compliance with the License. You may obtain
@@ -13,8 +13,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * $Id: davacl_resource.php 3364 2011-08-04 14:11:03Z pieterb $
  **************************************************************************/
 
 /**
@@ -27,8 +25,8 @@
  * @package DAVACL
  */
 abstract class DAVACL_Resource extends DAV_Resource {
-  
-  
+
+
 private $eaclCache = null;
 /**
  * Called by self::assert() and self::prop_current_user_privilege_set()
@@ -37,13 +35,13 @@ private $eaclCache = null;
 public function effective_acl() {
   if (null !== $this->eaclCache)
     return $this->eaclCache;
-  
+
   $this->eaclCache = array();
-  
+
   // Get a list of principals:
   $principals = $this->current_user_principals();
   //DAV::debug($principals);
-  
+
   $aces = $this->user_prop_acl();
   $fsps = DAVACL_Element_supported_privilege::flatten(
     $this->user_prop_supported_privilege_set()
@@ -96,14 +94,14 @@ public function assert($privileges) {
   if (!is_array($privileges))
     $privileges = array((string)$privileges);
   sort($privileges);
-  
+
   $privstring = implode(',', $privileges);
   if (array_key_exists($privstring, $this->assertCache))
     if ($this->assertCache[$privstring])
       throw $this->assertCache[$privstring];
     else
       return true;
-      
+
   $eacl = $this->effective_acl();
   $flags = array();
   foreach ($privileges as $p)
@@ -139,17 +137,6 @@ public function propname() {
     foreach ( array_keys(DAV::$PRINCIPAL_PROPERTIES) as $prop )
       if (!isset($retval[$prop]))
         $retval[$prop] = false;
-  return $retval;
-}
-
-
-/**
- * @param array $properties
- * @return array an array of (property => isReadable) pairs.
- */
-public function property_priv_read($properties) {
-  $retval = array();
-  foreach ($properties as $prop) $retval[$prop] = true;
   return $retval;
 }
 
@@ -387,8 +374,8 @@ final public function prop_principal_collection_set() {
 public function user_prop_principal_collection_set() {
   return DAV::$ACLPROVIDER->user_prop_principal_collection_set();
 }
-  
-  
+
+
 /**
  * @return DAV_Element_href
  * @see DAVACL_Principal
@@ -492,6 +479,19 @@ final public function current_user_principals() {
     $retval[DAVACL::PRINCIPAL_UNAUTHENTICATED] = DAVACL::PRINCIPAL_UNAUTHENTICATED;
   }
   return $retval;
+}
+
+
+/**
+ * @return string XML
+ */
+final public function prop_supported_report_set() {
+  $retval = ($this instanceof DAVACL_Principal_Collection) ?
+    DAV::$REPORTS :
+    array(DAV::REPORT_EXPAND_PROPERTY);
+  return '<D:supported-report><D:' .
+    implode("/></D:supported-report>\n<D:supported-report><D:", $retval) .
+    '/></D:supported-report>';
 }
 
 

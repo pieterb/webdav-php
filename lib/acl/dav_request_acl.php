@@ -1,8 +1,8 @@
 <?php
 
 /*·************************************************************************
- * Copyright ©2007-2011 Pieter van Beek, Almere, The Netherlands
- * 		    <http://purl.org/net/6086052759deb18f4c0c9fb2c3d3e83e>
+ * Copyright ©2007-2012 Pieter van Beek, Almere, The Netherlands
+ *           <http://purl.org/net/6086052759deb18f4c0c9fb2c3d3e83e>
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may
  * not use this file except in compliance with the License. You may obtain
@@ -13,23 +13,21 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * $Id: dav_request_acl.php 3364 2011-08-04 14:11:03Z pieterb $
  **************************************************************************/
 
 /**
  * File documentation (who cares)
- * @package DAV
+ * @package DAVACL
  */
 
 /**
  * Helper class for parsing PROPPATCH request bodies.
  * @internal
- * @package DAV
+ * @package DAVACL
  */
 class DAV_Request_ACL extends DAV_Request {
-    
-  
+
+
 /**
  * @var array of DAVACL_Element_ace objects
  */
@@ -49,7 +47,7 @@ protected function __construct() {
 //      DAV::HTTP_UNPROCESSABLE_ENTITY,
 //      'Couldn\'t find a proppatch request body.'
 //    );
-    
+
   // DEBUG
   $document = new DOMDocument();
   if ( ! $document->loadXML(
@@ -59,10 +57,10 @@ protected function __construct() {
     throw new DAV_Status(
       DAV::HTTP_BAD_REQUEST, 'Request body is not well-formed XML.'
     );
-  
+
   $xpath = new DOMXPath($document);
   $xpath->registerNamespace('D', 'DAV:');
-  
+
   $nodelist = $xpath->query('/D:acl/D:ace');
   DAV::debug($nodelist);
   foreach( $nodelist as $ace ) {
@@ -75,7 +73,7 @@ protected function __construct() {
         $principal->length . ' principals in ACE');
     $principal = $principal->item(0);
     $p_invert = ('invert' == $principal->parentNode->parentNode->localName);
-    
+
     $p = $principal->namespaceURI . ' ' . $principal->localName;
     if ('DAV: href' == $p)
       $p_principal = trim($principal->textContent);
@@ -96,7 +94,7 @@ protected function __construct() {
         DAV::HTTP_UNPROCESSABLE_ENTITY,
         "Don't understand principal element '$p'"
       );
-    
+
     // Find the grant or deny part:
     $granted = $xpath->query('D:grant/D:privilege/*', $ace);
     $denied  = $xpath->query('D:deny/D:privilege/*',  $ace);
@@ -116,7 +114,7 @@ protected function __construct() {
     $p_privileges = array();
     foreach ($privileges as $p)
       $p_privileges[] = $p->namespaceURI . ' ' . $p->localName;
-    
+
     // Finally, we look for the DAV:protected and DAV:inherited elements:
     $nodelist = $xpath->query('/D:ace/D:protected | /D:ace/D:inherited', $ace);
     if ($nodelist->length)
@@ -124,12 +122,12 @@ protected function __construct() {
         DAV::HTTP_UNPROCESSABLE_ENTITY,
         'Cannot set protected or inherited ACEs'
       );
-      
+
     $this->aces[] = new DAVACL_Element_ace(
       $p_principal, $p_invert, $p_privileges, $p_deny
     );
   }
-    
+
   // DEBUG
   //DAV::debug($this->aces);
 }
@@ -176,7 +174,7 @@ protected function handle( $resource ) {
   //TODO: enforce ACL restrictions
   $resource->method_ACL($this->aces);
 }
-  
-  
+
+
 } // class DAV_Request_PROPPATCH
 

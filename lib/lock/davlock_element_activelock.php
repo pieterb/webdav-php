@@ -1,8 +1,8 @@
 <?php
 
 /*·************************************************************************
- * Copyright ©2007-2011 Pieter van Beek, Almere, The Netherlands
- * 		    <http://purl.org/net/6086052759deb18f4c0c9fb2c3d3e83e>
+ * Copyright ©2007-2012 Pieter van Beek, Almere, The Netherlands
+ *           <http://purl.org/net/6086052759deb18f4c0c9fb2c3d3e83e>
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may
  * not use this file except in compliance with the License. You may obtain
@@ -13,19 +13,17 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * $Id: dav_element_activelock.php 3349 2011-07-28 13:04:24Z pieterb $
  **************************************************************************/
 
 /**
  * File documentation (who cares)
- * @package DAV
+ * @package DAVLock
  */
 
 /**
- * @package DAV
+ * @package DAVLock
  */
-class DAV_Element_activelock {
+class DAVLock_Element_activelock {
 // prop
 // `-lockdiscovery
 //   `-activelock*
@@ -104,7 +102,7 @@ public function toXML() {
     $t_timeout = 'Infinite';
   else {
     $t_timeout = $this->timeout - time();
-  	$t_timeout = ( $t_timeout < 0 ) ? 'Second-0' : 'Second-' . $t_timeout;
+    $t_timeout = ( $t_timeout < 0 ) ? 'Second-0' : 'Second-' . $t_timeout;
   }
   $t_locktoken = isset(DAV::$SUBMITTEDTOKENS[$this->locktoken])
      ? "\n<D:locktoken>\n<D:href>{$this->locktoken}</D:href>\n</D:locktoken>"
@@ -121,8 +119,8 @@ public function toXML() {
 </D:activelock>
 EOS;
 }
-  
-    
+
+
 } // class DAV_Element_lockdiscovery
 
 

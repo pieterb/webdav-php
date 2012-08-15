@@ -1,8 +1,8 @@
 <?php
 
 /*·************************************************************************
- * Copyright ©2007-2011 Pieter van Beek, Almere, The Netherlands
- * 		    <http://purl.org/net/6086052759deb18f4c0c9fb2c3d3e83e>
+ * Copyright ©2007-2012 Pieter van Beek, Almere, The Netherlands
+ *           <http://purl.org/net/6086052759deb18f4c0c9fb2c3d3e83e>
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may
  * not use this file except in compliance with the License. You may obtain
@@ -13,8 +13,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * $Id: dav_registry.php 3349 2011-07-28 13:04:24Z pieterb $
  **************************************************************************/
 
 /**
@@ -28,8 +26,8 @@
  * @package DAV
  */
 interface DAV_Registry {
-  
-  
+
+
 /**
  * @return DAV_Resource or null if the resource doesn't exist.
  * @param string $path The path to the resource, with or without trailing slash.
@@ -60,5 +58,5 @@ public function shallowLock($write_paths, $read_paths);
  */
 public function shallowUnlock();
 
-  
+
 }

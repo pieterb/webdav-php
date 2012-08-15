@@ -1,8 +1,8 @@
 <?php
 
 /*·************************************************************************
- * Copyright ©2007-2011 Pieter van Beek, Almere, The Netherlands
- * 		    <http://purl.org/net/6086052759deb18f4c0c9fb2c3d3e83e>
+ * Copyright ©2007-2012 Pieter van Beek, Almere, The Netherlands
+ *           <http://purl.org/net/6086052759deb18f4c0c9fb2c3d3e83e>
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may
  * not use this file except in compliance with the License. You may obtain
@@ -13,8 +13,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * $Id: dav.php 3364 2011-08-04 14:11:03Z pieterb $
  **************************************************************************/
 
 /**
@@ -48,25 +46,6 @@ const DEPTH_1   = '1';
 const DEPTH_INF = 'infinity';
 
 
-// Various possible lock scopes. A lock can be EXCLUSIVE xor SHARED, not BOTH.
-// But a resource may support neither, either, or both.
-const LOCKSCOPE_NONE      = 0;
-const LOCKSCOPE_EXCLUSIVE = 1;
-const LOCKSCOPE_SHARED    = 2;
-const LOCKSCOPE_BOTH      = 3;
-
-
-//const CAPABILITY_GET_RANGE = 0x0001;
-//const CAPABILITY_PUT_RANGE = 0x0002;
-//const CAPABILITY_LOCK      =  1; // Locking as per RFC4918
-// The following capabilities are not yet implemented:
-//const CAPABILITY_ACL       =  2; // ACL as per RFC3744
-//const CAPABILITY_SEARCH    =  4; // SEARCH as per RFC5323
-//const CAPABILITY_REDIRECT  =  8; // *REDIRECTREF as per RFC4437
-//const CAPABILITY_ORDERED   = 16; // Ordered collections as per RFC3648
-//const CAPABILITY_BIND      = 32; // BIND as per RFC5842
-
-
 // Some properties that are defined in RFC4918:
 const PROP_CREATIONDATE       = 'DAV: creationdate';
 const PROP_DISPLAYNAME        = 'DAV: displayname';
@@ -75,36 +54,10 @@ const PROP_GETCONTENTLENGTH   = 'DAV: getcontentlength';
 const PROP_GETCONTENTTYPE     = 'DAV: getcontenttype';
 const PROP_GETETAG            = 'DAV: getetag';
 const PROP_GETLASTMODIFIED    = 'DAV: getlastmodified';
-const PROP_LOCKDISCOVERY      = 'DAV: lockdiscovery';
 const PROP_RESOURCETYPE       = 'DAV: resourcetype';
-const PROP_SUPPORTEDLOCK      = 'DAV: supportedlock';
 // Some other common but undocumented properties:
 const PROP_EXECUTABLE         = 'http://apache.org/dav/props/ executable';
 const PROP_EXECUTABLE2        = 'DAV: executable';
-
-
-// RFC3744 Principal properties:
-const PROP_ALTERNATE_URI_SET = 'DAV: alternate-URI-set';
-const PROP_PRINCIPAL_URL     = 'DAV: principal-URL';
-const PROP_GROUP_MEMBER_SET  = 'DAV: group-member-set';
-const PROP_GROUP_MEMBERSHIP  = 'DAV: group-membership';
-
-// RFC3744 Access control properties:
-const PROP_OWNER                      = 'DAV: owner';
-const PROP_GROUP                      = 'DAV: group';
-const PROP_SUPPORTED_PRIVILEGE_SET    = 'DAV: supported-privilege-set';
-const PROP_CURRENT_USER_PRIVILEGE_SET = 'DAV: current-user-privilege-set';
-const PROP_ACL                        = 'DAV: acl';
-const PROP_ACL_RESTRICTIONS           = 'DAV: acl-restrictions';
-const PROP_INHERITED_ACL_SET          = 'DAV: inherited-acl-set';
-const PROP_PRINCIPAL_COLLECTION_SET   = 'DAV: principal-collection-set';
-
-
-// RFC3253 REPORT related properties:
-const PROP_SUPPORTED_REPORT_SET       = 'DAV: supported-report-set';
-
-// RFC5397 Access control property:
-const PROP_CURRENT_USER_PRINCIPAL     = 'DAV: current-user-principal';
 
 
 public static $WEBDAV_PROPERTIES = array(
@@ -115,34 +68,12 @@ public static $WEBDAV_PROPERTIES = array(
   self::PROP_GETCONTENTTYPE       => 'getcontenttype',
   self::PROP_GETETAG              => 'getetag',
   self::PROP_GETLASTMODIFIED      => 'getlastmodified',
-  self::PROP_LOCKDISCOVERY        => 'lockdiscovery',
+//  self::PROP_LOCKDISCOVERY        => 'lockdiscovery',
   self::PROP_RESOURCETYPE         => 'resourcetype',
-  self::PROP_SUPPORTEDLOCK        => 'supportedlock',
-  self::PROP_SUPPORTED_REPORT_SET => 'supported_report_set',
+//  self::PROP_SUPPORTEDLOCK        => 'supportedlock',
+//  self::PROP_SUPPORTED_REPORT_SET => 'supported_report_set',
   self::PROP_EXECUTABLE           => 'executable',
   self::PROP_EXECUTABLE2          => 'executable',
-);
-
-
-public static $PRINCIPAL_PROPERTIES = array(
-  self::PROP_ALTERNATE_URI_SET => 'alternate_URI_set',
-  self::PROP_PRINCIPAL_URL     => 'principal_URL',
-  self::PROP_GROUP_MEMBER_SET  => 'group_member_set',
-  self::PROP_GROUP_MEMBERSHIP  => 'group_membership',
-);
-  
-
-public static $ACL_PROPERTIES = array(
-  self::PROP_OWNER                      => 'owner',
-  self::PROP_GROUP                      => 'group',
-  self::PROP_SUPPORTED_PRIVILEGE_SET    => 'supported_privilege_set',
-  self::PROP_CURRENT_USER_PRIVILEGE_SET => 'current_user_privilege_set',
-  self::PROP_ACL                        => 'acl',
-  self::PROP_ACL_RESTRICTIONS           => 'acl_restrictions',
-  self::PROP_INHERITED_ACL_SET          => 'inherited_acl_set',
-  self::PROP_PRINCIPAL_COLLECTION_SET   => 'principal_collection_set',
-  // RFC5397 Access control property:
-  self::PROP_CURRENT_USER_PRINCIPAL     => 'current_user_principal',
 );
 
 
@@ -155,29 +86,11 @@ public static $SUPPORTED_PROPERTIES = array(
   self::PROP_GETCONTENTTYPE     => 'getcontenttype',
   self::PROP_GETETAG            => 'getetag',
   self::PROP_GETLASTMODIFIED    => 'getlastmodified',
-  self::PROP_LOCKDISCOVERY      => 'lockdiscovery',
+//  self::PROP_LOCKDISCOVERY      => 'lockdiscovery',
   self::PROP_RESOURCETYPE       => 'resourcetype',
-  self::PROP_SUPPORTEDLOCK      => 'supportedlock',
+//  self::PROP_SUPPORTEDLOCK      => 'supportedlock',
   self::PROP_EXECUTABLE         => 'executable',
   self::PROP_EXECUTABLE2        => 'executable',
-  // RFC3744 principal properties:
-  self::PROP_ALTERNATE_URI_SET => 'alternate_URI_set',
-  self::PROP_PRINCIPAL_URL     => 'principal_URL',
-  self::PROP_GROUP_MEMBER_SET  => 'group_member_set',
-  self::PROP_GROUP_MEMBERSHIP  => 'group_membership',
-  // RFC3744 Access Control properties:
-  self::PROP_OWNER                      => 'owner',
-  self::PROP_GROUP                      => 'group',
-  self::PROP_SUPPORTED_PRIVILEGE_SET    => 'supported_privilege_set',
-  self::PROP_CURRENT_USER_PRIVILEGE_SET => 'current_user_privilege_set',
-  self::PROP_ACL                        => 'acl',
-  self::PROP_ACL_RESTRICTIONS           => 'acl_restrictions',
-  self::PROP_INHERITED_ACL_SET          => 'inherited_acl_set',
-  self::PROP_PRINCIPAL_COLLECTION_SET   => 'principal_collection_set',
-  // RFC3253 REPORT related properties:
-  self::PROP_SUPPORTED_REPORT_SET       => 'supported_report_set',
-  // RFC5397 Access control property:
-  self::PROP_CURRENT_USER_PRINCIPAL     => 'current_user_principal',
 );
 
 public static $PROTECTED_PROPERTIES = array(
@@ -186,51 +99,15 @@ public static $PROTECTED_PROPERTIES = array(
   self::PROP_GETCONTENTLENGTH           => 'getcontentlength',
   self::PROP_GETETAG                    => 'getetag',
   self::PROP_GETLASTMODIFIED            => 'getlastmodified',
-  self::PROP_LOCKDISCOVERY              => 'lockdiscovery',
   self::PROP_RESOURCETYPE               => 'resourcetype',
-  self::PROP_SUPPORTEDLOCK              => 'supportedlock',
-  // RFC3744 Principal properties
-  self::PROP_ALTERNATE_URI_SET          => 'alternate_URI_set',
-  self::PROP_PRINCIPAL_URL              => 'principal_URL',
-  self::PROP_GROUP_MEMBERSHIP           => 'group_membership',
-  // RFC3744 Access control properties
-  self::PROP_SUPPORTED_PRIVILEGE_SET    => 'supported_privilege_set',
-  self::PROP_CURRENT_USER_PRIVILEGE_SET => 'current_user_privilege_set',
-  self::PROP_ACL                        => 'acl',
-  self::PROP_ACL_RESTRICTIONS           => 'acl_restrictions',
-  self::PROP_INHERITED_ACL_SET          => 'inherited_acl_set',
-  self::PROP_PRINCIPAL_COLLECTION_SET   => 'principal_collection_set',
-  // RFC3253 REPORT related properties:
-  self::PROP_SUPPORTED_REPORT_SET       => 'supported_report_set',
-  // RFC5397 Access control property:
-  self::PROP_CURRENT_USER_PRINCIPAL     => 'current_user_principal',
 );
 
 
 // All pre- and postconditions that are defined in RFC4918:
 const COND_CANNOT_MODIFY_PROTECTED_PROPERTY = 'cannot-modify-protected-property';
-const COND_LOCK_TOKEN_MATCHES_REQUEST_URI   = 'lock-token-matches-request-uri';
-const COND_LOCK_TOKEN_SUBMITTED             = 'lock-token-submitted';
-const COND_NO_CONFLICTING_LOCK              = 'no-conflicting-lock';
 const COND_NO_EXTERNAL_ENTITIES             = 'no-external-entities';
 const COND_PRESERVED_LIVE_PROPERTIES        = 'preserved-live-properties';
 const COND_PROPFIND_FINITE_DEPTH            = 'propfind-finite-depth';
-
-// All pre- and postconditions that are defined in RFC3744:
-const COND_ALLOWED_PRINCIPAL               = 'allowed-principal';
-const COND_DENY_BEFORE_GRANT               = 'deny-before-grant';
-const COND_GRANT_ONLY                      = 'grant-only';
-const COND_LIMITED_NUMBER_OF_ACES          = 'limited-number-of-aces';
-const COND_MISSING_REQUIRED_PRINCIPAL      = 'missing-required-principal';
-const COND_NEED_PRIVILEGES                 = 'need-privileges';
-const COND_NO_ABSTRACT                     = 'no-abstract';
-const COND_NO_ACE_CONFLICT                 = 'no-ace-conflict';
-const COND_NO_INHERITED_ACE_CONFLICT       = 'no-inherited-ace-conflict';
-const COND_NO_INVERT                       = 'no-invert';
-const COND_NO_PROTECTED_ACE_CONFLICT       = 'no-protected-ace-conflict';
-const COND_NOT_SUPPORTED_PRIVILEGE         = 'not-supported-privilege';
-const COND_NUMBER_OF_MATCHES_WITHIN_LIMITS = 'number-of-matches-within-limits';
-const COND_RECOGNIZED_PRINCIPAL            = 'recognized-principal';
 
 /**
  * All preconditions and postconditions mentioned in the RFCs
@@ -239,47 +116,13 @@ const COND_RECOGNIZED_PRINCIPAL            = 'recognized-principal';
 public static $CONDITIONS = array(
   // RFC4918:
   self::COND_CANNOT_MODIFY_PROTECTED_PROPERTY => self::COND_CANNOT_MODIFY_PROTECTED_PROPERTY,
-  self::COND_LOCK_TOKEN_MATCHES_REQUEST_URI   => self::COND_LOCK_TOKEN_MATCHES_REQUEST_URI,
-  self::COND_LOCK_TOKEN_SUBMITTED             => self::COND_LOCK_TOKEN_SUBMITTED,
-  self::COND_NO_CONFLICTING_LOCK              => self::COND_NO_CONFLICTING_LOCK,
   self::COND_NO_EXTERNAL_ENTITIES             => self::COND_NO_EXTERNAL_ENTITIES,
   self::COND_PRESERVED_LIVE_PROPERTIES        => self::COND_PRESERVED_LIVE_PROPERTIES,
   self::COND_PROPFIND_FINITE_DEPTH            => self::COND_PROPFIND_FINITE_DEPTH,
-  // RFC3744:
-  self::COND_ALLOWED_PRINCIPAL                => self::COND_ALLOWED_PRINCIPAL,
-  self::COND_DENY_BEFORE_GRANT                => self::COND_DENY_BEFORE_GRANT,
-  self::COND_GRANT_ONLY                       => self::COND_GRANT_ONLY,
-  self::COND_LIMITED_NUMBER_OF_ACES           => self::COND_LIMITED_NUMBER_OF_ACES,
-  self::COND_MISSING_REQUIRED_PRINCIPAL       => self::COND_MISSING_REQUIRED_PRINCIPAL,
-  self::COND_NEED_PRIVILEGES                  => self::COND_NEED_PRIVILEGES,
-  self::COND_NO_ABSTRACT                      => self::COND_NO_ABSTRACT,
-  self::COND_NO_ACE_CONFLICT                  => self::COND_NO_ACE_CONFLICT,
-  self::COND_NO_INHERITED_ACE_CONFLICT        => self::COND_NO_INHERITED_ACE_CONFLICT,
-  self::COND_NO_INVERT                        => self::COND_NO_INVERT,
-  self::COND_NO_PROTECTED_ACE_CONFLICT        => self::COND_NO_PROTECTED_ACE_CONFLICT,
-  self::COND_NOT_SUPPORTED_PRIVILEGE          => self::COND_NOT_SUPPORTED_PRIVILEGE,
-  self::COND_NUMBER_OF_MATCHES_WITHIN_LIMITS  => self::COND_NUMBER_OF_MATCHES_WITHIN_LIMITS,
-  self::COND_RECOGNIZED_PRINCIPAL             => self::COND_RECOGNIZED_PRINCIPAL,
 );
 
 
-const REPORT_EXPAND_PROPERTY               = 'expand-property';
-const REPORT_ACL_PRINCIPAL_PROP_SET        = 'acl-principal-prop-set';
-const REPORT_PRINCIPAL_MATCH               = 'principal-match';
-const REPORT_PRINCIPAL_PROPERTY_SEARCH     = 'principal-property-search';
-const REPORT_PRINCIPAL_SEARCH_PROPERTY_SET = 'principal-search-property-set';
-
-
-public static $REPORTS = array(
-  self::REPORT_EXPAND_PROPERTY               => 'expand_property',
-  self::REPORT_ACL_PRINCIPAL_PROP_SET        => 'acl_principal_prop_set',
-  self::REPORT_PRINCIPAL_MATCH               => 'principal_match',
-  self::REPORT_PRINCIPAL_PROPERTY_SEARCH     => 'principal_property_search',
-  self::REPORT_PRINCIPAL_SEARCH_PROPERTY_SET => 'principal_search_property_set',
-);
-
-
-public static $CHUNK_SIZE = 67108864; // 64MiB
+public static $CHUNK_SIZE = 67108864; // 64MB
 
 
 /**
@@ -290,35 +133,9 @@ public static $PATH;
 
 
 /**
- * Defines if lock tokens are hidden in lockdiscovery properties.
- * @var boolean
- */
-public static $HIDELOCKTOKENS = true;
-
-
-/**
  * @var DAV_Registry
  */
 public static $REGISTRY = null;
-
-
-/**
- * @var DAV_Lock_Provider
- */
-public static $LOCKPROVIDER = null;
-
-
-/**
- * @var DAVACL_ACL_Provider
- */
-public static $ACLPROVIDER = null;
-
-
-/**
- * An array of all statetokens submitted by the user in the If: header.
- * @var array <code>array( <stateToken> => <stateToken>, ... ></code>
- */
-public static $SUBMITTEDTOKENS = array();
 
 
 /**
@@ -349,6 +166,10 @@ public static function debug() {
 }
 
 
+/**
+ * @todo remove this function
+ * @deprecated
+ */
 public static function forbidden() {
   return ( !self::$ACLPROVIDER ||
            self::$ACLPROVIDER->user_prop_current_user_principal() ) ?
@@ -426,7 +247,7 @@ public static function recursiveSerialize(
   $elementprefix = $namespaces->prefix( $node->namespaceURI );
   $elementlocalName = $node->localName;
   $retval = "<$elementprefix$elementlocalName";
-  
+
   // Attributes handling:
   $elementattributes = $node->attributes;
   $attributes = array();
@@ -443,15 +264,15 @@ public static function recursiveSerialize(
   }
   foreach ($attributes as $key => $value)
     $retval .= " $key=\"" . DAV::xmlescape( $value, true ) . '"';
-    
+
   // The contents of the element:
   $childXML = '';
   for ($i = 0; $childNode = $node->childNodes->item($i); $i++)
     $childXML .= self::recursiveSerialize($childNode, $namespaces);
-    
+
   if ( is_null( $p_namespaces ) )
     $retval .= $namespaces->toXML();
-    
+
   if ( $childXML !== '')
     $retval .= ">$childXML</$elementprefix$elementlocalName>";
   else
@@ -545,8 +366,8 @@ public static function rawurlencode($path) {
   }
   return $newurl;
 }
-  
-  
+
+
 /**
  * Translate an absolute path to a full URI.
  * @param string $absolutePath
@@ -557,15 +378,15 @@ public static function abs2uri( $absolutePath ) {
     ? self::urlbase() . $absolutePath
     : $absolutePath;
 }
-  
-  
+
+
 /**
  * Returns the base URI.
  * The base URI is 'protocol://server.name:port'
  * @return string
  */
 public static function urlbase() {
-	static $URLBASE = null;
+  static $URLBASE = null;
   if ( is_null( $URLBASE ) ) {
     $URLBASE = empty($_SERVER['HTTPS']) ?
       'http://' : 'https://';
@@ -576,8 +397,8 @@ public static function urlbase() {
   }
   return $URLBASE;
 }
-  
-  
+
+
 /**
  * The default xml header.
  * @internal
@@ -627,12 +448,13 @@ public static function header($properties) {
   if ($status !== null)
     header( $_SERVER['SERVER_PROTOCOL'] . ' ' . self::status_code($status) );
 }
-  
-  
+
+
 /**
  * Redirects to a URL.
  * @param int $status
  * @param string $url
+ * @todo Shouldn't the response body contain some kind of hypermedia?
  */
 public static function redirect($status, $uri) {
   self::header( array(
@@ -657,50 +479,17 @@ public static function httpDate($timestamp) {
 /**
  * @param $uri string
  * @return boolean
+ * @todo It seems this method doesn't check the URI generic syntax very well...
  */
 public static function isValidURI($uri) {
   return preg_match('@^[a-z]+:(?:%[a-fA-F0-9]{2}|[-\\w.~:/?#\\[\\]\\@!$&\'()*+,;=]+)+$@', $uri);
 }
 
 
-/**
- * @param string $path
- * @return mixed one of the following:
- * - DAV_Element_href of the lockroot of the missing token
- * - null if no lock was found.
- */
-public static function assertLock($path) {
-  if ( !self::$LOCKPROVIDER ) return null;
-  if ( ( $lock = self::$LOCKPROVIDER->getlock($path) ) &&
-       !isset( self::$SUBMITTEDTOKENS[$lock->locktoken] ) ) {
-    $lockroot = DAV::$REGISTRY->resource($lock->lockroot);
-    if (!$lockroot)
-      throw new DAV_Status(DAV::HTTP_INTERNAL_SERVER_ERROR);
-    return new DAV_Element_href(
-      $lockroot->isVisible() ?
-      $lock->lockroot : '/undisclosed-resource'
-    );
-  }
-  return null;
-}
-
-
-/**
- * @param string $path
- * @return mixed one of the following:
- * - DAV_Element_href of the lockroot of the missing token
- * - null if no lock was found.
- */
-public static function assertMemberLocks($path) {
-  if ( !self::$LOCKPROVIDER ) return null;
-  $locks = DAV::$LOCKPROVIDER->memberLocks( $path );
-  foreach ($locks as $token => $lock)
-    if ( !isset( self::$SUBMITTEDTOKENS[$token] ) )
-      return new DAV_Element_href(
-        DAV::$REGISTRY->resource($lock->lockroot)->isVisible() ?
-        $lock->lockroot : '/undisclosed-resource'
-      );
-  return null;
+public static function parse_propname($propname) {
+  if ( ! preg_match( '@\\A(\\S+) ([^:\\s]+)\\z@', $propname, $matches ) )
+    throw new DAV_Status(DAV::HTTP_BAD_REQUEST, $propname);
+  return array( $matches[1], $matches[2] );
 }
 
 
@@ -778,7 +567,7 @@ const HTTP_EXPECTATION_FAILED              = 417;
 const HTTP_UNPROCESSABLE_ENTITY            = 422; // A WebDAV/RFC2518 extension
 const HTTP_LOCKED                          = 423; // A WebDAV/RFC2518 extension
 const HTTP_FAILED_DEPENDENCY               = 424; // A WebDAV/RFC2518 extension
-const HTTP_UNORDERED_COLLECTION            = 425; // A WebDAV RFC 3648 extension (obsolete)
+const HTTP_UNORDERED_COLLECTION            = 425; // A WebDAV RFC3648 extension (obsolete)
 const HTTP_UPGRADE_REQUIRED                = 426; // an RFC2817 extension
 const HTTP_RETRY_WITH                      = 449; // a Microsoft extension
 const HTTP_INTERNAL_SERVER_ERROR           = 500;

@@ -1,8 +1,8 @@
 <?php
 
 /*·************************************************************************
- * Copyright ©2007-2011 Pieter van Beek, Almere, The Netherlands
- * 		    <http://purl.org/net/6086052759deb18f4c0c9fb2c3d3e83e>
+ * Copyright ©2007-2012 Pieter van Beek, Almere, The Netherlands
+ *           <http://purl.org/net/6086052759deb18f4c0c9fb2c3d3e83e>
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may
  * not use this file except in compliance with the License. You may obtain
@@ -13,8 +13,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * $Id: dav_request_delete.php 3364 2011-08-04 14:11:03Z pieterb $
  **************************************************************************/
 
 /**
@@ -27,12 +25,16 @@
  * @internal
  * @package DAV
  */
-class DAV_Request_DELETE extends DAV_Request {
+class DAV_Request_DELETE extends DAV_Request {private $p_depth = null;
 
 
 public function depth() {
-  $retval = parent::depth();
-  return is_null($retval) ? DAV::DEPTH_INF : $retval;
+  if (is_null($this->p_depth)) {
+    $this->p_depth = parent::depth();
+    if ( is_null($this->p_depth) )
+      $this->p_depth = DAV::DEPTH_INF;
+  }
+  $this->p_depth;
 }
 
 
@@ -44,22 +46,16 @@ public function depth() {
 protected function handle( $resource )
 {
   $parent = $resource->collection();
+  // The following statement excludes deletion of the root:
   if (!$parent)
-    throw new DAV_Status(DAV::forbidden());
-  
-  $lockroot = DAV::assertLock( $parent->path );
-  if ( $lockroot )
-    throw new DAV_Status(
-      DAV::HTTP_LOCKED,
-      array( DAV::COND_LOCK_TOKEN_SUBMITTED => $lockroot )
-    );
-    
+    throw new DAV_Status(DAV::HTTP_FORBIDDEN);
+
   if ( DAV::DEPTH_INF != $this->depth() )
     throw new DAV_Status(
       DAV::HTTP_BAD_REQUEST,
       'Only Depth: infinity is allowed for DELETE requests.'
     );
-  
+
   self::delete_member($parent, substr( $resource->path, strlen( $parent->path ) ) );
 
   if (DAV_Multistatus::active())
@@ -80,11 +76,6 @@ protected function handle( $resource )
 private static function delete_member( $resource, $member )
 {
   $memberPath = $resource->path . $member;
-  if (( $lockroot = DAV::assertLock($memberPath) ))
-    throw new DAV_Status(
-      DAV::HTTP_LOCKED,
-      array( DAV::COND_LOCK_TOKEN_SUBMITTED => $lockroot )
-    );
   if ( '/' == substr($member, -1) ) {
     $failure = false;
     $memberResource = DAV::$REGISTRY->resource($memberPath);

@@ -1,8 +1,8 @@
 <?php
 
 /*·************************************************************************
- * Copyright ©2007-2011 Pieter van Beek, Almere, The Netherlands
- * 		    <http://purl.org/net/6086052759deb18f4c0c9fb2c3d3e83e>
+ * Copyright ©2007-2012 Pieter van Beek, Almere, The Netherlands
+ *           <http://purl.org/net/6086052759deb18f4c0c9fb2c3d3e83e>
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may
  * not use this file except in compliance with the License. You may obtain
@@ -13,23 +13,21 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * $Id: dav_request_lock.php 3364 2011-08-04 14:11:03Z pieterb $
  **************************************************************************/
 
 /**
  * File documentation (who cares)
- * @package DAV
+ * @package DAVLock
  */
 
 /**
  * Helper class for parsing LOCK request bodies.
  * @internal
- * @package DAV
+ * @package DAVLock
  */
-class DAV_Request_LOCK extends DAV_Request {
-    
-    
+class DAVLock_Request_LOCK extends DAV_Request {
+
+
 /**
  * @var string XML fragment
  */
@@ -81,37 +79,37 @@ protected function __construct()
 {
   parent::__construct();
   $this->init_timeout();
-  
+
   $input = $this->inputstring();
   if (empty($input)) return;
 
   // New lock!
   $this->newlock = true;
-  
+
   $document = new DOMDocument();
   $result = $document->loadXML(
     $input,
     LIBXML_NOCDATA | LIBXML_NOENT | LIBXML_NSCLEAN | LIBXML_NOWARNING
   );
-  
+
   if (!$result)
     throw new DAV_Status(
       DAV::HTTP_BAD_REQUEST, 'Request body is not well-formed XML.'
     );
-    
+
   $xpath = new DOMXPath($document);
   $xpath->registerNamespace('D', 'DAV:');
-  
+
   if ( $xpath->evaluate('count(/D:lockinfo/D:lockscope/D:shared)') == 1 )
     throw new DAV_Status(DAV::HTTP_BAD_REQUEST, 'Shared locks are not supported.');
   elseif ( $xpath->evaluate('count(/D:lockinfo/D:lockscope/D:exclusive)') != 1 )
     throw new DAV_Status(DAV::HTTP_BAD_REQUEST, 'No &lt;lockscope/&gt; element in LOCK request.');
-    
+
   if ( $xpath->evaluate('count(/D:lockinfo/D:locktype/D:write)') != 1 )
     throw new DAV_Status(
       DAV::HTTP_UNPROCESSABLE_ENTITY, 'Unknown lock type in request body'
     );
-    
+
   $ownerlist = $xpath->query('/D:lockinfo/D:owner');
   if ($ownerlist->length) {
     $ownerxml = '';
@@ -167,7 +165,7 @@ private function handleCreateLock($resource) {
       DAV::HTTP_LOCKED,
       array( DAV::COND_LOCK_TOKEN_SUBMITTED => $lockroot )
     );
-    
+
   // Check conflicting (parent) locks:
   if ( ( $lock = DAV::$LOCKPROVIDER->getlock( DAV::$PATH ) ) )
     throw new DAV_Status(
@@ -186,14 +184,14 @@ private function handleCreateLock($resource) {
       DAV::HTTP_BAD_REQUEST,
       'Depth: 1 is not supported for method LOCK.'
     );
-    
+
   // Check unmapped collection resource:
   if ( !$resource && substr( DAV::$PATH, -1 ) === '/' )
     throw new DAV_Status(
       DAV::HTTP_NOT_FOUND,
       'Unmapped collection resource'
     );
-    
+
   $headers = array( 'Content-Type' => 'application/xml; charset="utf-8"' );
   if ( !$resource ) {
     $parent = DAV::$REGISTRY->resource(dirname(DAV::$PATH));
@@ -212,7 +210,7 @@ private function handleCreateLock($resource) {
   );
   DAV::$SUBMITTEDTOKENS[$token] = $token;
   $headers['Lock-Token'] = "<{$token}>";
-  
+
   if ( !( $lockdiscovery = $resource->prop_lockdiscovery() ) )
     throw new DAV_Status( DAV::HTTP_INTERNAL_SERVER_ERROR );
 

@@ -1,8 +1,8 @@
 <?php
 
 /*·************************************************************************
- * Copyright ©2007-2011 Pieter van Beek, Almere, The Netherlands
- * 		    <http://purl.org/net/6086052759deb18f4c0c9fb2c3d3e83e>
+ * Copyright ©2007-2012 Pieter van Beek, Almere, The Netherlands
+ *           <http://purl.org/net/6086052759deb18f4c0c9fb2c3d3e83e>
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may
  * not use this file except in compliance with the License. You may obtain
@@ -13,8 +13,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * $Id: dav_request_proppatch.php 3349 2011-07-28 13:04:24Z pieterb $
  **************************************************************************/
 
 /**
@@ -28,8 +26,8 @@
  * @package DAV
  */
 class DAV_Request_PROPPATCH extends DAV_Request {
-    
-  
+
+
 /**
  * @var array( array( 'type'  => 'set|remove',
  *                    'name'  => '<namespaceURI> <localName>',
@@ -46,34 +44,45 @@ public $props = array();
  */
 protected function __construct() {
   parent::__construct();
-//  if ( !isset($_SERVER['CONTENT_LENGTH']) ||
-//       !$_SERVER['CONTENT_LENGTH'] )
-//    throw new DAV_Status(
-//      DAV::HTTP_BAD_REQUEST,
-//      'Couldn\'t find a proppatch request body.'
-//    );
-    
-//  DAV::debug($this->inputstring());
 
+  $input = $this->inputstring();
+  if (!strlen($input)) {
+    $this->requestType = 'allprop';
+    //DAV::debug('Empty PROPFIND body.');
+    return;
+  }
+
+  if ('application/json' == $SERVER['CONTENT_TYPE'])
+    $this->initialize_json($input);
+  else
+    $this->initialize_xml($input);
+}
+
+
+/**
+ * Called by __construct().
+ * @param string $input some XML data.
+ */
+private function initialize_xml($input) {
   $document = new DOMDocument();
   if ( ! $document->loadXML(
-           $this->inputstring(),
+           $input,
            LIBXML_NOCDATA | LIBXML_NOENT | LIBXML_NSCLEAN | LIBXML_NOWARNING
          ) )
     throw new DAV_Status(
       DAV::HTTP_BAD_REQUEST, 'Request body is not well-formed XML.'
     );
-  
+
   $xpath = new DOMXPath($document);
   $xpath->registerNamespace('D', 'DAV:');
-  
+
   $nodelist = $xpath->query('/D:propertyupdate/*/D:prop/*');
   for ($i = 0; $i < $nodelist->length; $i++) {
     $element = $nodelist->item($i);
     // PHP5 DOM cannot destinguish between empty namespaces (forbidden) and
     // the default no-namespace. Therefor, this check has been commented out.
 //    if ( empty($element->namespaceURI) &&
-//        !$element->isDefaultNamespace($element-namespaceURI) )
+//        !$element->isDefaultNamespace($element->namespaceURI) )
 //      throw new DAV_Status(
 //        DAV::HTTP_BAD_REQUEST,
 //        'Empty namespace URIs are not allowed.'
@@ -89,25 +98,27 @@ protected function __construct() {
       $this->props["{$element->namespaceURI} {$element->localName}"] = $xml;
     }
   }
-  
-//  $nodelist = $xpath->query('/D:propertyupdate/D:remove/D:prop/*');
-//  for ($i = 0; $i < $nodelist->length; $i++) {
-//    $element = $nodelist->item($i);
-//    // PHP5 DOM cannot destinguish between empty namespaces (forbidden) and
-//    // the default no-namespace. Therefor, this check has been commented out.
-////    if ( empty($element->namespaceURI) &&
-////        !$element->isDefaultNamespace($element-namespaceURI) )
-////      throw new DAV_Status(
-////        DAV::HTTP_BAD_REQUEST,
-////        'Empty namespace URIs are not allowed.'
-////      );
-//        $xml = '';
-//    for ($j = 0; $child = $element->childNodes->item($j); $j++)
-//      $xml .= DAV::recursiveSerialize($child);
-//    $this->props["{$element->namespaceURI} {$element->localName}"] = null;
-//  }
-  // DEBUG
-  //DAV::debug(var_export($this->props, true));
+}
+
+
+/**
+ * Called by __construct().
+ * @param string $json some JSON data.
+ */
+private function initialize_json($input) {
+  $this->props = json_decode($input, true);
+  // Let's check the syntax of the passed data:
+  if (!$this->props) throw DAV_Status::get(DAV::HTTP_BAD_REQUEST);
+  foreach ($this->props as $key => $value) {
+    // Each key must be a valid property name:
+    DAV::parse_propname($key);
+    // Check if the prop value is a valid XML fragment:
+    $xml = DAV::xml_header() . '<document xmlns:D="DAV:">' . $value . '</document>';
+    if ( !$document->loadXML(
+           $xml, LIBXML_NOCDATA | LIBXML_NOENT | LIBXML_NSCLEAN | LIBXML_NOWARNING
+         ) )
+      throw new DAV_Status( DAV::HTTP_BAD_REQUEST, $xml );
+  }
 }
 
 
@@ -117,19 +128,12 @@ protected function __construct() {
  * @throws DAV_Status
  */
 protected function handle( $resource ) {
-  if (($lockroot = DAV::assertLock(DAV::$PATH) ))
-    throw new DAV_Status(
-      DAV::HTTP_LOCKED,
-      array( DAV::COND_LOCK_TOKEN_SUBMITTED => $lockroot )
-    );
-  //DAV::debug(DAV::$PATH);
-  //DAV::debug($this->props);
   if (empty($this->props))
     throw new DAV_Status(
       DAV::HTTP_BAD_REQUEST,
       'No properties found in request body.'
     );
-    
+
   $errors = array();
   foreach ($this->props as $name => $value) {
     try {
@@ -144,7 +148,6 @@ protected function handle( $resource ) {
       $errors[$name] = $e;
     }
   }
-  $response = new DAV_Element_response(DAV::$PATH);
   if (empty($errors)) {
     try { $resource->storeProperties(); }
     catch (DAV_Status $e) {
@@ -152,21 +155,22 @@ protected function handle( $resource ) {
         $errors[$propname] = $e;
     }
   }
+
+  $response = new DAV_Element_response(DAV::$PATH);
   if (empty($errors))
     foreach ( array_keys( $this->props ) as $propname )
-      $response->setStatus( $propname, DAV_Status::$OK );
+      $response->setStatus( $propname, DAV_Status::get(DAV::HTTP_OK) );
   else {
-    $failed_dependency = new DAV_Status(DAV::HTTP_FAILED_DEPENDENCY);
     foreach ( array_keys( $this->props ) as $propname )
       if ( !isset( $errors[$propname] ) )
-        $errors[$propname] = $failed_dependency;
+        $errors[$propname] = DAV_Status::get(DAV::HTTP_FAILED_DEPENDENCY);
     foreach ($errors as $propname => $status)
       $response->setStatus($propname, $status);
   }
   DAV_Multistatus::inst()->addResponse($response);
   DAV_Multistatus::inst()->close();
 }
-  
-  
+
+
 } // class DAV_Request_PROPPATCH
 

@@ -1,8 +1,8 @@
 <?php
 
 /*·************************************************************************
- * Copyright ©2007-2011 Pieter van Beek, Almere, The Netherlands
- * 		    <http://purl.org/net/6086052759deb18f4c0c9fb2c3d3e83e>
+ * Copyright ©2007-2012 Pieter van Beek, Almere, The Netherlands
+ *           <http://purl.org/net/6086052759deb18f4c0c9fb2c3d3e83e>
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may
  * not use this file except in compliance with the License. You may obtain
@@ -13,8 +13,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * $Id: dav_resource.php 3364 2011-08-04 14:11:03Z pieterb $
  **************************************************************************/
 
 /**
@@ -28,16 +26,27 @@
  */
 
 class DAV_Resource {
-  
+
 
 /**
- * @return DAV_Resource
+ * @param array $properties
+ * @return array an array of (property => isReadable) pairs.
+ */
+public function property_priv_read($properties) {
+  $retval = array();
+  foreach ($properties as $prop) $retval[$prop] = true;
+  return $retval;
+}
+
+
+/**
+ * @return DAV_Collection
  */
 public function collection() {
   return ('/' == $this->path ) ?
     null : DAV::$REGISTRY->resource(dirname($this->path));
 }
-  
+
 
 /**
  * @return bool
@@ -488,7 +497,7 @@ final public function set_getcontenttype($value) {
     //                | "," | ";" | ":" | "\" | <">
     //                | "/" | "[" | "]" | "?" | "="
     //                | "{" | "}" | SP | HT
-    
+
     // A token. Note that it's escaped for use between @@ delimiters.
     $token = "[^\\x00-\\x20\\x7f-\\xff\\(\\)<>\\@,;:\\\\\"/\\[\\]?={}]+";
     //                                   escaped^         ^unescaped
@@ -534,24 +543,24 @@ final public function prop_getlastmodified() {
 }
 
 
-/**
+/*
  * @return string XML
  */
-final public function prop_ishidden() {
-  if (is_null($tmp = $this->user_prop_ishidden())) return null;
-  return $tmp ? 'true' : 'false';
-}
+// final public function prop_ishidden() {
+  // if (is_null($tmp = $this->user_prop_ishidden())) return null;
+  // return $tmp ? 'true' : 'false';
+// }
 
 
-/**
+/*
  * @param string $value null, 'true' or 'false'
  * @return void
  * @throws DAV_Status
  */
-final public function set_ishidden($value) {
-  if (!is_null($value)) $value = ($value == 'true');
-  return $this->user_set_ishidden($value);
-}
+// final public function set_ishidden($value) {
+  // if (!is_null($value)) $value = ($value == 'true');
+  // return $this->user_set_ishidden($value);
+// }
 
 
 /*
@@ -579,17 +588,6 @@ final public function set_ishidden($value) {
 /**
  * @return string XML
  */
-final public function prop_lockdiscovery() {
-  if ( ! DAV::$LOCKPROVIDER ) return null;
-  $retval = ( $lock = DAV::$LOCKPROVIDER->getlock($this->path) ) ?
-    $lock->toXML() : '';
-  return $retval;
-}
-
-
-/**
- * @return string XML
- */
 final public function prop_resourcetype() {
   $retval = $this->user_prop_resourcetype();
   if (!is_null($retval)) return $retval;
@@ -598,33 +596,6 @@ final public function prop_resourcetype() {
   if ($this instanceof DAVACL_Principal)
     $retval .= DAVACL_Principal::RESOURCETYPE;
   return $retval;
-}
-
-
-/**
- * @return string XML
- */
-final public function prop_supported_report_set() {
-  $retval = ($this instanceof DAVACL_Principal_Collection) ?
-    DAV::$REPORTS :
-    array(DAV::REPORT_EXPAND_PROPERTY);
-  return '<D:supported-report><D:' .
-    implode("/></D:supported-report>\n<D:supported-report><D:", $retval) .
-    '/></D:supported-report>';
-}
-
-
-/**
- * @return string XML
- */
-final public function prop_supportedlock() {
-  if ( ! DAV::$LOCKPROVIDER ) return null;
-  return <<<EOS
-<D:lockentry>
-  <D:lockscope><D:exclusive/></D:lockscope>
-  <D:locktype><D:write/></D:locktype>
-</D:lockentry>
-EOS;
 }
 
 
@@ -676,4 +647,4 @@ public function method_PROPPATCH($propname, $value = null) {
 
 
 } // class DAV_Resource
-  
+

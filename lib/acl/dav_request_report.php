@@ -1,8 +1,8 @@
 <?php
 
 /*·************************************************************************
- * Copyright ©2007-2011 Pieter van Beek, Almere, The Netherlands
- * 		    <http://purl.org/net/6086052759deb18f4c0c9fb2c3d3e83e>
+ * Copyright ©2007-2012 Pieter van Beek, Almere, The Netherlands
+ *           <http://purl.org/net/6086052759deb18f4c0c9fb2c3d3e83e>
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may
  * not use this file except in compliance with the License. You may obtain
@@ -13,23 +13,21 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * $Id: dav_request_report.php 3364 2011-08-04 14:11:03Z pieterb $
  **************************************************************************/
 
 /**
  * File documentation (who cares)
- * @package DAV
+ * @package DAVACL
  */
 
 /**
  * Helper class for parsing REPORT request bodies.
  * @internal
- * @package DAV
+ * @package DAVACL
  */
 class DAV_Request_REPORT extends DAV_Request {
 
-  
+
 /**
  * One of 'allprop', 'propname', or 'prop'.
  * @var string
@@ -54,7 +52,7 @@ private static $SUPPORTED_REPORTS = array(
  */
 protected function __construct() {
   parent::__construct();
-  
+
   /*
    * RFC4918 §9.1:
    * A client may choose not to submit a request body.  An empty PROPFIND
@@ -63,7 +61,7 @@ protected function __construct() {
   $input = $this->inputstring();
   if (!strlen($input))
     throw new DAV_Status( DAV::HTTP_BAD_REQUEST, 'Missing required request entity.' );
-  
+
   $document = new DOMDocument();
   //DAV::debug( var_export( array( $_SERVER, DAV_Server::inst()->inputstring() ), true ) );
   if ( ! $document->loadXML(
@@ -74,7 +72,7 @@ protected function __construct() {
       DAV::HTTP_BAD_REQUEST,
       'Request body is not well-formed XML.'
     );
-    
+
   $documentElement = $document->documentElement;
   $reportType = $documentElement->namespaceURI . ' ' . $documentElement->localName;
   $this->type = @self::$SUPPORTED_REPORTS[$reportType];
@@ -83,10 +81,10 @@ protected function __construct() {
       DAV::HTTP_UNPROCESSABLE_ENTITY,
       'Unsupported REPORT type.'
     );
-    
+
   $xpath = new DOMXPath($document);
   $xpath->registerNamespace('D', 'DAV:');
-  
+
   $parse = 'parse_' . $this->type;
   $this->$parse($document, $xpath);
 }
@@ -284,13 +282,13 @@ private function handle_principal_search_property_set($principal_collection) {
     list($namespaceURI, $localName) = explode(' ', $prop);
     echo "\n<";
     switch ($namespaceURI) {
-		case 'DAV:': echo "D:$localName"; break;
-		case '':     echo "$localName"; break;
-		default:     echo "ns:$localName xmlns:ns=\"$namespaceURI\"";
+    case 'DAV:': echo "D:$localName"; break;
+    case '':     echo "$localName"; break;
+    default:     echo "ns:$localName xmlns:ns=\"$namespaceURI\"";
     }
     echo '/>';
     if ($desc) echo
-    	'<D:description xml:lang="en">' . DAV::xmlescape($desc) .
+      '<D:description xml:lang="en">' . DAV::xmlescape($desc) .
       '</D:description>';
     echo '</D:principal-search-property>';
   }

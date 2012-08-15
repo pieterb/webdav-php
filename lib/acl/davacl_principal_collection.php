@@ -17,31 +17,26 @@
 
 /**
  * File documentation (who cares)
- * @package DAV
+ * @package DAVACL
  */
 
 /**
- * @internal
- * @package DAV
+ * Base class for all ACL-enabled resources.
+ * @package DAVACL
  */
-class DAV_Request_DEFAULT extends DAV_Request {
+interface DAVACL_Principal_Collection {
 
+public function report_principal_match ($input);
 
 /**
- * @param DAV_Resource $resource
- * @return void
- * @throws DAV_Status
+ * @param array $input array of ( property => search string ) pairs.
+ * @return array of principal urls.
  */
-public function handle($resource) {
-  $allow = implode(', ', self::$ALLOWED_METHODS);
-  header("Allow: $allow");
-  $status = new DAV_Status(
-    DAV::HTTP_METHOD_NOT_ALLOWED,
-    "Allowed methods: $allow"
-  );
-  $status->output();
+public function report_principal_property_search ($input);
+
+/**
+ * @return array property => description pairs.
+ */
+public function report_principal_search_property_set();
+
 }
-
-
-} // class
-

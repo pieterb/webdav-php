@@ -1,8 +1,8 @@
 <?php
 
 /*·************************************************************************
- * Copyright ©2007-2011 Pieter van Beek, Almere, The Netherlands
- * 		    <http://purl.org/net/6086052759deb18f4c0c9fb2c3d3e83e>
+ * Copyright ©2007-2012 Pieter van Beek, Almere, The Netherlands
+ *           <http://purl.org/net/6086052759deb18f4c0c9fb2c3d3e83e>
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may
  * not use this file except in compliance with the License. You may obtain
@@ -13,8 +13,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * $Id: dav_request_put.php 3364 2011-08-04 14:11:03Z pieterb $
  **************************************************************************/
 
 /**
@@ -75,12 +73,6 @@ protected function __construct()
  * @param DAV_Resource $resource
  */
 protected function handle( $resource ) {
-  if (( $lockroot = DAV::assertLock( $resource ? DAV::$PATH : dirname( DAV::$PATH ) ) ))
-    throw new DAV_Status(
-      DAV::HTTP_LOCKED,
-      array( DAV::COND_LOCK_TOKEN_SUBMITTED => $lockroot )
-    );
-    
   $created = false;
   if ( !$resource ) {
     if (!is_null($this->range_start))
@@ -88,14 +80,14 @@ protected function handle( $resource ) {
     $parent = DAV::$REGISTRY->resource(dirname(DAV::$PATH));
     if (!$parent || ! $parent instanceof DAV_Collection )
       throw new DAV_Status(DAV::HTTP_CONFLICT);
-        
+
     $parent->create_member( basename( DAV::$PATH ) );
     $resource = DAV::$REGISTRY->resource(DAV::$PATH);
     $created = true;
   }
   elseif ( $resource instanceof DAV_Collection )
     throw new DAV_Status( DAV::HTTP_METHOD_NOT_ALLOWED, 'Method PUT not supported on collections.' );
-    
+
   if (is_null($this->range_start)) {
     if ( isset($_SERVER['CONTENT_TYPE']) &&
          'application/octet-stream' != $_SERVER['CONTENT_TYPE'] )
@@ -134,7 +126,7 @@ protected function handle( $resource ) {
       throw $e;
     }
   }
-  
+
   if ($etag = $resource->prop_getetag())
     header('ETag: ' . htmlspecialchars_decode($etag));
   //DAV::debug($headers);

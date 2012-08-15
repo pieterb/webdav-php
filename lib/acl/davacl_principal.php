@@ -1,8 +1,8 @@
 <?php
 
 /*·************************************************************************
- * Copyright ©2007-2011 Pieter van Beek, Almere, The Netherlands
- * 		    <http://purl.org/net/6086052759deb18f4c0c9fb2c3d3e83e>
+ * Copyright ©2007-2012 Pieter van Beek, Almere, The Netherlands
+ *           <http://purl.org/net/6086052759deb18f4c0c9fb2c3d3e83e>
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may
  * not use this file except in compliance with the License. You may obtain
@@ -13,8 +13,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * $Id: davacl_principal_collection.php 3349 2011-07-28 13:04:24Z pieterb $
  **************************************************************************/
 
 /**
@@ -23,22 +21,44 @@
  */
 
 /**
- * Base class for all ACL-enabled resources.
+ * Interface for all principals.
  * @package DAVACL
  */
-interface DAVACL_Principal_Collection {
-  
-public function report_principal_match ($input);
+interface DAVACL_Principal {
+
+
+const RESOURCETYPE = '<D:principal/>';
+
 
 /**
- * @param array $input array of ( property => search string ) pairs.
- * @return array of principal urls.
+ * @return array of URIs
  */
-public function report_principal_property_search ($input);
+public function user_prop_alternate_uri_set();
+
 
 /**
- * @return array property => description pairs.
+ * @return string path
  */
-public function report_principal_search_property_set();
+public function user_prop_principal_url();
+
+
+/**
+ * @return array of paths
+ */
+public function user_prop_group_member_set();
+
+
+/**
+ * @param array $set an array of paths
+ * @see DAVACL_Resource
+ */
+public function user_set_group_member_set($set);
+
+
+/**
+ * @return array of paths
+ */
+public function user_prop_group_membership();
+
 
 }

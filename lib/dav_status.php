@@ -1,8 +1,8 @@
 <?php
 
 /*·************************************************************************
- * Copyright ©2007-2011 Pieter van Beek, Almere, The Netherlands
- * 		    <http://purl.org/net/6086052759deb18f4c0c9fb2c3d3e83e>
+ * Copyright ©2007-2012 Pieter van Beek, Almere, The Netherlands
+ *           <http://purl.org/net/6086052759deb18f4c0c9fb2c3d3e83e>
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may
  * not use this file except in compliance with the License. You may obtain
@@ -13,8 +13,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * $Id: dav_status.php 3364 2011-08-04 14:11:03Z pieterb $
  **************************************************************************/
 
 /**
@@ -31,9 +29,13 @@ class DAV_Status extends Exception {
 public $location = null;
 public $conditions = array();
 
-// The following two pseudo-constants are initialized at the bottom of this file:
-public static $OK = null;
-public static $NOT_FOUND = null;
+public static function get($status) {
+  static $cache = array();
+  if (! @$cache[$status])
+    $cache[$status] = new DAV_Status($status);
+  $cache[$status];
+}
+
 
 /**
  * Constructor.
@@ -84,6 +86,14 @@ public function __construct(
 }
 
 
+public function hash() {
+  return md5(
+    $this->getCode() . "\t" . $this->getMessage() . "\t" .
+    implode( "\t", $this->conditions ) . $this->location
+  );
+}
+
+
 /**
  * Sends this status to client.
  * @return void
@@ -97,7 +107,7 @@ public function output() {
       "DAV_Status object with status $status " .
       var_export($this->getMessage(), true)
     );
-    
+
   if ( DAV::HTTP_UNAUTHORIZED == $status &&
        DAV::$ACLPROVIDER &&
        DAV::$ACLPROVIDER->unauthorized() )
@@ -125,13 +135,9 @@ public function output() {
       'Content-Type' => 'text/plain; charset="UTF-8"'
     ));
     echo "HTTP/1.1 " . DAV::status_code($status) .
-    	"\n" . $this->getMessage();
+      "\n" . $this->getMessage();
   }
 }
 
 
 } // class DAV_Status
-
-DAV_Status::$OK = new DAV_Status(DAV::HTTP_OK);
-DAV_Status::$NOT_FOUND = new DAV_Status(DAV::HTTP_NOT_FOUND);
-

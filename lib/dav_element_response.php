@@ -1,8 +1,8 @@
 <?php
 
 /*·************************************************************************
- * Copyright ©2007-2011 Pieter van Beek, Almere, The Netherlands
- * 		    <http://purl.org/net/6086052759deb18f4c0c9fb2c3d3e83e>
+ * Copyright ©2007-2012 Pieter van Beek, Almere, The Netherlands
+ *           <http://purl.org/net/6086052759deb18f4c0c9fb2c3d3e83e>
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may
  * not use this file except in compliance with the License. You may obtain
@@ -13,8 +13,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * $Id: dav_element_response.php 3349 2011-07-28 13:04:24Z pieterb $
  **************************************************************************/
 
 /**
@@ -48,8 +46,8 @@
  * @package DAV
  */
 class DAV_Element_response {
-  
-  
+
+
 /**
  * @var uri
  */
@@ -69,8 +67,8 @@ private $properties = array();
 public function __construct($path) {
   $this->path = $path;
 }
-  
-    
+
+
 /**
  * Sets a property.
  * @param string $property MUST be "<namespaceURI> <localName>"
@@ -114,6 +112,54 @@ public function setStatus($property, $status) {
 }
 
 
+public function toJSON() {
+  // Set the default status to 200:
+  foreach ( array_keys( $this->properties ) as $p )
+    if ( !isset( $this->status[$p] ) )
+      $this->status[$p] = DAV_Status::get(DAV::HTTP_OK);
+
+  // Rearrange by status:
+  $hashed_statusses = array();
+  $hashed_properties = array();
+  foreach ($this->status as $p => $s) {
+    $hash = $s->hash();
+    if ( ! @$hashed_statusses[$hash] )
+      $hashed_statusses[$hash] = $s;
+    $hashed_properties[$hash][] = $p;
+  }
+
+  $propstats = array();
+  foreach ($hashed_statusses as $hash => $status) {
+    $props = array();
+    foreach ($hashed_properties[$hash] as $prop)
+      $props[$prop] = isset($this->properties[$prop]) ?
+        $this->properties[$prop] : null;
+
+    $propstat = array(
+      'props' => $props,
+      'status' => $status->getCode(),
+    );
+
+    if (!empty($status->conditions)) {
+      $propstat['error'] = array();
+      foreach ($status->conditions as $condition => $xml)
+        $propstat['error'][$condition] = $xml;
+    }
+
+    $message = $status->getMessage();
+    if ( !empty($message) )
+      $propstat['responsedescription'] = $message;
+
+    $propstats[] = $propstat;
+  }
+  $json = array(
+    'href' => $this->path,
+    'propstats' => $propstats,
+  );
+
+  return json_encode($json);
+}
+
 
 /**
  * Serializes this object to XML.
@@ -124,17 +170,15 @@ public function toXML() {
   // Set the default status to 200:
   foreach ( array_keys( $this->properties ) as $p )
     if ( !isset( $this->status[$p] ) )
-      $this->status[$p] = DAV_Status::$OK;
-      
+      $this->status[$p] = DAV_Status::get(DAV::HTTP_OK);
+
   // Rearrange by status:
   $hashed_statusses = array();
   $hashed_properties = array();
   foreach ($this->status as $p => $s) {
-    $hash = md5(
-      $s->getCode() . "\t" . $s->getMessage() . "\t" .
-      implode( "\t", $s->conditions ) . $s->location
-    );
-    $hashed_statusses[$hash] = $s;
+    $hash = $s->hash();
+    if ( ! @$hashed_statusses[$hash] )
+      $hashed_statusses[$hash] = $s;
     $hashed_properties[$hash][] = $p;
   }
 
@@ -147,16 +191,16 @@ public function toXML() {
       list($namespaceURI, $localName) = explode(' ', $prop);
       $xml .= "\n<";
       switch ($namespaceURI) {
-			case 'DAV:': $xml .= "D:$localName"; break;
-			case '':     $xml .= "$localName"; break;
-			default:     $xml .= "ns:$localName xmlns:ns=\"$namespaceURI\"";
+      case 'DAV:': $xml .= "D:$localName"; break;
+      case '':     $xml .= "$localName"; break;
+      default:     $xml .= "ns:$localName xmlns:ns=\"$namespaceURI\"";
       }
       if (isset($this->properties[$prop])) {
         $xml .= '>' . $this->properties[$prop] . '</';
         switch ($namespaceURI) {
-				case 'DAV:': $xml .= "D:"; break;
-				case '':     break;
-				default:     $xml .= "ns:";
+        case 'DAV:': $xml .= "D:"; break;
+        case '':     break;
+        default:     $xml .= "ns:";
         }
         $xml .= "$localName>";
       }
@@ -164,7 +208,7 @@ public function toXML() {
         $xml .= '/>';
       }
     }
-    
+
     // And give the status itself!
     $xml .=
       "\n</D:prop>\n<D:status>HTTP/1.1 " .
@@ -186,7 +230,7 @@ public function toXML() {
   $xml .= "\n</D:response>";
   return $xml;
 }
-  
-    
+
+
 } // class DAV_Element_response
 

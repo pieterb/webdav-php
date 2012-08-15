@@ -1,8 +1,8 @@
 <?php
 
 /*·************************************************************************
- * Copyright ©2007-2011 Pieter van Beek, Almere, The Netherlands
- * 		    <http://purl.org/net/6086052759deb18f4c0c9fb2c3d3e83e>
+ * Copyright ©2007-2012 Pieter van Beek, Almere, The Netherlands
+ *           <http://purl.org/net/6086052759deb18f4c0c9fb2c3d3e83e>
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may
  * not use this file except in compliance with the License. You may obtain
@@ -13,8 +13,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * $Id: dav_request.php 3364 2011-08-04 14:11:03Z pieterb $
  **************************************************************************/
 
 /**
@@ -44,52 +42,47 @@ abstract class DAV_Request {
 
 /**
  * @var array
+ * @todo support the PATCH method
  */
 static $ALLOWED_METHODS = array(
-  'ACL', 'COPY', 'DELETE', 'GET', 'HEAD', 'LOCK', 'MKCOL', 'MOVE', 'OPTIONS',
-  'POST', 'PROPFIND', 'PROPPATCH', 'PUT', 'REPORT', 'UNLOCK'
+  'COPY', 'DELETE', 'GET', 'HEAD', 'MKCOL', 'MOVE', 'OPTIONS',
+  'PATCH', 'POST', 'PROPFIND', 'PROPPATCH', 'PUT',
+  // RFC3744:
+  //'ACL', 'REPORT',
+  // Locking:
+  //'LOCK', 'UNLOCK',
 );
 
 
-/**
- * @var DAV_Request
- */
-private static $inst = null;
 /**
  * @return DAV_Request or null if some error occured.
  * @throws void
  */
 public static function inst() {
-  if ( is_null( self::$inst ) ) {
+  static $inst = null;
+  if ( is_null( $inst ) ) {
     try {
       $REQUEST_METHOD = strtoupper($_SERVER['REQUEST_METHOD']);
       if ( in_array( $REQUEST_METHOD, self::$ALLOWED_METHODS ) ) {
         $classname = "DAV_Request_{$REQUEST_METHOD}";
-        self::$inst = new $classname();
+        $inst = new $classname();
       }
       else
-        self::$inst = new DAV_Request_DEFAULT();
+        $inst = new DAV_Request_DEFAULT();
     }
     catch (DAV_Status $e) {
-      if ($e instanceof DAV_Status)
-        $e->output();
-      else {
+      if (! $e instanceof DAV_Status)
         $e = new DAV_Status(
           DAV::HTTP_INTERNAL_SERVER_ERROR,
           "$e"
         );
-        $e->output();
-      }
+      $e->output();
     }
   }
-  return self::$inst;
+  return $inst;
 }
 
 
-/**
- * @var string
- */
-private $inputstring = null;
 /**
  * @return string
  */
@@ -118,6 +111,10 @@ public function overwrite() {
 }
 
 
+/**
+ * @return null|string One of DAV::DEPTH_0, DAV::DEPTH_1, DAV::DEPTH_INF, or
+ *   null if no Depth: header is present.
+ */
 public function depth() {
   switch ( @$_SERVER['HTTP_DEPTH'] ) {
   case null:
@@ -137,7 +134,7 @@ public function depth() {
 /**
  * @param  string  header string to parse
  * @param  int     current parsing position
- * @return array|null   next token (type and value)
+ * @return array|null next token (type and value)
  * @throws DAV_Status on lexer error
  */
 static private function if_header_lexer(&$pos) 
@@ -184,7 +181,7 @@ static private function if_header_lexer(&$pos)
     return array('CHAR', $c);
   }
 }
-  
+
 
 /**
  * Parsed If: header.
@@ -217,7 +214,7 @@ private function init_if_header()
           DAV::HTTP_BAD_REQUEST, "Unexpected end of If: header: {$_SERVER['HTTP_IF']}"
         );
     }
-    
+
     // sanity check
     if ($token[0] != "CHAR" || $token[1] != '(') {
       throw new DAV_Status(
@@ -225,11 +222,11 @@ private function init_if_header()
         "Error while parsing If: header: Found '{$token[1]}' where '(' was expected."
       );
     }
-    
+
     // Initialize inner parser loop:
     $etag = null;
     $notetags = $locks = $notlocks = array();
-    
+
     // Inner parser loop:
     while ( ( $token = self::if_header_lexer($pos) ) &&
             !( $token[0] == 'CHAR' &&
@@ -246,9 +243,9 @@ private function init_if_header()
       } else {
         $bool = true;
       }
-      
+
       switch($token[0]) {
-        
+
       case 'URI':
         DAV::$SUBMITTEDTOKENS[$token[1]] = $token[1];
         if ( $bool )
@@ -256,7 +253,7 @@ private function init_if_header()
         else
           $notlocks[$token[1]] = $token[1]; 
         break;
-        
+
       case 'ETAG':
         if ( $bool && $etag )
             throw new DAV_Status(DAV::HTTP_BAD_REQUEST, 'Multiple etags required on resource.');
@@ -265,16 +262,16 @@ private function init_if_header()
         else
           $notetags[$token[1]] = $token[1];
         break;
-        
+
       default:
         throw new DAV_Status(DAV::HTTP_BAD_REQUEST, <<<EOS
 Error while parsing If: header:
 Found "{$token[1]}" where "<" or "[" was expected.
 EOS
         );
-        
+
       } // switch($token[0])
-      
+
     } // while
 
     // Shared locks are not supported, so any request with multiple lock tokens
@@ -291,7 +288,7 @@ EOS
       'lock' => array_shift($locks),
       'notlocks' => $notlocks
     );
-    
+
   } // while
 }
 
@@ -310,7 +307,7 @@ protected function __construct()
   // say about fragments?
   if (strstr($_SERVER['REQUEST_URI'], '#') !== false)
     throw new DAV_Status(DAV::HTTP_BAD_REQUEST, 'Fragments are not allowed.');
-      
+
 //  DAV::debug($_SERVER);
   $this->init_if_header();
 }
@@ -335,35 +332,32 @@ public function handleRequest()
   $shallow_lock = false;
   try {
     $shallow_lock = $this->check_if_headers();
-    
+
     $resource = DAV::$REGISTRY->resource(DAV::$PATH);
     if ( !$resource || !$resource->isVisible() and
          in_array( $_SERVER['REQUEST_METHOD'], array(
-             'ACL', 'COPY', 'DELETE', 'GET', 'HEAD', 'MOVE',
-             'POST', 'PROPFIND', 'PROPPATCH', 'REPORT', 'UNLOCK',
+             //'ACL',
+             'COPY', 'DELETE', 'GET', 'HEAD', 'MOVE', 'PATCH',
+             'POST', 'PROPFIND', 'PROPPATCH', 'REPORT', //'UNLOCK',
        ) ) )
       throw new DAV_Status( DAV::HTTP_NOT_FOUND );
-      
+
     if ( '/' !== substr( DAV::$PATH, -1 ) &&
-         ( $resource &&
-           $resource instanceof DAV_Collection ||
+         ( $resource && $resource instanceof DAV_Collection ||
            'MKCOL' == $_SERVER['REQUEST_METHOD'] ) ) {
       DAV::$PATH .= '/';
       header('Content-Location: ' . DAV::abs2uri( DAV::$PATH ) );
     }
-    
+
     $this->handle( $resource );
   }
   catch (Exception $e) {
-    if ($e instanceof DAV_Status)
-      $e->output();
-    else {
+    if (! $e instanceof DAV_Status)
       $e = new DAV_Status(
         DAV::HTTP_INTERNAL_SERVER_ERROR,
         "$e"
       );
-      $e->output();
-    }
+    $e->output();
   }
   if (DAV_Multistatus::active())
     DAV_Multistatus::inst()->close();
@@ -384,14 +378,15 @@ private function check_if_headers() {
     case 'PROPFIND':
     case 'REPORT':
       break;
-    case 'ACL':
+    //case 'ACL':
     case 'DELETE':
-    case 'LOCK':
+    //case 'LOCK':
     case 'MKCOL':
+    case 'PATCH':
     case 'POST':
     case 'PROPPATCH':
     case 'PUT':
-    case 'UNLOCK':
+    //case 'UNLOCK':
       $write_locks[DAV::unslashify(DAV::$PATH)] = 1;
       break;
     case 'COPY':
@@ -418,19 +413,19 @@ private function check_if_headers() {
         $read_locks[$p] = 1;
       }
     }
-  
+
   foreach( array( 'MATCH', 'UNMODIFIED_SINCE' ) as $value ) // Conditions 'NONE_MATCH', 'MODIFIED_SINCE' are not relevant 
     if ( isset( $_SERVER['HTTP_IF_' . $value] ) ) {
       $read_locks[DAV::unslashify(DAV::$PATH)] = 1;
       break;
     }
-  
+
   foreach (array_keys($this->if_header) as $path)
     $read_locks[DAV::unslashify($path)] = 1;
-  
+
   foreach (array_keys($write_locks) as $path)
     unset( $read_locks[$path] );
-    
+
   if (empty($write_locks) && empty($read_locks))
     return false;
 
@@ -459,13 +454,13 @@ private function check_if_headers() {
 private function check_if_header()
 {
   if (empty($this->if_header)) return;
-  
+
   $anyStateMatches = false;
   foreach ($this->if_header as $path => $values) {
     $resource = DAV::$REGISTRY->resource($path); // May return null
     if ($resource && $resource->isVisible()) {
       $res_etag = $resource->user_prop_getetag();
-      
+
       // Check etag:
       if ( $values['etag'] &&
            !self::equalETags(
@@ -473,11 +468,11 @@ private function check_if_header()
               $res_etag
             ) )
         continue;
-        
+
       // Check notetags:
       if ( $res_etag && isset($values['notetags'][$res_etag]) )
         continue;
-            
+
       // Check locks:
       $lock = DAV::$LOCKPROVIDER ? DAV::$LOCKPROVIDER->getlock($path) : null;
       if ( $values['lock'] and
@@ -495,8 +490,8 @@ private function check_if_header()
   if (!$anyStateMatches)
     throw new DAV_Status(DAV::HTTP_PRECONDITION_FAILED);
 } // function check_if_header()
-  
-  
+
+
 /**
  * Parses AND checks the If-(Un)Modified-Since: header.
  * @throws DAV_Status particularly 304 Not Modified and 412 Precondition Failed
@@ -532,9 +527,9 @@ private function check_if_match_header() {
     $none = true;
   }
   else return;
-  
+
   $resource = DAV::$REGISTRY->resource( DAV::$PATH );
-  
+
   // The simplest case: just an asterisk '*'.
   if ( preg_match( '@^\\s*\\*\\s*$@', $header ) ) {
     if ( ( !$resource || !$resource->isVisible() ) && !$none )
@@ -543,7 +538,7 @@ private function check_if_match_header() {
       throw new DAV_Status(DAV::HTTP_PRECONDITION_FAILED, 'If-None-Match');
     return;
   }
-  
+
   // A list of entity-tags
   $header .= ',';
   preg_match_all( '@((?:W/)?"(?:[^"\\\\]|\\\\.)*")\\s*,@',
@@ -554,7 +549,7 @@ private function check_if_match_header() {
       DAV::HTTP_BAD_REQUEST,
       'Couldn\'t parse If-(None-)Match header.'
     );
-    
+
   if ( ( !$resource || !$resource->isVisible() ) && !$none)
     throw new DAV_Status(DAV::HTTP_PRECONDITION_FAILED, 'If-Match');
   // $resource exists:
@@ -580,16 +575,17 @@ private function check_if_match_header() {
  * @return mixed null if both ETags are malformed, true if equal, otherwise false
  */
 public static function equalETags( $a, $b ) {
-  $a = preg_match( '@^\\s*(W/)?("(?:[^"\\\\]|\\\\.)*")\\s*@',
+  $a = preg_match( '@^\\s*(W/)?"((?:[^"\\\\]|\\\\.)*)"\\s*@',
                    $a, $a_matches );
-  $b = preg_match( '@^\\s*(W/)?("(?:[^"\\\\]|\\\\.)*")\\s*@',
+  $b = preg_match( '@^\\s*(W/)?"((?:[^"\\\\]|\\\\.)*)"\\s*@',
                    $b, $b_matches );
   if ( !$a && !$b )
     throw new DAV_Status(
       DAV::HTTP_BAD_REQUEST,
       'Malformed ETag(s)'
     );
-  return ( $a_matches[2] === $b_matches[2] );
+  $tokens = str_replace ( '\\' , '', array( $a_matches[2], $b_matches[2] ) );
+  return ( $tokens[0] == $tokens[1] );
 }
 
 
