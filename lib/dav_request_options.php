@@ -42,6 +42,10 @@ protected function handle( $resource ) {
   );
   // For details on the following lines of code, see W3C's working draft on
   // "Cross Origin Resource Sharing" at <http://www.w3.org/TR/access-control/>
+  $headers['Access-Control-Allow-Origin'] = (
+      is_null( $_SERVER['HTTP_ORIGIN'] ) ||
+      strtolower( $_SERVER['HTTP_ORIGIN'] ) == 'null'
+    ) ? '*' : $_SERVER['HTTP_ORIGIN'];
   if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD']))
     $headers['Access-Control-Allow-Methods'] = $_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD'];
   if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']))
