@@ -79,7 +79,7 @@ public function json() { return $this->json; }
  */
 private function __construct()
 {
-  $this->json = 'application/json' == $_SERVER['HTTP_ACCEPT'];
+  $this->json = ( 'application/json' == $_SERVER['HTTP_ACCEPT'] );
   DAV::header( array(
     'Content-Type' => (
       $this->json() ?
@@ -253,7 +253,9 @@ public function addResponse($response) {
   // exception here?
   if ( null !== $this->currentStatus )
     $this->flushStatus();
-  echo $this->json() ? $response->toJSON() : $response->toXML();
+  echo $this->json() ?
+    $this->json_comma() . json_encode( $response->toStruct() ) :
+    $response->toXML();
   //DAV::debug($response->toXML($path));
   //flush();
   return $this;

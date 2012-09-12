@@ -44,7 +44,7 @@ protected function __construct() {
 //  if ( !isset($_SERVER['CONTENT_LENGTH']) ||
 //       !$_SERVER['CONTENT_LENGTH'] )
 //    throw new DAV_Status(
-//      DAV::HTTP_UNPROCESSABLE_ENTITY,
+//      DAVACL::HTTP_UNPROCESSABLE_ENTITY,
 //      'Couldn\'t find a proppatch request body.'
 //    );
 
@@ -55,21 +55,21 @@ protected function __construct() {
            LIBXML_NOCDATA | LIBXML_NOENT | LIBXML_NSCLEAN | LIBXML_NOWARNING
          ) )
     throw new DAV_Status(
-      DAV::HTTP_BAD_REQUEST, 'Request body is not well-formed XML.'
+      DAVACL::HTTP_BAD_REQUEST, 'Request body is not well-formed XML.'
     );
 
   $xpath = new DOMXPath($document);
   $xpath->registerNamespace('D', 'DAV:');
 
   $nodelist = $xpath->query('/D:acl/D:ace');
-  DAV::debug($nodelist);
+  DAVACL::debug($nodelist);
   foreach( $nodelist as $ace ) {
-    DAV::debug($ace);
+    DAVACL::debug($ace);
     // Find the principal element:
     $principal = $xpath->query("D:principal/* | D:invert/D:principal/*", $ace);
     if (1 != $principal->length)
       throw new DAV_Status(
-        DAV::HTTP_UNPROCESSABLE_ENTITY,
+        DAVACL::HTTP_UNPROCESSABLE_ENTITY,
         $principal->length . ' principals in ACE');
     $principal = $principal->item(0);
     $p_invert = ('invert' == $principal->parentNode->parentNode->localName);
@@ -85,13 +85,13 @@ protected function __construct() {
         $e = $e->nextSibling;
       if (!$e)
         throw new DAV_Status(
-          DAV::HTTP_UNPROCESSABLE_ENTITY,
+          DAVACL::HTTP_UNPROCESSABLE_ENTITY,
           "Missing property in ACE principal"
         );
       $p_principal = $e->namespaceURI . ' ' . $e->localName;
     } else
       throw new DAV_Status(
-        DAV::HTTP_UNPROCESSABLE_ENTITY,
+        DAVACL::HTTP_UNPROCESSABLE_ENTITY,
         "Don't understand principal element '$p'"
       );
 
@@ -101,7 +101,7 @@ protected function __construct() {
     if (  $granted->length &&  $denied->length or
          !$granted->length && !$denied->length )
       throw new DAV_Status(
-        DAV::HTTP_UNPROCESSABLE_ENTITY,
+        DAVACL::HTTP_UNPROCESSABLE_ENTITY,
         'Both grant and deny elements in ACE, or no privileges at all.'
       );
     if ($granted->length) {
@@ -119,7 +119,7 @@ protected function __construct() {
     $nodelist = $xpath->query('/D:ace/D:protected | /D:ace/D:inherited', $ace);
     if ($nodelist->length)
       throw new DAV_Status(
-        DAV::HTTP_UNPROCESSABLE_ENTITY,
+        DAVACL::HTTP_UNPROCESSABLE_ENTITY,
         'Cannot set protected or inherited ACEs'
       );
 
@@ -129,7 +129,7 @@ protected function __construct() {
   }
 
   // DEBUG
-  //DAV::debug($this->aces);
+  //DAVACL::debug($this->aces);
 }
 
 
@@ -139,13 +139,13 @@ protected function __construct() {
  * @throws DAV_Status
  */
 protected function handle( $resource ) {
-  if ($lockroot = DAV::assertLock(DAV::$PATH))
+  if ($lockroot = DAVACL::assertLock(DAVACL::$PATH))
     throw new DAV_Status(
-      DAV::HTTP_LOCKED, 
-      array(DAV::COND_LOCK_TOKEN_SUBMITTED => $lockroot)
+      DAVACL::HTTP_LOCKED, 
+      array(DAVACL::COND_LOCK_TOKEN_SUBMITTED => $lockroot)
     );
   if ( ! $resource instanceof DAVACL_Resource )
-    throw new DAV_Status(DAV::HTTP_METHOD_NOT_ALLOWED);
+    throw new DAV_Status(DAVACL::HTTP_METHOD_NOT_ALLOWED);
   $supported = $resource->user_prop_supported_privilege_set();
   $supported = DAVACL_Element_supported_privilege::flatten($supported);
   $restrictions = $resource->user_prop_acl_restrictions();
@@ -154,20 +154,20 @@ protected function handle( $resource ) {
       // Check if the privilege is supported...
       if ( !isset( $supported[$privilege] ) )
         throw new DAV_Status(
-          DAV::HTTP_FORBIDDEN, DAV::COND_NOT_SUPPORTED_PRIVILEGE
+          DAVACL::HTTP_FORBIDDEN, DAVACL::COND_NOT_SUPPORTED_PRIVILEGE
         );
       // ...and not abstract.
       elseif ( $supported[$privilege]['abstract'] )
         throw new DAV_Status(
-          DAV::HTTP_FORBIDDEN, DAV::COND_NO_ABSTRACT
+          DAVACL::HTTP_FORBIDDEN, DAVACL::COND_NO_ABSTRACT
         );
-    if ( $ace->principal instanceof DAV_Element_href ) {
+    if ( $ace->principal instanceof DAVACL_Element_href ) {
       $path = $ace->principal->URIs[0];
-      if ( !( $principal = DAV::$REGISTRY->resource( $path ) ) ||
+      if ( !( $principal = DAVACL::$REGISTRY->resource( $path ) ) ||
            ! $principal instanceof DAVACL_Principal )
         throw new DAV_Status(
-          DAV::HTTP_FORBIDDEN,
-          DAV::COND_RECOGNIZED_PRINCIPAL
+          DAVACL::HTTP_FORBIDDEN,
+          DAVACL::COND_RECOGNIZED_PRINCIPAL
         );
     }
   }

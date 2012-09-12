@@ -151,22 +151,6 @@ const RESTRICTION_REQUIRED_PRINCIPAL = 'DAV: required-principal';
 //    property*)>
 
 
-/**
- * @param string $hrefs
- * @return DAV_Element_href
- * @throws DAV_Status
- */
-public static function parse_hrefs($hrefs) {
-  $href = new DAV_Element_href();
-  if (!preg_match('@^\\s*(?:<D:href(?:\\s+[^>]*)?>\\s*[^\\s<]+\\s*</D:href>\\s*)*$@', $hrefs))
-    return $href;
-  preg_match_all('@<D:href(?:\\s+[^>]*)?>\\s*([^\\s<]+)\\s*</D:href>@', $hrefs, $matches);
-  foreach($matches[1] as $match)
-    $href->addURI( DAV::parseURI( $match, false ) );
-  return $href;
-}
-
-
 const REPORT_EXPAND_PROPERTY               = 'expand-property';
 const REPORT_ACL_PRINCIPAL_PROP_SET        = 'acl-principal-prop-set';
 const REPORT_PRINCIPAL_MATCH               = 'principal-match';
@@ -191,10 +175,14 @@ public static $ACLPROVIDER = null;
 
 } // class DAVACL
 
-DAV::$WEBDAV_PROPERTIES[DAVACL::PROP_SUPPORTED_REPORT_SET] = 'supported_report_set';
+DAVACL::$WEBDAV_PROPERTIES = array_merge(
+  DAVACL::$WEBDAV_PROPERTIES, array(
+    DAVACL::PROP_SUPPORTED_REPORT_SET => 'supported_report_set',
+  )
+);
 
-DAV::$SUPPORTED_PROPERTIES = array_merge(
-  DAV::$SUPPORTED_PROPERTIES, array(
+DAVACL::$SUPPORTED_PROPERTIES = array_merge(
+  DAVACL::$SUPPORTED_PROPERTIES, array(
     // RFC3744 principal properties:
     DAVACL::PROP_ALTERNATE_URI_SET => 'alternate_URI_set',
     DAVACL::PROP_PRINCIPAL_URL     => 'principal_URL',
@@ -216,8 +204,8 @@ DAV::$SUPPORTED_PROPERTIES = array_merge(
   )
 );
 
-DAV::$PROTECTED_PROPERTIES = array_merge(
-  DAV::$PROTECTED_PROPERTIES, array(
+DAVACL::$PROTECTED_PROPERTIES = array_merge(
+  DAVACL::$PROTECTED_PROPERTIES, array(
     // RFC3744 Principal properties
     DAVACL::PROP_ALTERNATE_URI_SET          => 'alternate_URI_set',
     DAVACL::PROP_PRINCIPAL_URL              => 'principal_URL',
@@ -236,8 +224,8 @@ DAV::$PROTECTED_PROPERTIES = array_merge(
   )
 );
 
-DAV::$CONDITIONS = array_merge(
-  DAV::$CONDITIONS, array(
+DAVACL::$CONDITIONS = array_merge(
+  DAVACL::$CONDITIONS, array(
     // RFC3744:
     DAVACL::COND_ALLOWED_PRINCIPAL                => DAVACL::COND_ALLOWED_PRINCIPAL,
     DAVACL::COND_DENY_BEFORE_GRANT                => DAVACL::COND_DENY_BEFORE_GRANT,

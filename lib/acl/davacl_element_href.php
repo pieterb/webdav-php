@@ -24,7 +24,7 @@
  * Set of DAV:href elements
  * @package DAVACL
  */
-class DAVACL_Element_href {
+class DAVACL_Element_href implements JsonSerializable {
 
 
 /**
@@ -41,6 +41,8 @@ public $URIs;
 public function __construct($URIs = null) {
   if (is_array($URIs))
     $this->URIs = $URIs;
+  elseif ($URIs instanceof DAVACL_Element_href)
+    $this->URIs = $URIs->URIs;
   elseif ($URIs)
     $this->URIs = array("$URIs");
   else
@@ -60,6 +62,37 @@ public function addURI($URI) {
 public function __toString() {
   return empty($this->URIs) ? '' :
   '<D:href>' . implode("</D:href>\n<D:href>", $this->URIs). '</D:href>';
+}
+
+
+/**
+ * A JSON representation of the object.
+ * @return string
+ */
+public function jsonSerialize($force_array = false) {
+  return $this->URIs;
+  // This is the old code
+  if ($force_array || count($this->URIs) > 1)
+    return $this->URIs;
+  elseif (count($this->URIs) == 1)
+    return $this->URIs[0];
+  return null;
+}
+
+
+/**
+ * @param string $hrefs
+ * @return DAVACL_Element_href
+ * @throws DAV_Status
+ */
+public static function parse($hrefs) {
+  $href = new DAVACL_Element_href();
+  if (!preg_match('@^\\s*(?:<D:href(?:\\s+[^>]*)?>\\s*[^\\s<]+\\s*</D:href>\\s*)*$@', $hrefs))
+    return $href;
+  preg_match_all('@<D:href(?:\\s+[^>]*)?>\\s*([^\\s<]+)\\s*</D:href>@', $hrefs, $matches);
+  foreach($matches[1] as $match)
+    $href->addURI( DAVACL::parseURI( $match, false ) );
+  return $href;
 }
 
 

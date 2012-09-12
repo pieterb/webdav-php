@@ -60,16 +60,16 @@ protected function __construct() {
    */
   $input = $this->inputstring();
   if (!strlen($input))
-    throw new DAV_Status( DAV::HTTP_BAD_REQUEST, 'Missing required request entity.' );
+    throw new DAV_Status( DAVACL::HTTP_BAD_REQUEST, 'Missing required request entity.' );
 
   $document = new DOMDocument();
-  //DAV::debug( var_export( array( $_SERVER, DAV_Server::inst()->inputstring() ), true ) );
+  //DAVACL::debug( var_export( array( $_SERVER, DAV_Server::inst()->inputstring() ), true ) );
   if ( ! $document->loadXML(
            $input,
            LIBXML_NOCDATA | LIBXML_NOENT | LIBXML_NSCLEAN | LIBXML_NOWARNING
          ) )
     throw new DAV_Status(
-      DAV::HTTP_BAD_REQUEST,
+      DAVACL::HTTP_BAD_REQUEST,
       'Request body is not well-formed XML.'
     );
 
@@ -78,7 +78,7 @@ protected function __construct() {
   $this->type = @self::$SUPPORTED_REPORTS[$reportType];
   if ( !$this->type )
     throw new DAV_Status(
-      DAV::HTTP_UNPROCESSABLE_ENTITY,
+      DAVACL::HTTP_UNPROCESSABLE_ENTITY,
       'Unsupported REPORT type.'
     );
 
@@ -114,7 +114,7 @@ private function parse_expand_property_recursively($element) {
       $namespaceURI = $namespaceURI ? $namespaceURI->value : 'DAV:';
       if ( !( $localName = $child->attributes->getNamedItem('name') ) )
         throw new DAV_Status(
-          DAV::HTTP_UNPROCESSABLE_ENTITY,
+          DAVACL::HTTP_UNPROCESSABLE_ENTITY,
           'Missing required "name" attribute in DAV:property element.'
         );
       $localName = $localName->value;
@@ -179,8 +179,8 @@ protected function handle( $resource ) {
  * @param DAV_Resource $resource
  */
 private function handle_expand_property($resource) {
-  DAV::debug($this->entity);
-  $response = $this->handle_expand_property_recursively( DAV::$PATH, $this->entity );
+  DAVACL::debug($this->entity);
+  $response = $this->handle_expand_property_recursively( DAVACL::$PATH, $this->entity );
   DAV_Multistatus::inst()->addResponse($response)->close();
 }
 
@@ -191,13 +191,13 @@ private function handle_expand_property($resource) {
  * @return DAV_Element_response
  */
 private function handle_expand_property_recursively($path, $properties) {
-  if ( !( $resource = DAV::$REGISTRY->resource($path) ) )
+  if ( !( $resource = DAVACL::$REGISTRY->resource($path) ) )
     return null;
   $retval = new DAV_Element_response($path);
   foreach ($properties as $parent => $children) {
     try {
       $oldprop = $newprop = $resource->prop($parent);
-      if ( $oldprop instanceof DAV_Element_href && $children ) {
+      if ( $oldprop instanceof DAVACL_Element_href && $children ) {
         $newprop = '';
         foreach ($oldprop->URIs as $URI) {
           $tmp = $this->handle_expand_property_recursively( $URI, $children );
@@ -215,7 +215,7 @@ private function handle_expand_property_recursively($path, $properties) {
 
 
 private function handle_acl_principal_prop_set($resource) {
-  DAV::debug($this->entity);
+  DAVACL::debug($this->entity);
   $resource->assert(DAVACL::PRIV_READ_ACL);
   $principals = array();
   foreach ($resource->user_prop_acl() as $ace) {
@@ -225,13 +225,13 @@ private function handle_acl_principal_prop_set($resource) {
       continue;
     else {
       $href = $resource->prop($ace->principal);
-      if ($href instanceof DAV_Element_href)
+      if ($href instanceof DAVACL_Element_href)
         $principals[$href->URIs[0]] = true;
     }
   }
   $multistatus = DAV_Multistatus::inst();
   foreach (array_keys($principals) as $href)
-    if ($href && ($principal = DAV::$REGISTRY->resource( $href ) ) ) {
+    if ($href && ($principal = DAVACL::$REGISTRY->resource( $href ) ) ) {
       $response = new DAV_Element_response($href);
       foreach ($this->entity as $property)
         try {
@@ -247,7 +247,7 @@ private function handle_acl_principal_prop_set($resource) {
 
 private function handle_principal_match($resource) {
   // TODO
-  throw new DAV_Status(DAV::HTTP_NOT_IMPLEMENTED);
+  throw new DAV_Status(DAVACL::HTTP_NOT_IMPLEMENTED);
 }
 
 
@@ -255,7 +255,7 @@ private function handle_principal_property_search($principal_collection) {
   $principals = $principal_collection->report_principal_property_search($this->entity['match']);
   DAV_Multistatus::inst();
   foreach($principals as $path) {
-    $principal = DAV::$REGISTRY->resource($path);
+    $principal = DAVACL::$REGISTRY->resource($path);
     if ( $principal && $principal->isVisible() ) {
       $response = new DAV_Element_response($path);
       foreach ($this->entity['prop'] as $prop) {
@@ -275,7 +275,7 @@ private function handle_principal_property_search($principal_collection) {
 
 private function handle_principal_search_property_set($principal_collection) {
   $properties = $principal_collection->report_principal_search_property_set();
-  echo DAV::xml_header();
+  echo DAVACL::xml_header();
   echo '<D:principal-search-property-set xmlns:D="DAV:">';
   foreach ($properties as $prop => $desc) {
     echo "\n<D:principal-search-property><D:prop>";
@@ -288,7 +288,7 @@ private function handle_principal_search_property_set($principal_collection) {
     }
     echo '/>';
     if ($desc) echo
-      '<D:description xml:lang="en">' . DAV::xmlescape($desc) .
+      '<D:description xml:lang="en">' . DAVACL::xmlescape($desc) .
       '</D:description>';
     echo '</D:principal-search-property>';
   }

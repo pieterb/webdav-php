@@ -170,7 +170,7 @@ private function handleCreateLock($resource) {
   if ( ( $lock = DAV::$LOCKPROVIDER->getlock( DAV::$PATH ) ) )
     throw new DAV_Status(
       DAV::HTTP_LOCKED,
-      array( DAV::COND_NO_CONFLICTING_LOCK => new DAV_Element_href( $lock->lockroot ) )
+      array( DAV::COND_NO_CONFLICTING_LOCK => new DAVACL_Element_href( $lock->lockroot ) )
     );
   if ( DAV::$LOCKPROVIDER->memberLocks( DAV::$PATH ) )
     throw new DAV_Status(

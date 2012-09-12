@@ -358,7 +358,7 @@ protected function user_set($propname, $value = null) {
  */
 final public function prop_creationdate() {
   if (is_null($tmp = $this->user_prop_creationdate())) return null;
-  return gmdate( 'Y-m-d\\TH:i:s\\Z', $tmp );
+  return DAV_Multistatus::inst()->json() ? $tmp : gmdate( 'Y-m-d\\TH:i:s\\Z', $tmp );
 }
 
 
@@ -367,7 +367,7 @@ final public function prop_creationdate() {
  */
 final public function prop_displayname() {
   if (is_null($tmp = $this->user_prop_displayname())) return null;
-  return DAV::xmlescape( $tmp );
+  return DAV_Multistatus::inst()->json() ? $tmp : DAV::xmlescape( $tmp );
 }
 
 
@@ -381,7 +381,8 @@ final public function set_displayname($value) {
         DAV::HTTP_BAD_REQUEST,
         'XML is not allowed in displaynames.'
       );
-    $value = htmlspecialchars_decode($value);
+    if (!DAV::json())
+      $value = htmlspecialchars_decode($value);
   }
   return $this->user_set_displayname($value);
 }
@@ -401,7 +402,7 @@ protected function user_set_displayname($value) {
  */
 final public function prop_executable() {
   if (is_null($tmp = $this->user_prop_executable())) return null;
-  return $tmp ? 'T' : 'F';
+  return DAV_Multistatus::inst()->json() ? (!!$tmp) : ( $tmp ? 'T' : 'F' );
 }
 
 
@@ -410,7 +411,8 @@ final public function prop_executable() {
  * @throws DAV_Status
  */
 final public function set_executable($value) {
-  if (null !== $value) $value = ($value == 'T');
+  if ( !DAV::json() && null !== $value )
+    $value = ($value == 'T');
   return $this->user_set_executable($value);
 }
 
@@ -432,7 +434,7 @@ protected function user_set_executable($value) {
  */
 final public function prop_getcontentlanguage() {
   if (is_null($tmp = $this->user_prop_getcontentlanguage())) return null;
-  return DAV::xmlescape($tmp);
+  return DAV_Multistatus::inst()->json() ? $tmp : DAV::xmlescape($tmp);
 }
 
 
@@ -441,7 +443,9 @@ final public function prop_getcontentlanguage() {
  * @throws DAV_Status
  */
 final public function set_getcontentlanguage($value) {
-  if (null !== $value) {
+  if ( null !== $value ) {
+    if ( !DAV::json() )
+      $value = htmlspecialchars_decode($value);
     $languages = preg_split('/,\\s*/', $value);
     foreach ($languages as $language)
       if (!preg_match('/^[a-z]{1,8}(?:-[a-z]{1,8})*$/i', $language))
@@ -472,7 +476,7 @@ protected function user_set_getcontentlanguage($value) {
  */
 final public function prop_getcontentlength() {
   if (is_null($tmp = $this->user_prop_getcontentlength())) return null;
-  return DAV::xmlescape($tmp);
+  return DAV_Multistatus::inst()->json() ? $tmp : DAV::xmlescape($tmp);
 }
 
 
@@ -481,7 +485,7 @@ final public function prop_getcontentlength() {
  */
 final public function prop_getcontenttype() {
   if (is_null($tmp = $this->user_prop_getcontenttype())) return null;
-  return DAV::xmlescape( $tmp );
+  return DAV_Multistatus::inst()->json() ? $tmp : DAV::xmlescape($tmp);
 }
 
 
@@ -491,6 +495,8 @@ final public function prop_getcontenttype() {
  */
 final public function set_getcontenttype($value) {
   if ( !is_null( $value ) ) {
+    if ( !DAV::json() )
+      $value = htmlspecialchars_decode($value);
     // RFC2616 §2.2
     // token          = 1*<any CHAR except CTLs or separators>
     // separators     = "(" | ")" | "<" | ">" | "@"
@@ -530,7 +536,7 @@ protected function user_set_getcontenttype($value) {
  */
 final public function prop_getetag() {
   if (is_null($tmp = $this->user_prop_getetag())) return null;
-  return DAV::xmlescape( $tmp );
+  return DAV_Multistatus::inst()->json() ? $tmp : DAV::xmlescape($tmp);
 }
 
 
@@ -588,13 +594,10 @@ final public function prop_getlastmodified() {
 /**
  * @return string XML
  */
-final public function prop_resourcetype() {
+public function prop_resourcetype() {
   $retval = $this->user_prop_resourcetype();
-  if (!is_null($retval)) return $retval;
   if ($this instanceof DAV_Collection)
     $retval .= DAV_Collection::RESOURCETYPE;
-  if ($this instanceof DAVACL_Principal)
-    $retval .= DAVACL_Principal::RESOURCETYPE;
   return $retval;
 }
 

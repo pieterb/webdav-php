@@ -27,6 +27,18 @@
 abstract class DAVACL_Resource extends DAV_Resource {
 
 
+/**
+ * @return string XML
+ * @see DAV_Resource::prop_resourcetype()
+ */
+public function prop_resourcetype() {
+  $retval = parent::prop_resourcetype();
+  if ($this instanceof DAVACL_Principal)
+    $retval .= DAVACL_Principal::RESOURCETYPE;
+  return $retval;
+}
+
+
 private $eaclCache = null;
 /**
  * Called by self::assert() and self::prop_current_user_privilege_set()
@@ -40,13 +52,13 @@ public function effective_acl() {
 
   // Get a list of principals:
   $principals = $this->current_user_principals();
-  //DAV::debug($principals);
+  //DAVACL::debug($principals);
 
   $aces = $this->user_prop_acl();
   $fsps = DAVACL_Element_supported_privilege::flatten(
     $this->user_prop_supported_privilege_set()
   );
-  //DAV::debug($aces);
+  //DAVACL::debug($aces);
   foreach ($aces as $ace) {
     $match = false;
     switch($ace->principal) {
@@ -63,19 +75,19 @@ public function effective_acl() {
         $match = isset($principals[$this->path]);
         break;
       default:
-        //DAV::debug($principals);
+        //DAVACL::debug($principals);
         if ('/' == $ace->principal[0])
           $match = isset($principals[$ace->principal]);
-        elseif ( ( $p = $this->prop($ace->principal) ) instanceof DAV_Element_href )
-          //DAV::debug($p);
+        elseif ( ( $p = $this->prop($ace->principal) ) instanceof DAVACL_Element_href )
+          //DAVACL::debug($p);
           foreach ( $p->URIs as $URI )
             if ( isset($principals[$URI]) )
               $match = true;
     }
     if (!$match && !$ace->invert ||
          $match &&  $ace->invert) continue;
-//    DAV::debug($ace->principal);
-//    DAV::debug($fsps);
+//    DAVACL::debug($ace->principal);
+//    DAVACL::debug($fsps);
     $privs = array();
     foreach ($ace->privileges as $p)
       $privs = array_merge($privs, $fsps[$p]['children']);
@@ -119,10 +131,10 @@ public function assert($privileges) {
   $need_privileges = '';
   foreach (array_keys($flags) as $priv)
     if (!$flags[$priv])
-      $need_privileges .= '<' . DAV::expand($priv) . '/>';
+      $need_privileges .= '<' . DAVACL::expand($priv) . '/>';
   $this->assertCache[$privstring] = new DAV_Status(
-    DAV::forbidden(),
-    array( DAV::COND_NEED_PRIVILEGES => $need_privileges )
+    DAVACL::forbidden(),
+    array( DAVACL::COND_NEED_PRIVILEGES => $need_privileges )
   );
   throw $this->assertCache[$privstring];
 }
@@ -130,11 +142,11 @@ public function assert($privileges) {
 
 public function propname() {
   $retval = parent::propname();
-  foreach ( array_keys( DAV::$ACL_PROPERTIES ) as $prop )
+  foreach ( array_keys( DAVACL::$ACL_PROPERTIES ) as $prop )
     if (!isset($retval[$prop]))
       $retval[$prop] = false;
   if ($this instanceof DAVACL_Principal)
-    foreach ( array_keys(DAV::$PRINCIPAL_PROPERTIES) as $prop )
+    foreach ( array_keys(DAVACL::$PRINCIPAL_PROPERTIES) as $prop )
       if (!isset($retval[$prop]))
         $retval[$prop] = false;
   return $retval;
@@ -148,33 +160,33 @@ public function propname() {
  */
 public function prop($propname) {
   if ( $this instanceof DAVACL_Principal &&
-       ( $method = @DAV::$PRINCIPAL_PROPERTIES[$propname] ) or
-       ( $method = @DAV::$ACL_PROPERTIES[$propname] ) )
+       ( $method = @DAVACL::$PRINCIPAL_PROPERTIES[$propname] ) or
+       ( $method = @DAVACL::$ACL_PROPERTIES[$propname] ) )
     return call_user_func(array($this, "prop_$method"));
   return parent::prop($propname);
 }
 
 
 public function method_ACL($aces) {
-  throw new DAV_Status( DAV::HTTP_FORBIDDEN );
+  throw new DAV_Status( DAVACL::HTTP_FORBIDDEN );
 }
 
 
 public function method_PROPPATCH($propname, $value = null) {
-  if ( ( $method = @DAV::$ACL_PROPERTIES[$propname] ) or
+  if ( ( $method = @DAVACL::$ACL_PROPERTIES[$propname] ) or
        $this instanceof DAVACL_Principal &&
-       ( $method = @DAV::$PRINCIPAL_PROPERTIES[$propname] ) )
+       ( $method = @DAVACL::$PRINCIPAL_PROPERTIES[$propname] ) )
     return call_user_func(array($this, "set_$method"), $value);
   return parent::method_PROPPATCH($propname, $value);
 }
 
 
 /**
- * @return DAV_Element_href
+ * @return DAVACL_Element_href
  */
 final public function prop_owner() {
   $retval = $this->user_prop_owner();
-  return $retval ? new DAV_Element_href($retval) : '';
+  return $retval ? new DAVACL_Element_href($retval) : '';
 }
 
 
@@ -187,13 +199,13 @@ public function user_prop_owner() {
 
 
 final public function set_owner($owner) {
-  $owner = DAVACL::parse_hrefs($owner);
+  $owner = DAVACL_Element_href::parse($owner);
   if (1 != count($owner->URIs))
     throw new DAV_Status(
-      DAV::HTTP_BAD_REQUEST,
+      DAVACL::HTTP_BAD_REQUEST,
       'Illegal value for property DAV:owner.'
     );
-  $this->user_set_owner(DAV::parseURI($owner->URIs[0]));
+  $this->user_set_owner(DAVACL::parseURI($owner->URIs[0]));
 }
 
 
@@ -202,18 +214,18 @@ final public function set_owner($owner) {
  */
 protected function user_set_owner($owner) {
   throw new DAV_Status(
-    DAV::HTTP_PRECONDITION_FAILED,
-    DAV::COND_CANNOT_MODIFY_PROTECTED_PROPERTY
+    DAVACL::HTTP_PRECONDITION_FAILED,
+    DAVACL::COND_CANNOT_MODIFY_PROTECTED_PROPERTY
   );
 }
 
 
 /**
- * @return DAV_Element_href
+ * @return DAVACL_Element_href
  */
 final public function prop_group() {
   $retval = $this->user_prop_group();
-  return $retval ? new DAV_Element_href($retval) : '';
+  return $retval ? new DAVACL_Element_href($retval) : '';
 }
 
 
@@ -224,13 +236,13 @@ public function user_prop_group() { return null; }
 
 
 final public function set_group($group) {
-  $group = DAVACL::parse_hrefs($group);
+  $group = DAVACL_Element_href::parse($group);
   if (1 != count($group->URIs))
     throw new DAV_Status(
-      DAV::HTTP_BAD_REQUEST,
+      DAVACL::HTTP_BAD_REQUEST,
       'Illegal value for property DAV:group.'
     );
-  $this->user_set_group(DAV::parseURI($group->URIs[0]));
+  $this->user_set_group(DAVACL::parseURI($group->URIs[0]));
 }
 
 
@@ -239,8 +251,8 @@ final public function set_group($group) {
  */
 protected function user_set_group($group) {
   throw new DAV_Status(
-    DAV::HTTP_PRECONDITION_FAILED,
-    DAV::COND_CANNOT_MODIFY_PROTECTED_PROPERTY
+    DAVACL::HTTP_PRECONDITION_FAILED,
+    DAVACL::COND_CANNOT_MODIFY_PROTECTED_PROPERTY
   );
 }
 
@@ -261,7 +273,7 @@ final public function prop_supported_privilege_set() {
  * @return array of DAVACL_Element_supported_privilege objects.
  */
 public function user_prop_supported_privilege_set() {
-  return DAV::$ACLPROVIDER->user_prop_supported_privilege_set();
+  return DAVACL::$ACLPROVIDER->user_prop_supported_privilege_set();
 }
 
 
@@ -270,7 +282,7 @@ public function user_prop_supported_privilege_set() {
  */
 final public function prop_current_user_privilege_set() {
   $eacl = $this->effective_acl();
-  //DAV::debug($eacl);
+  //DAVACL::debug($eacl);
   $grant = $deny = array();
   foreach ($eacl as $acl) {
     foreach ($acl[1] as $priv)
@@ -294,14 +306,11 @@ final public function prop_current_user_privilege_set() {
 
 
 /**
- * @return string XML
+ * @return string|JsonSerializable
  */
 final public function prop_acl() {
-  if ( !( $aces = $this->user_prop_acl() ) )
-    return '';
-  foreach ($aces as &$ace)
-    $ace = $ace->toXML();
-  return implode("\n", $aces);
+  $aces = $this->user_prop_acl();
+  return DAV_Multistatus::inst()->json() ? $aces : implode("\n", $aces);
 }
 
 
@@ -315,6 +324,9 @@ abstract public function user_prop_acl();
  * @return string XML
  */
 final public function prop_acl_restrictions() {
+  if (DAV_Multistatus::inst()->json())
+    return $this->user_prop_acl_restrictions();
+  // We need XML:
   $retval = '';
   foreach ($this->user_prop_acl_restrictions() as $restriction)
     if (is_array($restriction)) {
@@ -326,11 +338,11 @@ final public function prop_acl_restrictions() {
         elseif ('/' == $principal[0] )
           $retval .= "\n<D:href>" . $principal . '</D:href>';
         else 
-          $retval .= "\n<D:property><" . DAV::expand($principal) . '/></D:property>';
+          $retval .= "\n<D:property><" . DAVACL::expand($principal) . '/></D:property>';
       $retval .= "\n</D:required-principal>";
     } else
       // Normal predefined restrictions:
-      $retval .= '<' . DAV::expand($restriction) . '/>';
+      $retval .= '<' . DAVACL::expand($restriction) . '/>';
   return $retval;
 }
 
@@ -340,16 +352,15 @@ final public function prop_acl_restrictions() {
  *   required principals.
  */
 public function user_prop_acl_restrictions() {
-  return DAV::$ACLPROVIDER->user_prop_acl_restrictions();
+  return DAVACL::$ACLPROVIDER->user_prop_acl_restrictions();
 }
 
 
 /**
- * @return DAV_Element_href
+ * @return DAVACL_Element_href
  */
 final public function prop_inherited_acl_set() {
-  $retval = $this->user_prop_inherited_acl_set();
-  return $retval ? new DAV_Element_href( $retval ) : '';
+  return new DAVACL_Element_href( $this->user_prop_inherited_acl_set() );
 }
 
 
@@ -360,11 +371,10 @@ public function user_prop_inherited_acl_set() { return null; }
 
 
 /**
- * @return DAV_Element_href
+ * @return DAVACL_Element_href
  */
 final public function prop_principal_collection_set() {
-  $retval = $this->user_prop_principal_collection_set();
-  return $retval ? new DAV_Element_href( $retval ) : '';
+  return new DAVACL_Element_href( $this->user_prop_principal_collection_set() );
 }
 
 
@@ -372,37 +382,36 @@ final public function prop_principal_collection_set() {
  * @return array an array of paths
  */
 public function user_prop_principal_collection_set() {
-  return DAV::$ACLPROVIDER->user_prop_principal_collection_set();
+  return DAVACL::$ACLPROVIDER->user_prop_principal_collection_set();
 }
 
 
 /**
- * @return DAV_Element_href
+ * @return DAVACL_Element_href
  * @see DAVACL_Principal
  */
 final public function prop_alternate_URI_set() {
-  $retval = $this->user_prop_alternate_URI_set();
-  return $retval ? new DAV_Element_href( $retval ) : '';
+  return new DAVACL_Element_href( $this->user_prop_alternate_URI_set() );
 }
 
 
 /**
- * @return DAV_Element_href
+ * @return DAVACL_Element_href
  * @see DAVACL_Principal
  */
 final public function prop_principal_URL() {
   $retval = $this->user_prop_principal_URL();
-  return DAV_Element_href( $retval ? $retval : $this->path );
+  return DAVACL_Element_href( $retval ? $retval : $this->path );
 }
 
 
 /**
- * @return DAV_Element_href
+ * @return DAVACL_Element_href
  * @see DAVACL_Principal
  */
 final public function prop_group_member_set() {
   $retval = $this->user_prop_group_member_set();
-  return $retval ? new DAV_Element_href( $retval ) : '';
+  return $retval ? new DAVACL_Element_href( $retval ) : '';
 }
 
 
@@ -411,9 +420,7 @@ final public function prop_group_member_set() {
  * @see DAVACL_Principal
  */
 final public function set_group_member_set($set) {
-  $set = DAVACL::parse_hrefs($set)->URIs;
-  foreach ( $set as &$uri )
-    $uri = DAV::parseURI($uri, false);
+  $set = DAVACL_Element_href::parse($set)->URIs;
   return $this->user_set_group_member_set($set);
 }
 
@@ -425,28 +432,28 @@ final public function set_group_member_set($set) {
  */
 public function user_set_group_member_set($set) {
   throw new DAV_Status(
-    DAV::HTTP_PRECONDITION_FAILED,
-    DAV::COND_CANNOT_MODIFY_PROTECTED_PROPERTY
+    DAVACL::HTTP_PRECONDITION_FAILED,
+    DAVACL::COND_CANNOT_MODIFY_PROTECTED_PROPERTY
   );
 }
 
 
 /**
- * @return DAV_Element_href
+ * @return DAVACL_Element_href
  * @see DAVACL_Principal
  */
 final public function prop_group_membership() {
   $retval = $this->user_prop_group_membership();
-  return $retval ? new DAV_Element_href( $retval ) : '';
+  return $retval ? new DAVACL_Element_href( $retval ) : '';
 }
 
 
 /**
- * @return DAV_Element_href
+ * @return DAVACL_Element_href
  */
 final public function prop_current_user_principal() {
   $retval = $this->user_prop_current_user_principal();
-  return $retval ? new DAV_Element_href( $retval ) : '';
+  return $retval ? new DAVACL_Element_href( $retval ) : '';
 }
 
 
@@ -454,13 +461,13 @@ final public function prop_current_user_principal() {
  * @return string path
  */
 public function user_prop_current_user_principal() {
-  return DAV::$ACLPROVIDER->user_prop_current_user_principal();
+  return DAVACL::$ACLPROVIDER->user_prop_current_user_principal();
 }
 
 
 final private static function current_user_principals_recursive($path) {
   $retval = array($path => $path);
-  foreach (DAV::$REGISTRY->resource($path)->user_prop_group_membership() as $group)
+  foreach (DAVACL::$REGISTRY->resource($path)->user_prop_group_membership() as $group)
     $retval = array_merge($retval, self::current_user_principals_recursive($group));
   return $retval;
 }
@@ -487,8 +494,8 @@ final public function current_user_principals() {
  */
 final public function prop_supported_report_set() {
   $retval = ($this instanceof DAVACL_Principal_Collection) ?
-    DAV::$REPORTS :
-    array(DAV::REPORT_EXPAND_PROPERTY);
+    DAVACL::$REPORTS :
+    array(DAVACL::REPORT_EXPAND_PROPERTY);
   return '<D:supported-report><D:' .
     implode("/></D:supported-report>\n<D:supported-report><D:", $retval) .
     '/></D:supported-report>';

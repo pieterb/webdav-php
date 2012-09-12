@@ -44,23 +44,28 @@
 //
 //<!ELEMENT inherited (href)> 
 
+/*
+ * acl
+ * `- ace*
+ *    |- invert | principal
+ *    |  `- principal
+ *    |- grant | deny
+ *    |- protected?
+ *    `- inherited?
+ * 
+ */
+
 /**
  * Set of DAV:href elements
  * @package DAVACL
  */
-class DAVACL_Element_ace {
+class DAVACL_Element_ace implements JsonSerializable {
 
 
 /**
  * @var string a path or property or predefined principal.
  */
 public $principal;
-
-
-/**
- * @var bool
- */
-public $invert;
 
 
 /**
@@ -100,7 +105,20 @@ public function __construct(
   $this->privileges = $privileges;
   $this->deny       = (bool)$deny;
   $this->protected  = (bool)$protected;
-  $this->inherited  = $inherited ? (string)$inherited : null;
+  $this->inherited  = $inherited ? ( new DAVACL_Element_href($inherited) ) : null;
+}
+
+
+public function jsonSerialize() {
+  // First the principal (or inversion thereof):
+  return array(
+    'principal' => $this->principal,
+    'invert' => $this->invert,
+    'privileges' => $this->privileges,
+    'deny' => $this->deny,
+    'protected' => $this->protected,
+    'inherited' => ( $this->inherited ? $this->inherited->URIs[0] : null ),
+  );
 }
 
 
@@ -108,11 +126,11 @@ public function __construct(
  * An XML representation of the object.
  * @return string
  */
-public function toXML() {
+public function __toString() {
   $retval = "<D:ace>\n";
   // First the principal (or inversion thereof):
   if ('/' == $this->principal[0] )
-    $principal = new DAV_Element_href( $this->principal );
+    $principal = new DAVACL_Element_href( $this->principal );
   elseif ( !( $principal = @DAVACL::$PRINCIPALS[$this->principal] ) ) {
     $principal = explode(' ', $this->principal);
     $principal = "<D:property><{$principal[1]} xmlns=\"{$principal[0]}\"/></D:property>";
@@ -143,5 +161,5 @@ public function toXML() {
 }
 
 
-} // class DAV_Element_href
+} // class DAVACL_Element_href
 

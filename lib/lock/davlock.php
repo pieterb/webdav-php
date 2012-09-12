@@ -67,7 +67,7 @@ public static $SUBMITTEDTOKENS = array();
 /**
  * @param string $path
  * @return mixed one of the following:
- * - DAV_Element_href of the lockroot of the missing token
+ * - DAVACL_Element_href of the lockroot of the missing token
  * - null if no lock was found.
  */
 public static function assertLock($path) {
@@ -77,7 +77,7 @@ public static function assertLock($path) {
     $lockroot = DAV::$REGISTRY->resource($lock->lockroot);
     if (!$lockroot)
       throw new DAV_Status(DAV::HTTP_INTERNAL_SERVER_ERROR);
-    return new DAV_Element_href(
+    return new DAVACL_Element_href(
       $lockroot->isVisible() ?
       $lock->lockroot : '/undisclosed-resource'
     );
@@ -89,7 +89,7 @@ public static function assertLock($path) {
 /**
  * @param string $path
  * @return mixed one of the following:
- * - DAV_Element_href of the lockroot of the missing token
+ * - DAVACL_Element_href of the lockroot of the missing token
  * - null if no lock was found.
  */
 public static function assertMemberLocks($path) {
@@ -97,7 +97,7 @@ public static function assertMemberLocks($path) {
   $locks = DAV::$LOCKPROVIDER->memberLocks( $path );
   foreach ($locks as $token => $lock)
     if ( !isset( self::$SUBMITTEDTOKENS[$token] ) )
-      return new DAV_Element_href(
+      return new DAVACL_Element_href(
         DAV::$REGISTRY->resource($lock->lockroot)->isVisible() ?
         $lock->lockroot : '/undisclosed-resource'
       );

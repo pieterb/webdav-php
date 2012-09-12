@@ -89,7 +89,7 @@ public function toXML($namespaces = false) {
   $t_privilege = explode(' ', $this->privilege);
   $t_privilege = '<' . $namespaces->prefix($t_privilege[0]) . $t_privilege[1] . '/>';
   $t_abstract = $this->abstract ? "\n<D:abstract/>" : '';
-  $t_description = DAV::xmlescape($this->description);
+  $t_description = DAVACL::xmlescape($this->description);
   $t_supported_privileges = '';
   foreach ( $this->supported_privileges as $sp )
     $t_supported_privileges .= "\n" . $sp->toXML($namespaces);

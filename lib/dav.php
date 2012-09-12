@@ -71,14 +71,12 @@ public static $WEBDAV_PROPERTIES = array(
 //  self::PROP_LOCKDISCOVERY        => 'lockdiscovery',
   self::PROP_RESOURCETYPE         => 'resourcetype',
 //  self::PROP_SUPPORTEDLOCK        => 'supportedlock',
-//  self::PROP_SUPPORTED_REPORT_SET => 'supported_report_set',
   self::PROP_EXECUTABLE           => 'executable',
   self::PROP_EXECUTABLE2          => 'executable',
 );
 
 
 public static $SUPPORTED_PROPERTIES = array(
-  // RFC4918:
   self::PROP_CREATIONDATE       => 'creationdate',
   self::PROP_DISPLAYNAME        => 'displayname',
   self::PROP_GETCONTENTLANGUAGE => 'getcontentlanguage',
@@ -171,6 +169,8 @@ public static function debug() {
  * @deprecated
  */
 public static function forbidden() {
+  return self::HTTP_FORBIDDEN;
+  // This is the old code:
   return ( !self::$ACLPROVIDER ||
            self::$ACLPROVIDER->user_prop_current_user_principal() ) ?
     self::HTTP_FORBIDDEN : self::HTTP_UNAUTHORIZED;

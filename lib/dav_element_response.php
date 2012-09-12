@@ -45,7 +45,7 @@
  *     `-URL
  * @package DAV
  */
-class DAV_Element_response {
+class DAV_Element_response implements JsonSerializable {
 
 
 /**
@@ -72,11 +72,11 @@ public function __construct($path) {
 /**
  * Sets a property.
  * @param string $property MUST be "<namespaceURI> <localName>"
- * @param string $xmlvalue an XML fragment
+ * @param mixed $value an XML fragment, or a JSON serializable struct.
  * @return DAV_Element_response $this
  */
-public function setProperty( $property, $xmlvalue = null ) {
-  $this->properties[ $property ] = $xmlvalue;
+public function setProperty( $property, $value = null ) {
+  $this->properties[ $property ] = $value;
   return $this;
 }
 
@@ -112,7 +112,7 @@ public function setStatus($property, $status) {
 }
 
 
-public function toJSON() {
+public function jsonSerialize() {
   // Set the default status to 200:
   foreach ( array_keys( $this->properties ) as $p )
     if ( !isset( $this->status[$p] ) )
@@ -152,12 +152,11 @@ public function toJSON() {
 
     $propstats[] = $propstat;
   }
-  $json = array(
+
+  return array(
     'href' => $this->path,
     'propstats' => $propstats,
   );
-
-  return json_encode($json);
 }
 
 
@@ -166,7 +165,7 @@ public function toJSON() {
  * Must only be called by DAV_Multistatus.
  * @return string XML
  */
-public function toXML() {
+public function __toString() {
   // Set the default status to 200:
   foreach ( array_keys( $this->properties ) as $p )
     if ( !isset( $this->status[$p] ) )
