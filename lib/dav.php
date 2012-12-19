@@ -320,6 +320,12 @@ public static $ACLPROVIDER = null;
  */
 public static $SUBMITTEDTOKENS = array();
 
+/**
+ * An array with the parsed config.ini file
+ * @var array <code>array( <section> => array( <key> => <value,... ) )</code>
+ */
+public static $CONFIG;
+
 
 /**
  * Remake of PHP's var_dump().
@@ -343,7 +349,7 @@ public static function debug() {
   $data = '';
   foreach (func_get_args() as $arg)
     $data .= "\n" . ( is_string($arg) ? $arg : self::var_dump($arg) );
-  $fh = fopen( dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'debug.txt', 'a' );
+  $fh = fopen( DAV::$CONFIG['debug']['file'], 'a' );
   fwrite($fh, date('r') . ":$data\n\n");
   fclose ($fh);
 }
@@ -863,3 +869,5 @@ public static function status_code($code) {
 
 } // namespace DAV
 
+// Read, parse and store de configuration in the ini file
+DAV::$CONFIG = parse_ini_file(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . "config.ini", true);

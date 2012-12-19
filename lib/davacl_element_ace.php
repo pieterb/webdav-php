@@ -145,5 +145,35 @@ public function toXML() {
 }
 
 
+/**
+ * @param array $aces
+ * @return string json
+ */
+public static function aces2json($aces) {
+  $json = array();
+  foreach ($aces as $ace)
+    $json[] = array(
+      $ace->principal, $ace->invert, $ace->privileges, $ace->deny
+    );
+  return json_encode($json);
+}
+
+
+/**
+ * @param string $json
+ * @return array
+ */
+public static function json2aces($json) {
+  if ( !( $json = json_decode($json, true) ) )
+    return array();
+  $retval = array();
+  foreach ($json as $ace)
+    $retval[] = new DAVACL_Element_ace(
+      $ace[0], $ace[1], $ace[2], $ace[3]
+    );
+  return $retval;
+}
+
+
 } // class DAV_Element_href
 
