@@ -109,13 +109,9 @@ protected function handle( $resource )
 {
   $headers = self::common($resource);
   
-  $entity = $resource->method_GET();
+  $entity = $resource->method_GET($headers);
+  if (headers_sent()) return;
   if (!is_resource($entity)) {
-    if (is_null($entity)) {
-      $headers['status'] = DAV::HTTP_NO_CONTENT;
-      DAV::header($headers);
-      return;
-    }
     DAV::header($headers);
     echo "$entity";
     return;

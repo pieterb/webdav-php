@@ -115,11 +115,14 @@ public function method_COPY_external( $destination, $overwrite ) {
 
 /**
  * Handle a GET request.
- * @return resource|string a stream or a string, or null if no content.
+ * @param Hash $headers the headers that are about to be sent.
+ * @return resource|string|void a stream or a string. Alternatively, you can
+ *   start streaming output from within this method. Don't forget to send the
+ *   headers first, with <code>DAV::header($headers)</code>.
  * @throws DAV_Status
  */
-public function method_GET() {
-  return null;
+public function method_GET($headers) {
+  throw new DAV_Status( DAV::HTTP_FORBIDDEN );
 }
 
 
@@ -135,22 +138,6 @@ public function method_GET() {
 public function method_HEAD() {
   return array();
 }
-
-
-/*
- * Handle a GET request.
- * @param array &$headers Headers you want to submit in the HTTP response.
- * The following headers are set automatically if you don't return them:
- * - Content-Type
- * - Content-Length
- * - ETag
- * - Last-Modified
- * @return mixed either a non-seekable stream or a string.
- * @throws DAV_Status
- */
-//public function method_GET_unseekable( &$headers ) {
-//  throw new DAV_Status( DAV::HTTP_FORBIDDEN );
-//}
 
 
 /**
