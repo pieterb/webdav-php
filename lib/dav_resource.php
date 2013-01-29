@@ -28,7 +28,7 @@
  */
 
 class DAV_Resource {
-  
+
 
 /**
  * @return DAV_Resource
@@ -37,7 +37,7 @@ public function collection() {
   return ('/' == $this->path ) ?
     null : DAV::$REGISTRY->resource(dirname($this->path));
 }
-  
+
 
 /**
  * @return bool
@@ -63,7 +63,7 @@ public function __construct($path) {
  * Report the capabilities of this resource.
  * Returns an binary ORed combination of the CAPABILITY_* constants defined in
  * this class.
- * 
+ *
  * The default implementation returns 0.
  * @return int
  */
@@ -142,7 +142,7 @@ public function method_HEAD() {
 
 /**
  * @param array $headers By default, DAV_Server returns same standard response
- * to an OPTIONS request. This method allows you to filter this response. 
+ * to an OPTIONS request. This method allows you to filter this response.
  * Especially, you may want to override the default Allow: and DAV: headers.
  * @return array the $headers array
  * @throws DAV_Status You could throw a DAV_Status if you think this is
@@ -308,20 +308,20 @@ protected function user_prop($propname) {
  * @param string $value an XML fragment, or null to unset the property.
  * @return void
  * @throws DAV_Status §9.2.1 specifically mentions the following statusses.
- * - 200 (OK): The property set or change succeeded. Note that if this appears 
- *   for one property, it appears for every property in the response, due to the 
+ * - 200 (OK): The property set or change succeeded. Note that if this appears
+ *   for one property, it appears for every property in the response, due to the
  *   atomicity of PROPPATCH.
- * - 403 (Forbidden): The client, for reasons the server chooses not to 
+ * - 403 (Forbidden): The client, for reasons the server chooses not to
  *   specify, cannot alter one of the properties.
- * - 403 (Forbidden): The client has attempted to set a protected property, such 
- *   as DAV:getetag. If returning this error, the server SHOULD use the 
- *   precondition code 'cannot-modify-protected-property' inside the response 
+ * - 403 (Forbidden): The client has attempted to set a protected property, such
+ *   as DAV:getetag. If returning this error, the server SHOULD use the
+ *   precondition code 'cannot-modify-protected-property' inside the response
  *   body.
- * - 409 (Conflict): The client has provided a value whose semantics are not 
+ * - 409 (Conflict): The client has provided a value whose semantics are not
  *   appropriate for the property.
- * - 424 (Failed Dependency): The property change could not be made because of 
+ * - 424 (Failed Dependency): The property change could not be made because of
  *   another property change that failed.
- * - 507 (Insufficient Storage): The server did not have sufficient space to 
+ * - 507 (Insufficient Storage): The server did not have sufficient space to
  *   record the property.
  */
 protected function user_set($propname, $value = null) {
@@ -398,10 +398,7 @@ final public function set_executable($value) {
  * @throws DAV_Status
  */
 protected function user_set_executable($value) {
-  throw new DAV_Status(
-    DAV::HTTP_PRECONDITION_FAILED,
-    DAV::COND_CANNOT_MODIFY_PROTECTED_PROPERTY
-  );
+  throw new DAV_Status( DAV::HTTP_FORBIDDEN );
 }
 
 
@@ -438,10 +435,7 @@ final public function set_getcontentlanguage($value) {
  * @throws DAV_Status
  */
 protected function user_set_getcontentlanguage($value) {
-  throw new DAV_Status(
-    DAV::HTTP_PRECONDITION_FAILED,
-    DAV::COND_CANNOT_MODIFY_PROTECTED_PROPERTY
-  );
+  throw new DAV_Status( DAV::HTTP_FORBIDDEN );
 }
 
 
@@ -475,7 +469,7 @@ final public function set_getcontenttype($value) {
     //                | "," | ";" | ":" | "\" | <">
     //                | "/" | "[" | "]" | "?" | "="
     //                | "{" | "}" | SP | HT
-    
+
     // A token. Note that it's escaped for use between @@ delimiters.
     $token = "[^\\x00-\\x20\\x7f-\\xff\\(\\)<>\\@,;:\\\\\"/\\[\\]?={}]+";
     //                                   escaped^         ^unescaped
@@ -496,10 +490,7 @@ final public function set_getcontenttype($value) {
  * @throws DAV_Status
  */
 protected function user_set_getcontenttype($value) {
-  throw new DAV_Status(
-    DAV::HTTP_PRECONDITION_FAILED,
-    DAV::COND_CANNOT_MODIFY_PROTECTED_PROPERTY
-  );
+  throw new DAV_Status( DAV::HTTP_FORBIDDEN );
 }
 
 
@@ -546,10 +537,7 @@ final public function set_ishidden($value) {
  * @throws DAV_Status
  */
 //protected function user_set_ishidden($value) {
-//  throw new DAV_Status(
-//    DAV::HTTP_PRECONDITION_FAILED,
-//    array(DAV::COND_CANNOT_MODIFY_PROTECTED_PROPERTY)
-//  );
+//  throw new DAV_Status( DAV::HTTP_FORBIDDEN );
 //}
 
 
@@ -644,15 +632,15 @@ public function storeProperties() {
  * @param string $value an XML fragment, or null to unset the property.
  * @return void
  * @throws DAV_Status §9.2.1 specifically mentions o.a. the following statusses.
- * - 403 (Forbidden): The client, for reasons the server chooses not to 
+ * - 403 (Forbidden): The client, for reasons the server chooses not to
  *   specify, cannot alter one of the properties.
- * - 403 (Forbidden): The client has attempted to set a protected property, such 
- *   as DAV:getetag. If returning this error, the server SHOULD use the 
- *   precondition code 'cannot-modify-protected-property' inside the response 
+ * - 403 (Forbidden): The client has attempted to set a protected property, such
+ *   as DAV:getetag. If returning this error, the server SHOULD use the
+ *   precondition code 'cannot-modify-protected-property' inside the response
  *   body.
- * - 409 (Conflict): The client has provided a value whose semantics are not 
+ * - 409 (Conflict): The client has provided a value whose semantics are not
  *   appropriate for the property.
- * - 507 (Insufficient Storage): The server did not have sufficient space to 
+ * - 507 (Insufficient Storage): The server did not have sufficient space to
  *   record the property.
  */
 public function method_PROPPATCH($propname, $value = null) {
@@ -663,4 +651,4 @@ public function method_PROPPATCH($propname, $value = null) {
 
 
 } // class DAV_Resource
-  
+

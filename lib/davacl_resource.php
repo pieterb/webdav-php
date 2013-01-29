@@ -27,8 +27,8 @@
  * @package DAVACL
  */
 abstract class DAVACL_Resource extends DAV_Resource {
-  
-  
+
+
 private $eaclCache = null;
 /**
  * Called by self::assert() and self::prop_current_user_privilege_set()
@@ -37,13 +37,13 @@ private $eaclCache = null;
 public function effective_acl() {
   if (null !== $this->eaclCache)
     return $this->eaclCache;
-  
+
   $this->eaclCache = array();
-  
+
   // Get a list of principals:
   $principals = $this->current_user_principals();
   //DAV::debug($principals);
-  
+
   $aces = $this->user_prop_acl();
   $fsps = DAVACL_Element_supported_privilege::flatten(
     $this->user_prop_supported_privilege_set()
@@ -96,14 +96,14 @@ public function assert($privileges) {
   if (!is_array($privileges))
     $privileges = array((string)$privileges);
   sort($privileges);
-  
+
   $privstring = implode(',', $privileges);
   if (array_key_exists($privstring, $this->assertCache))
     if ($this->assertCache[$privstring])
       throw $this->assertCache[$privstring];
     else
       return true;
-      
+
   $eacl = $this->effective_acl();
   $flags = array();
   foreach ($privileges as $p)
@@ -214,10 +214,7 @@ final public function set_owner($owner) {
  * @param string $owner path
  */
 protected function user_set_owner($owner) {
-  throw new DAV_Status(
-    DAV::HTTP_PRECONDITION_FAILED,
-    DAV::COND_CANNOT_MODIFY_PROTECTED_PROPERTY
-  );
+  throw new DAV_Status( DAV::HTTP_FORBIDDEN );
 }
 
 
@@ -251,10 +248,7 @@ final public function set_group($group) {
  * @param string $group path
  */
 protected function user_set_group($group) {
-  throw new DAV_Status(
-    DAV::HTTP_PRECONDITION_FAILED,
-    DAV::COND_CANNOT_MODIFY_PROTECTED_PROPERTY
-  );
+  throw new DAV_Status( DAV::HTTP_FORBIDDEN );
 }
 
 
@@ -338,7 +332,7 @@ final public function prop_acl_restrictions() {
           $retval .= "\n$p";
         elseif ('/' == $principal[0] )
           $retval .= "\n<D:href>" . $principal . '</D:href>';
-        else 
+        else
           $retval .= "\n<D:property><" . DAV::expand($principal) . '/></D:property>';
       $retval .= "\n</D:required-principal>";
     } else
@@ -387,8 +381,8 @@ final public function prop_principal_collection_set() {
 public function user_prop_principal_collection_set() {
   return DAV::$ACLPROVIDER->user_prop_principal_collection_set();
 }
-  
-  
+
+
 /**
  * @return DAV_Element_href
  * @see DAVACL_Principal
@@ -437,10 +431,7 @@ final public function set_group_member_set($set) {
  * @internal must be public because of interface DAVACL_Principal.
  */
 public function user_set_group_member_set($set) {
-  throw new DAV_Status(
-    DAV::HTTP_PRECONDITION_FAILED,
-    DAV::COND_CANNOT_MODIFY_PROTECTED_PROPERTY
-  );
+  throw new DAV_Status( DAV::HTTP_FORBIDDEN );
 }
 
 
