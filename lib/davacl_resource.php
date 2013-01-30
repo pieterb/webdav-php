@@ -144,17 +144,6 @@ public function propname() {
 
 
 /**
- * @param array $properties
- * @return array an array of (property => isReadable) pairs.
- */
-public function property_priv_read($properties) {
-  $retval = array();
-  foreach ($properties as $prop) $retval[$prop] = true;
-  return $retval;
-}
-
-
-/**
  * @param string $propname the name of the property to be returned,
  *        eg. "mynamespace: myprop"
  * @return string XML or NULL if the property is not defined.

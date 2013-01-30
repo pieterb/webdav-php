@@ -281,6 +281,17 @@ public function propname() {
 
 
 /**
+ * @param array $properties
+ * @return array an array of (property => isReadable) pairs.
+ */
+public function property_priv_read($properties) {
+  $retval = array();
+  foreach ($properties as $prop) $retval[$prop] = true;
+  return $retval;
+}
+
+
+/**
  * All available properties of the current resource.
  * This method must return an array with ALL property names as keys and a
  * boolean as value, indicating if the property should be returned in an
