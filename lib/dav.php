@@ -130,7 +130,7 @@ public static $PRINCIPAL_PROPERTIES = array(
   self::PROP_GROUP_MEMBER_SET  => 'group_member_set',
   self::PROP_GROUP_MEMBERSHIP  => 'group_membership',
 );
-  
+
 
 public static $ACL_PROPERTIES = array(
   self::PROP_OWNER                      => 'owner',
@@ -355,10 +355,13 @@ public static function debug() {
 }
 
 
-public static function forbidden() {
-  return ( !self::$ACLPROVIDER ||
-           self::$ACLPROVIDER->user_prop_current_user_principal() ) ?
-    self::HTTP_FORBIDDEN : self::HTTP_UNAUTHORIZED;
+public static function forbidden( $info = null ) {
+  return new DAV_Status(
+    ( !self::$ACLPROVIDER ||
+       self::$ACLPROVIDER->user_prop_current_user_principal() ) ?
+    self::HTTP_FORBIDDEN : self::HTTP_UNAUTHORIZED,
+    $info
+  );
 }
 
 
@@ -432,7 +435,7 @@ public static function recursiveSerialize(
   $elementprefix = $namespaces->prefix( $node->namespaceURI );
   $elementlocalName = $node->localName;
   $retval = "<$elementprefix$elementlocalName";
-  
+
   // Attributes handling:
   $elementattributes = $node->attributes;
   $attributes = array();
@@ -449,15 +452,15 @@ public static function recursiveSerialize(
   }
   foreach ($attributes as $key => $value)
     $retval .= " $key=\"" . DAV::xmlescape( $value, true ) . '"';
-    
+
   // The contents of the element:
   $childXML = '';
   for ($i = 0; $childNode = $node->childNodes->item($i); $i++)
     $childXML .= self::recursiveSerialize($childNode, $namespaces);
-    
+
   if ( is_null( $p_namespaces ) )
     $retval .= $namespaces->toXML();
-    
+
   if ( $childXML !== '')
     $retval .= ">$childXML</$elementprefix$elementlocalName>";
   else
@@ -551,8 +554,8 @@ public static function rawurlencode($path) {
   }
   return $newurl;
 }
-  
-  
+
+
 /**
  * Translate an absolute path to a full URI.
  * @param string $absolutePath
@@ -563,8 +566,8 @@ public static function abs2uri( $absolutePath ) {
     ? self::urlbase() . $absolutePath
     : $absolutePath;
 }
-  
-  
+
+
 /**
  * Returns the base URI.
  * The base URI is 'protocol://server.name:port'
@@ -582,8 +585,8 @@ public static function urlbase() {
   }
   return $URLBASE;
 }
-  
-  
+
+
 /**
  * The default xml header.
  * @internal
@@ -633,8 +636,8 @@ public static function header($properties) {
   if ($status !== null)
     header( $_SERVER['SERVER_PROTOCOL'] . ' ' . self::status_code($status) );
 }
-  
-  
+
+
 /**
  * Redirects to a URL.
  * @param int $status

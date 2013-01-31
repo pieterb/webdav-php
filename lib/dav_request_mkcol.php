@@ -37,16 +37,16 @@ class DAV_Request_MKCOL extends DAV_Request {
  */
 protected function handle( $resource )
 {
-  
+
   if ($resource) {
     if ( $resource->isVisible() )
       throw new DAV_Status(DAV::HTTP_METHOD_NOT_ALLOWED);
-    throw new DAV_Status(DAV::forbidden());
+    throw DAV::forbidden();
   }
   $resource = DAV::$REGISTRY->resource(dirname(DAV::$PATH));
   if ( !$resource or !$resource->isVisible() )
     throw new DAV_Status( DAV::HTTP_CONFLICT );
-      
+
   $lockroot = DAV::assertLock($resource->path);
   if ($lockroot)
     throw new DAV_Status(

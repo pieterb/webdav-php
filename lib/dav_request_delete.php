@@ -45,21 +45,21 @@ protected function handle( $resource )
 {
   $parent = $resource->collection();
   if (!$parent)
-    throw new DAV_Status(DAV::forbidden());
-  
+    throw DAV::forbidden();
+
   $lockroot = DAV::assertLock( $parent->path );
   if ( $lockroot )
     throw new DAV_Status(
       DAV::HTTP_LOCKED,
       array( DAV::COND_LOCK_TOKEN_SUBMITTED => $lockroot )
     );
-    
+
   if ( DAV::DEPTH_INF != $this->depth() )
     throw new DAV_Status(
       DAV::HTTP_BAD_REQUEST,
       'Only Depth: infinity is allowed for DELETE requests.'
     );
-  
+
   self::delete_member($parent, substr( $resource->path, strlen( $parent->path ) ) );
 
   if (DAV_Multistatus::active())

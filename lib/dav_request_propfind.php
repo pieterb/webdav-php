@@ -231,7 +231,7 @@ private function handle3( $resource, $props ) {
   foreach ($props as $prop)
     if ( array_key_exists( $prop, $propprivs ) &&
          !$propprivs[$prop] )
-      $response->setStatus($prop, new DAV_Status(DAV::forbidden()));
+      $response->setStatus($prop, DAV::forbidden());
     else
       try {
         $value = $resource->prop($prop);

@@ -122,8 +122,7 @@ public function assert($privileges) {
   foreach (array_keys($flags) as $priv)
     if (!$flags[$priv])
       $need_privileges .= '<' . DAV::expand($priv) . '/>';
-  $this->assertCache[$privstring] = new DAV_Status(
-    DAV::forbidden(),
+  $this->assertCache[$privstring] = DAV::forbidden(
     array( DAV::COND_NEED_PRIVILEGES => $need_privileges )
   );
   throw $this->assertCache[$privstring];
