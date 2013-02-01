@@ -27,7 +27,7 @@
  */
 class DAV_Request_POST extends DAV_Request {
 
- 
+
 /**
  * @param DAV_Resource $resource
  * @return void
@@ -39,9 +39,33 @@ public function handle($resource) {
       DAV::HTTP_LOCKED,
       array( DAV::COND_LOCK_TOKEN_SUBMITTED => $lockroot )
     );
-  $resource->method_POST();
+  $headers = array();
+  try {
+    ob_start();
+    $entity = $resource->method_POST($headers);
+  }
+  catch (DAV_Status $e) {
+    ob_end_clean();
+    throw $e;
+  }
+
+  if (ob_get_length()) {
+    DAV::header($headers);
+    ob_end_flush();
+    return;
+  } else {
+    ob_end_clean();
+  }
+
+  if (is_string($entity)) {
+    $headers['Content-Length'] = strlen($entity);
+    DAV::header($headers);
+    echo $entity;
+    return;
+  }
+  DAV::header($headers);
 }
-  
+
 
 } // class
 

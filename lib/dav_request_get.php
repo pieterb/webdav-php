@@ -64,7 +64,7 @@ public static function range_header( $entity_length ) {
     // RFC2616: 14.35.1
     // If the last-byte-pos value is absent, or if the value is greater than or
     // equal to the current length of the entity-body, last-byte-pos is taken to
-    // be equal to one less than the current length of the entity- body in bytes. 
+    // be equal to one less than the current length of the entity- body in bytes.
     if ( '' == $end ) {
       if (!$entity_length)
         throw new DAV_Status( DAV::HTTP_REQUESTED_RANGE_NOT_SATISFIABLE );
@@ -108,16 +108,33 @@ public static function range_header( $entity_length ) {
 protected function handle( $resource )
 {
   $headers = self::common($resource);
-  
-  $entity = $resource->method_GET($headers);
-  if (headers_sent()) return;
+
+  try {
+    ob_start();
+    $entity = $resource->method_GET();
+  }
+  catch (DAV_Status $e) {
+    ob_end_clean();
+    throw $e;
+  }
+
+  if (ob_get_length()) {
+    DAV::header($headers);
+    ob_end_flush();
+    return;
+  } else {
+    ob_end_clean();
+  }
+
   if (!is_resource($entity)) {
+    $entity = "{$entity}";
+    $headers['Content-Length'] = strlen($entity);
     DAV::header($headers);
     echo "$entity";
     return;
   }
   // GET handler returned a stream
-  
+
   // Try to find out the length of the total entity:
   if ( isset($headers['Content-Length']) ) {
     $entity_length = (int)($headers['Content-Length']);
@@ -127,10 +144,10 @@ protected function handle( $resource )
     $entity_length = ( !is_array( $stat ) || !isset( $stat['size'] ) ) ?
       '*' : $stat['size'];
   }
-  
+
   // process Range: header if present
   $ranges = self::range_header( $entity_length );
-  
+
   if ( ( isset($headers['status']) &&
          substr($header['status'], 0, 3) != '200' ) ||
        empty( $ranges ) ) {
@@ -142,7 +159,7 @@ protected function handle( $resource )
     fclose($entity);
     return;
   }
-  
+
   //echo 'debugdebug'; exit;
   // One or more Ranges!
   $headers['status'] = DAV::HTTP_PARTIAL_CONTENT;
@@ -185,7 +202,7 @@ protected function handle( $resource )
     fclose($entity);
     return;
   }
-  
+
   // Multiple ranges!
   $multipart_separator = 'SDisk_' . strtr( microtime(), '. ', '__');
   // Remove all Content-* headers from the HTTP response headers.
@@ -231,7 +248,7 @@ protected function handle( $resource )
       );
       continue;
     }
-    
+
     echo "\r\n--{$multipart_separator}\r\n";
     $partheaders['Content-Range'] = "{$range['start']}-{$range['end']}/$entity_length";
     $partheaders['Content-Length'] = $range['end'] - $range['start'] + 1;
@@ -258,7 +275,7 @@ protected function handle( $resource )
   echo "\r\n--{$multipart_separator}--\r\n";
   fclose($entity);
 }
-    
-    
+
+
 } // class
 

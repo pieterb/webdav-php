@@ -121,7 +121,7 @@ public function method_COPY_external( $destination, $overwrite ) {
  *   headers first, with <code>DAV::header($headers)</code>.
  * @throws DAV_Status
  */
-public function method_GET($headers) {
+public function method_GET() {
   throw new DAV_Status( DAV::HTTP_FORBIDDEN );
 }
 
