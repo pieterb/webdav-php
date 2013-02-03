@@ -80,7 +80,7 @@ public function __construct(
   }
   parent::__construct("$info", $status);
   if ($status >= 500)
-    trigger_error("$this", E_USER_WARNING);
+    trigger_error("{$info}\n{$this}", E_USER_WARNING);
 }
 
 
@@ -97,7 +97,7 @@ public function output() {
       "DAV_Status object with status $status " .
       var_export($this->getMessage(), true)
     );
-    
+
   if ( DAV::HTTP_UNAUTHORIZED == $status &&
        DAV::$ACLPROVIDER &&
        DAV::$ACLPROVIDER->unauthorized() )
