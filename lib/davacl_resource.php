@@ -129,6 +129,25 @@ public function assert($privileges) {
 }
 
 
+/**
+ * By default, properties are writeble if the current user has PRIV_WRITE_PROPERTIES.
+ * @param array $properties
+ * @return array an array of (property => isWritable) pairs.
+ */
+public function property_priv_write($properties) {
+  try {
+    $this->assert(DAVACL::PRIV_WRITE_PROPERTIES);
+    $allow = true;
+  }
+  catch( DAV_Status $e ) {
+    $allow = false;
+  }
+  $retval = array();
+  foreach ($properties as $prop) $retval[$prop] = $allow;
+  return $retval;
+}
+
+
 public function propname() {
   $retval = parent::propname();
   foreach ( array_keys( DAV::$ACL_PROPERTIES ) as $prop )

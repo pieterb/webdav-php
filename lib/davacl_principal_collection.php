@@ -27,7 +27,7 @@
  * @package DAVACL
  */
 interface DAVACL_Principal_Collection {
-  
+
 public function report_principal_match ($input);
 
 /**

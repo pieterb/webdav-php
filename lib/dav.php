@@ -182,28 +182,28 @@ public static $SUPPORTED_PROPERTIES = array(
 
 public static $PROTECTED_PROPERTIES = array(
   // RFC4918:
-  self::PROP_CREATIONDATE               => 'creationdate',
-  self::PROP_GETCONTENTLENGTH           => 'getcontentlength',
-  self::PROP_GETETAG                    => 'getetag',
-  self::PROP_GETLASTMODIFIED            => 'getlastmodified',
-  self::PROP_LOCKDISCOVERY              => 'lockdiscovery',
-  self::PROP_RESOURCETYPE               => 'resourcetype',
-  self::PROP_SUPPORTEDLOCK              => 'supportedlock',
+  self::PROP_CREATIONDATE               => true,
+  self::PROP_GETCONTENTLENGTH           => true,
+  self::PROP_GETETAG                    => true,
+  self::PROP_GETLASTMODIFIED            => true,
+  self::PROP_LOCKDISCOVERY              => true,
+  self::PROP_RESOURCETYPE               => true,
+  self::PROP_SUPPORTEDLOCK              => true,
   // RFC3744 Principal properties
-  self::PROP_ALTERNATE_URI_SET          => 'alternate_URI_set',
-  self::PROP_PRINCIPAL_URL              => 'principal_URL',
-  self::PROP_GROUP_MEMBERSHIP           => 'group_membership',
+  self::PROP_ALTERNATE_URI_SET          => true,
+  self::PROP_PRINCIPAL_URL              => true,
+  self::PROP_GROUP_MEMBERSHIP           => true,
   // RFC3744 Access control properties
-  self::PROP_SUPPORTED_PRIVILEGE_SET    => 'supported_privilege_set',
-  self::PROP_CURRENT_USER_PRIVILEGE_SET => 'current_user_privilege_set',
-  self::PROP_ACL                        => 'acl',
-  self::PROP_ACL_RESTRICTIONS           => 'acl_restrictions',
-  self::PROP_INHERITED_ACL_SET          => 'inherited_acl_set',
-  self::PROP_PRINCIPAL_COLLECTION_SET   => 'principal_collection_set',
+  self::PROP_SUPPORTED_PRIVILEGE_SET    => true,
+  self::PROP_CURRENT_USER_PRIVILEGE_SET => true,
+  self::PROP_ACL                        => true,
+  self::PROP_ACL_RESTRICTIONS           => true,
+  self::PROP_INHERITED_ACL_SET          => true,
+  self::PROP_PRINCIPAL_COLLECTION_SET   => true,
   // RFC3253 REPORT related properties:
-  self::PROP_SUPPORTED_REPORT_SET       => 'supported_report_set',
+  self::PROP_SUPPORTED_REPORT_SET       => true,
   // RFC5397 Access control property:
-  self::PROP_CURRENT_USER_PRINCIPAL     => 'current_user_principal',
+  self::PROP_CURRENT_USER_PRINCIPAL     => true,
 );
 
 
@@ -425,7 +425,8 @@ public static function recursiveSerialize(
       return
         "<?{$node->target} " . str_replace( '?>', '?&lt;', $node->data ) . '?>';
     case XML_CDATA_SECTION_NODE:
-      return '<![CDATA[' . $node->data .']]>';
+      return self::xmlescape($node->data);
+      //return '<![CDATA[' . $node->data .']]>';
     default:
       return DAV::xmlescape($node->nodeValue);
   }
