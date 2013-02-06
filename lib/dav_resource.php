@@ -136,7 +136,7 @@ public function method_GET() {
  * @return array An associative array of HTTP-headers.
  */
 public function method_HEAD() {
-  return array();
+  throw new DAV_Status( DAV::HTTP_FORBIDDEN );
 }
 
 
