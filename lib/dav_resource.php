@@ -122,7 +122,7 @@ public function method_COPY_external( $destination, $overwrite ) {
  * @throws DAV_Status
  */
 public function method_GET() {
-  throw new DAV_Status( DAV::HTTP_FORBIDDEN );
+  throw new DAV_Status( DAV::HTTP_NOT_IMPLEMENTED );
 }
 
 
@@ -136,7 +136,7 @@ public function method_GET() {
  * @return array An associative array of HTTP-headers.
  */
 public function method_HEAD() {
-  throw new DAV_Status( DAV::HTTP_FORBIDDEN );
+  return array();
 }
 
 

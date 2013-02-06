@@ -189,6 +189,12 @@ public function method_PROPPATCH($propname, $value = null) {
 }
 
 
+public function method_HEAD() {
+  $this->assert(DAVACL::PRIV_READ);
+  return parent::method_HEAD();
+}
+
+
 /**
  * @return DAV_Element_href
  */
