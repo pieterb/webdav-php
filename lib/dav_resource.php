@@ -281,12 +281,25 @@ public function propname() {
 
 
 /**
+ * By default, all properties are readable.
  * @param array $properties
  * @return array an array of (property => isReadable) pairs.
  */
 public function property_priv_read($properties) {
   $retval = array();
   foreach ($properties as $prop) $retval[$prop] = true;
+  return $retval;
+}
+
+
+/**
+ * By default, all properties are not writable.
+ * @param array $properties
+ * @return array an array of (property => isWritable) pairs.
+ */
+public function property_priv_write($properties) {
+  $retval = array();
+  foreach ($properties as $prop) $retval[$prop] = false;
   return $retval;
 }
 

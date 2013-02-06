@@ -28,8 +28,8 @@
  * @package DAV
  */
 class DAV_Request_PROPPATCH extends DAV_Request {
-    
-  
+
+
 /**
  * @var array( array( 'type'  => 'set|remove',
  *                    'name'  => '<namespaceURI> <localName>',
@@ -52,7 +52,7 @@ protected function __construct() {
 //      DAV::HTTP_BAD_REQUEST,
 //      'Couldn\'t find a proppatch request body.'
 //    );
-    
+
 //  DAV::debug($this->inputstring());
 
   $document = new DOMDocument();
@@ -63,10 +63,10 @@ protected function __construct() {
     throw new DAV_Status(
       DAV::HTTP_BAD_REQUEST, 'Request body is not well-formed XML.'
     );
-  
+
   $xpath = new DOMXPath($document);
   $xpath->registerNamespace('D', 'DAV:');
-  
+
   $nodelist = $xpath->query('/D:propertyupdate/*/D:prop/*');
   for ($i = 0; $i < $nodelist->length; $i++) {
     $element = $nodelist->item($i);
@@ -89,7 +89,7 @@ protected function __construct() {
       $this->props["{$element->namespaceURI} {$element->localName}"] = $xml;
     }
   }
-  
+
 //  $nodelist = $xpath->query('/D:propertyupdate/D:remove/D:prop/*');
 //  for ($i = 0; $i < $nodelist->length; $i++) {
 //    $element = $nodelist->item($i);
@@ -129,15 +129,19 @@ protected function handle( $resource ) {
       DAV::HTTP_BAD_REQUEST,
       'No properties found in request body.'
     );
-    
+
+  $priv_write = $resource->property_priv_write( array_keys( $this->props ) );
+
   $errors = array();
   foreach ($this->props as $name => $value) {
     try {
-      if (isset(DAV::$PROTECTED_PROPERTIES[$name]))
+      if (@DAV::$PROTECTED_PROPERTIES[$name])
         throw new DAV_Status(
           DAV::HTTP_FORBIDDEN,
           DAV::COND_CANNOT_MODIFY_PROTECTED_PROPERTY
         );
+      if ( !@$priv_write[$name] )
+        throw DAV::forbidden();
       $resource->method_PROPPATCH($name, $value);
     }
     catch (DAV_Status $e) {
@@ -166,7 +170,7 @@ protected function handle( $resource ) {
   DAV_Multistatus::inst()->addResponse($response);
   DAV_Multistatus::inst()->close();
 }
-  
-  
+
+
 } // class DAV_Request_PROPPATCH
 
