@@ -170,7 +170,7 @@ public function method_POST( &$headers ) {
  * @return void
  */
 public function method_PUT($stream) {
-  throw new DAV_Status( DAV::HTTP_FORBIDDEN );
+  throw new DAV_Status( DAV::HTTP_NOT_IMPLEMENTED );
 }
 
 
