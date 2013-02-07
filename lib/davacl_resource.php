@@ -42,13 +42,11 @@ public function effective_acl() {
 
   // Get a list of principals:
   $principals = $this->current_user_principals();
-  //DAV::debug($principals);
 
   $aces = $this->user_prop_acl();
   $fsps = DAVACL_Element_supported_privilege::flatten(
     $this->user_prop_supported_privilege_set()
   );
-  //DAV::debug($aces);
   foreach ($aces as $ace) {
     $match = false;
     switch($ace->principal) {
@@ -65,19 +63,15 @@ public function effective_acl() {
         $match = isset($principals[$this->path]);
         break;
       default:
-        //DAV::debug($principals);
         if ('/' == $ace->principal[0])
           $match = isset($principals[$ace->principal]);
         elseif ( ( $p = $this->prop($ace->principal) ) instanceof DAV_Element_href )
-          //DAV::debug($p);
           foreach ( $p->URIs as $URI )
             if ( isset($principals[$URI]) )
               $match = true;
     }
     if (!$match && !$ace->invert ||
          $match &&  $ace->invert) continue;
-//    DAV::debug($ace->principal);
-//    DAV::debug($fsps);
     $privs = array();
     foreach ($ace->privileges as $p)
       $privs = array_merge($privs, $fsps[$p]['children']);
@@ -290,7 +284,6 @@ public function user_prop_supported_privilege_set() {
  */
 final public function prop_current_user_privilege_set() {
   $eacl = $this->effective_acl();
-  //DAV::debug($eacl);
   $grant = $deny = array();
   foreach ($eacl as $acl) {
     foreach ($acl[1] as $priv)

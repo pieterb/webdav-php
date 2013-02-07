@@ -57,12 +57,10 @@ protected function __construct() {
   $input = $this->inputstring();
   if (!strlen($input)) {
     $this->requestType = 'allprop';
-    //DAV::debug('Empty PROPFIND body.');
     return;
   }
 
   $document = new DOMDocument();
-  //DAV::debug( var_export( array( $_SERVER, DAV_Server::inst()->inputstring() ), true ) );
   if ( ! @$document->loadXML(
            $input,
            LIBXML_NOCDATA | LIBXML_NOENT | LIBXML_NSCLEAN | LIBXML_NOWARNING
@@ -153,7 +151,6 @@ protected function handle( $resource ) {
   if ( $resource instanceof DAV_Collection and
        DAV::DEPTH_INF == $this->depth() ) {
     //$d = debug_backtrace();
-    //DAV::debug($d);
     throw new DAV_Status (
       DAV::HTTP_FORBIDDEN,
       DAV::COND_PROPFIND_FINITE_DEPTH

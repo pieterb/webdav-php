@@ -65,7 +65,6 @@ protected function __construct() {
     throw new DAV_Status( DAV::HTTP_BAD_REQUEST, 'Missing required request entity.' );
 
   $document = new DOMDocument();
-  //DAV::debug( var_export( array( $_SERVER, DAV_Server::inst()->inputstring() ), true ) );
   if ( ! $document->loadXML(
            $input,
            LIBXML_NOCDATA | LIBXML_NOENT | LIBXML_NSCLEAN | LIBXML_NOWARNING
@@ -181,7 +180,6 @@ protected function handle( $resource ) {
  * @param DAV_Resource $resource
  */
 private function handle_expand_property($resource) {
-  DAV::debug($this->entity);
   $response = $this->handle_expand_property_recursively( DAV::$PATH, $this->entity );
   DAV_Multistatus::inst()->addResponse($response)->close();
 }
@@ -217,7 +215,6 @@ private function handle_expand_property_recursively($path, $properties) {
 
 
 private function handle_acl_principal_prop_set($resource) {
-  DAV::debug($this->entity);
   $ppr = $resource->property_priv_read(array(DAV::PROP_ACL));
   if ( ! $ppr[DAV::PROP_ACL] )
     throw DAV::forbidden();

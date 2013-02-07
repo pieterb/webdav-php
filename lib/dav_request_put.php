@@ -80,7 +80,7 @@ protected function handle( $resource ) {
       DAV::HTTP_LOCKED,
       array( DAV::COND_LOCK_TOKEN_SUBMITTED => $lockroot )
     );
-    
+
   $created = false;
   if ( !$resource ) {
     if (!is_null($this->range_start))
@@ -88,14 +88,14 @@ protected function handle( $resource ) {
     $parent = DAV::$REGISTRY->resource(dirname(DAV::$PATH));
     if (!$parent || ! $parent instanceof DAV_Collection )
       throw new DAV_Status(DAV::HTTP_CONFLICT);
-        
+
     $parent->create_member( basename( DAV::$PATH ) );
     $resource = DAV::$REGISTRY->resource(DAV::$PATH);
     $created = true;
   }
   elseif ( $resource instanceof DAV_Collection )
     throw new DAV_Status( DAV::HTTP_METHOD_NOT_ALLOWED, 'Method PUT not supported on collections.' );
-    
+
   if (is_null($this->range_start)) {
     if ( isset($_SERVER['CONTENT_TYPE']) &&
          'application/octet-stream' != $_SERVER['CONTENT_TYPE'] )
@@ -134,10 +134,9 @@ protected function handle( $resource ) {
       throw $e;
     }
   }
-  
+
   if ($etag = $resource->prop_getetag())
     header('ETag: ' . htmlspecialchars_decode($etag));
-  //DAV::debug($headers);
   if ($created)
     DAV::redirect(DAV::HTTP_CREATED, DAV::$PATH );
   else

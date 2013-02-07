@@ -53,8 +53,6 @@ protected function __construct() {
 //      'Couldn\'t find a proppatch request body.'
 //    );
 
-//  DAV::debug($this->inputstring());
-
   $document = new DOMDocument();
   if ( ! $document->loadXML(
            $this->inputstring(),
@@ -107,7 +105,6 @@ protected function __construct() {
 //    $this->props["{$element->namespaceURI} {$element->localName}"] = null;
 //  }
   // DEBUG
-  //DAV::debug(var_export($this->props, true));
 }
 
 
@@ -122,8 +119,6 @@ protected function handle( $resource ) {
       DAV::HTTP_LOCKED,
       array( DAV::COND_LOCK_TOKEN_SUBMITTED => $lockroot )
     );
-  //DAV::debug(DAV::$PATH);
-  //DAV::debug($this->props);
   if (empty($this->props))
     throw new DAV_Status(
       DAV::HTTP_BAD_REQUEST,

@@ -348,7 +348,8 @@ public static function var_dump($var) {
 public static function debug() {
   $data = '';
   foreach (func_get_args() as $arg)
-    $data .= "\n" . ( is_string($arg) ? $arg : self::var_dump($arg) );
+    //$data .= "\n" . ( is_string($arg) ? $arg : self::var_dump($arg) );
+    $data .= "\n" . ( is_string($arg) ? $arg : var_export($arg, true) );
   $fh = fopen( DAV::$CONFIG['debug']['file'], 'a' );
   fwrite($fh, date('r') . ":$data\n\n");
   fclose ($fh);
@@ -521,7 +522,6 @@ public static function xmlescape($utf8text, $isAttribute = false) {
     $utf8text, $isAttribute ? ENT_QUOTES : ENT_NOQUOTES, 'UTF-8'
   );
   if (empty($retval) && !empty($utf8text)) {
-    DAV::debug($utf8text . rawurlencode($utf8text));
     return htmlspecialchars(
       $utf8text,
       ENT_IGNORE | ( $isAttribute ? ENT_QUOTES : ENT_NOQUOTES ),
@@ -529,6 +529,22 @@ public static function xmlescape($utf8text, $isAttribute = false) {
     );
   }
   return $retval;
+}
+
+
+/**
+ * @param string $xml
+ * @return string the utf8text, escaped for use in an XML text or attribute element.
+ */
+public static function xmlunescape($xml) {
+  if (null === $xml) return null;
+  $xml = "$xml";
+  if ( false !== strpos( $xml, '<' ) )
+    throw new DAV_Status(
+      self::HTTP_BAD_REQUEST,
+      "XML not allowed:\n$xml"
+    );
+  return htmlspecialchars_decode($xml);
 }
 
 

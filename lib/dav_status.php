@@ -89,7 +89,6 @@ public function __construct(
  * @return void
  */
 public function output() {
-  DAV::debug($this);
   $status = $this->getCode();
   if ($status < 300)
     throw new DAV_Status(

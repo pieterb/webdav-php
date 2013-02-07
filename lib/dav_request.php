@@ -140,7 +140,7 @@ public function depth() {
  * @return array|null   next token (type and value)
  * @throws DAV_Status on lexer error
  */
-static private function if_header_lexer(&$pos) 
+static private function if_header_lexer(&$pos)
 {
   // skip whitespace
   while ( strpos(" \r\n\t", substr($_SERVER['HTTP_IF'], $pos, 1) ) !== false ) $pos++;
@@ -184,7 +184,7 @@ static private function if_header_lexer(&$pos)
     return array('CHAR', $c);
   }
 }
-  
+
 
 /**
  * Parsed If: header.
@@ -217,7 +217,7 @@ private function init_if_header()
           DAV::HTTP_BAD_REQUEST, "Unexpected end of If: header: {$_SERVER['HTTP_IF']}"
         );
     }
-    
+
     // sanity check
     if ($token[0] != "CHAR" || $token[1] != '(') {
       throw new DAV_Status(
@@ -225,11 +225,11 @@ private function init_if_header()
         "Error while parsing If: header: Found '{$token[1]}' where '(' was expected."
       );
     }
-    
+
     // Initialize inner parser loop:
     $etag = null;
     $notetags = $locks = $notlocks = array();
-    
+
     // Inner parser loop:
     while ( ( $token = self::if_header_lexer($pos) ) &&
             !( $token[0] == 'CHAR' &&
@@ -246,17 +246,17 @@ private function init_if_header()
       } else {
         $bool = true;
       }
-      
+
       switch($token[0]) {
-        
+
       case 'URI':
         DAV::$SUBMITTEDTOKENS[$token[1]] = $token[1];
         if ( $bool )
           $locks[$token[1]] = $token[1];
         else
-          $notlocks[$token[1]] = $token[1]; 
+          $notlocks[$token[1]] = $token[1];
         break;
-        
+
       case 'ETAG':
         if ( $bool && $etag )
             throw new DAV_Status(DAV::HTTP_BAD_REQUEST, 'Multiple etags required on resource.');
@@ -265,16 +265,16 @@ private function init_if_header()
         else
           $notetags[$token[1]] = $token[1];
         break;
-        
+
       default:
         throw new DAV_Status(DAV::HTTP_BAD_REQUEST, <<<EOS
 Error while parsing If: header:
 Found "{$token[1]}" where "<" or "[" was expected.
 EOS
         );
-        
+
       } // switch($token[0])
-      
+
     } // while
 
     // Shared locks are not supported, so any request with multiple lock tokens
@@ -291,7 +291,7 @@ EOS
       'lock' => array_shift($locks),
       'notlocks' => $notlocks
     );
-    
+
   } // while
 }
 
@@ -310,8 +310,7 @@ protected function __construct()
   // say about fragments?
   if (strstr($_SERVER['REQUEST_URI'], '#') !== false)
     throw new DAV_Status(DAV::HTTP_BAD_REQUEST, 'Fragments are not allowed.');
-      
-//  DAV::debug($_SERVER);
+
   $this->init_if_header();
 }
 
@@ -335,7 +334,7 @@ public function handleRequest()
   $shallow_lock = false;
   try {
     $shallow_lock = $this->check_if_headers();
-    
+
     $resource = DAV::$REGISTRY->resource(DAV::$PATH);
     if ( !$resource || !$resource->isVisible() and
          in_array( $_SERVER['REQUEST_METHOD'], array(
@@ -343,7 +342,7 @@ public function handleRequest()
              'POST', 'PROPFIND', 'PROPPATCH', 'REPORT', 'UNLOCK',
        ) ) )
       throw new DAV_Status( DAV::HTTP_NOT_FOUND );
-      
+
     if ( '/' !== substr( DAV::$PATH, -1 ) &&
          ( $resource &&
            $resource instanceof DAV_Collection ||
@@ -351,7 +350,7 @@ public function handleRequest()
       DAV::$PATH .= '/';
       header('Content-Location: ' . DAV::abs2uri( DAV::$PATH ) );
     }
-    
+
     $this->handle( $resource );
   }
   catch (Exception $e) {
@@ -418,19 +417,19 @@ private function check_if_headers() {
         $read_locks[$p] = 1;
       }
     }
-  
-  foreach( array( 'MATCH', 'UNMODIFIED_SINCE' ) as $value ) // Conditions 'NONE_MATCH', 'MODIFIED_SINCE' are not relevant 
+
+  foreach( array( 'MATCH', 'UNMODIFIED_SINCE' ) as $value ) // Conditions 'NONE_MATCH', 'MODIFIED_SINCE' are not relevant
     if ( isset( $_SERVER['HTTP_IF_' . $value] ) ) {
       $read_locks[DAV::unslashify(DAV::$PATH)] = 1;
       break;
     }
-  
+
   foreach (array_keys($this->if_header) as $path)
     $read_locks[DAV::unslashify($path)] = 1;
-  
+
   foreach (array_keys($write_locks) as $path)
     unset( $read_locks[$path] );
-    
+
   if (empty($write_locks) && empty($read_locks))
     return false;
 
@@ -459,13 +458,13 @@ private function check_if_headers() {
 private function check_if_header()
 {
   if (empty($this->if_header)) return;
-  
+
   $anyStateMatches = false;
   foreach ($this->if_header as $path => $values) {
     $resource = DAV::$REGISTRY->resource($path); // May return null
     if ($resource && $resource->isVisible()) {
       $res_etag = $resource->user_prop_getetag();
-      
+
       // Check etag:
       if ( $values['etag'] &&
            !self::equalETags(
@@ -473,11 +472,11 @@ private function check_if_header()
               $res_etag
             ) )
         continue;
-        
+
       // Check notetags:
       if ( $res_etag && isset($values['notetags'][$res_etag]) )
         continue;
-            
+
       // Check locks:
       $lock = DAV::$LOCKPROVIDER ? DAV::$LOCKPROVIDER->getlock($path) : null;
       if ( $values['lock'] and
@@ -495,8 +494,8 @@ private function check_if_header()
   if (!$anyStateMatches)
     throw new DAV_Status(DAV::HTTP_PRECONDITION_FAILED);
 } // function check_if_header()
-  
-  
+
+
 /**
  * Parses AND checks the If-(Un)Modified-Since: header.
  * @throws DAV_Status particularly 304 Not Modified and 412 Precondition Failed
@@ -532,9 +531,9 @@ private function check_if_match_header() {
     $none = true;
   }
   else return;
-  
+
   $resource = DAV::$REGISTRY->resource( DAV::$PATH );
-  
+
   // The simplest case: just an asterisk '*'.
   if ( preg_match( '@^\\s*\\*\\s*$@', $header ) ) {
     if ( ( !$resource || !$resource->isVisible() ) && !$none )
@@ -543,7 +542,7 @@ private function check_if_match_header() {
       throw new DAV_Status(DAV::HTTP_PRECONDITION_FAILED, 'If-None-Match');
     return;
   }
-  
+
   // A list of entity-tags
   $header .= ',';
   preg_match_all( '@((?:W/)?"(?:[^"\\\\]|\\\\.)*")\\s*,@',
@@ -554,7 +553,7 @@ private function check_if_match_header() {
       DAV::HTTP_BAD_REQUEST,
       'Couldn\'t parse If-(None-)Match header.'
     );
-    
+
   if ( ( !$resource || !$resource->isVisible() ) && !$none)
     throw new DAV_Status(DAV::HTTP_PRECONDITION_FAILED, 'If-Match');
   // $resource exists:

@@ -98,7 +98,6 @@ public function __construct($arg = array()) {
  * @return string an XML element
  */
 public function toXML() {
-  //DAV::debug($this);
   $t_lockroot = "\n<D:lockroot><D:href>{$this->lockroot}</D:href></D:lockroot>";
   if ( $this->timeout == 0 )
     $t_timeout = 'Infinite';
@@ -121,8 +120,8 @@ public function toXML() {
 </D:activelock>
 EOS;
 }
-  
-    
+
+
 } // class DAV_Element_lockdiscovery
 
 
