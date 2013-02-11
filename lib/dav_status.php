@@ -34,6 +34,7 @@ public $conditions = array();
 // The following two pseudo-constants are initialized at the bottom of this file:
 public static $OK = null;
 public static $NOT_FOUND = null;
+public static $RESPONSE_GENERATOR = null;
 
 /**
  * Constructor.
@@ -119,12 +120,21 @@ public function output() {
   elseif ( $this->location )
     DAV::redirect($status, $this->location);
   else {
-    DAV::header(array(
-      'status' => $status,
-      'Content-Type' => 'text/plain; charset="UTF-8"'
-    ));
-    echo "HTTP/1.1 " . DAV::status_code($status) .
-    	"\n" . $this->getMessage();
+    if ( self::$RESPONSE_GENERATOR &&
+         in_array( $_SERVER['REQUEST_METHOD'],
+                   array( 'GET', 'POST' ) ) ) {
+      DAV::header(array('status' => $status));
+      call_user_func(
+        self::$RESPONSE_GENERATOR, $status, $this->getMessage()
+      );
+    } else {
+      DAV::header(array(
+        'status' => $status,
+        'Content-Type' => 'text/plain; charset="UTF-8"'
+      ));
+      echo "HTTP/1.1 " . DAV::status_code($status) .
+        "\n" . $this->getMessage();
+    }
   }
 }
 
