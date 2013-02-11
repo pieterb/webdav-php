@@ -161,9 +161,9 @@ public function propname() {
  * @return string XML or NULL if the property is not defined.
  */
 public function prop($propname) {
-  if ( $this instanceof DAVACL_Principal &&
-       ( $method = @DAV::$PRINCIPAL_PROPERTIES[$propname] ) or
-       ( $method = @DAV::$ACL_PROPERTIES[$propname] ) )
+  if ( ( $method = @DAV::$ACL_PROPERTIES[$propname] ) or
+       $this instanceof DAVACL_Principal &&
+       ( $method = @DAV::$PRINCIPAL_PROPERTIES[$propname] ) )
     return call_user_func(array($this, "prop_$method"));
   return parent::prop($propname);
 }
@@ -474,6 +474,7 @@ final private static function current_user_principals_recursive($path) {
     $retval = array_merge($retval, self::current_user_principals_recursive($group));
   return $retval;
 }
+
 
 /**
  * @return array of principals (either paths or properties),

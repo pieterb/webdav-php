@@ -146,39 +146,8 @@ public static $ACL_PROPERTIES = array(
 );
 
 
-public static $SUPPORTED_PROPERTIES = array(
-  // RFC4918:
-  self::PROP_CREATIONDATE       => 'creationdate',
-  self::PROP_DISPLAYNAME        => 'displayname',
-  self::PROP_GETCONTENTLANGUAGE => 'getcontentlanguage',
-  self::PROP_GETCONTENTLENGTH   => 'getcontentlength',
-  self::PROP_GETCONTENTTYPE     => 'getcontenttype',
-  self::PROP_GETETAG            => 'getetag',
-  self::PROP_GETLASTMODIFIED    => 'getlastmodified',
-  self::PROP_LOCKDISCOVERY      => 'lockdiscovery',
-  self::PROP_RESOURCETYPE       => 'resourcetype',
-  self::PROP_SUPPORTEDLOCK      => 'supportedlock',
-  self::PROP_EXECUTABLE         => 'executable',
-  self::PROP_EXECUTABLE2        => 'executable',
-  // RFC3744 principal properties:
-  self::PROP_ALTERNATE_URI_SET => 'alternate_URI_set',
-  self::PROP_PRINCIPAL_URL     => 'principal_URL',
-  self::PROP_GROUP_MEMBER_SET  => 'group_member_set',
-  self::PROP_GROUP_MEMBERSHIP  => 'group_membership',
-  // RFC3744 Access Control properties:
-  self::PROP_OWNER                      => 'owner',
-  self::PROP_GROUP                      => 'group',
-  self::PROP_SUPPORTED_PRIVILEGE_SET    => 'supported_privilege_set',
-  self::PROP_CURRENT_USER_PRIVILEGE_SET => 'current_user_privilege_set',
-  self::PROP_ACL                        => 'acl',
-  self::PROP_ACL_RESTRICTIONS           => 'acl_restrictions',
-  self::PROP_INHERITED_ACL_SET          => 'inherited_acl_set',
-  self::PROP_PRINCIPAL_COLLECTION_SET   => 'principal_collection_set',
-  // RFC3253 REPORT related properties:
-  self::PROP_SUPPORTED_REPORT_SET       => 'supported_report_set',
-  // RFC5397 Access control property:
-  self::PROP_CURRENT_USER_PRINCIPAL     => 'current_user_principal',
-);
+public static $SUPPORTED_PROPERTIES = null;
+
 
 public static $PROTECTED_PROPERTIES = array(
   // RFC4918:
@@ -889,5 +858,12 @@ public static function status_code($code) {
 
 } // namespace DAV
 
+
+DAV::$SUPPORTED_PROPERTIES = array_merge(
+  DAV::$WEBDAV_PROPERTIES,
+  DAV::$PRINCIPAL_PROPERTIES,
+  DAV::$ACL_PROPERTIES
+);
+
 // Read, parse and store de configuration in the ini file
-DAV::$CONFIG = parse_ini_file(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . "config.ini", true);
+DAV::$CONFIG = parse_ini_file(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'config.ini', true);

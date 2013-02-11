@@ -635,8 +635,6 @@ EOS;
 public function prop($propname) {
   if ($method = @DAV::$WEBDAV_PROPERTIES[$propname])
     return call_user_func(array($this, "prop_$method"));
-    //$propname = DAV::$SUPPORTED_PROPERTIES[$propname];
-    //return "<$propname>$value</$propname>";
   return $this->user_prop($propname);
 }
 
