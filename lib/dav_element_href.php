@@ -27,8 +27,8 @@
  * @package DAV
  */
 class DAV_Element_href {
-  
-  
+
+
 /**
  * Array of properties.
  * @var array
@@ -61,7 +61,9 @@ public function addURI($URI) {
  */
 public function __toString() {
   return empty($this->URIs) ? '' :
-  '<D:href>' . implode("</D:href>\n<D:href>", $this->URIs). '</D:href>';
+    '<D:href>' . implode(
+      "</D:href>\n<D:href>", array_unique($this->URIs)
+    ). '</D:href>';
 }
 
 

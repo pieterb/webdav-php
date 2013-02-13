@@ -75,12 +75,6 @@ protected function __construct()
  * @param DAV_Resource $resource
  */
 protected function handle( $resource ) {
-  if (( $lockroot = DAV::assertLock( $resource ? DAV::$PATH : dirname( DAV::$PATH ) ) ))
-    throw new DAV_Status(
-      DAV::HTTP_LOCKED,
-      array( DAV::COND_LOCK_TOKEN_SUBMITTED => $lockroot )
-    );
-
   $created = false;
   if ( !$resource ) {
     if (!is_null($this->range_start))
@@ -88,6 +82,7 @@ protected function handle( $resource ) {
     $parent = DAV::$REGISTRY->resource(dirname(DAV::$PATH));
     if (!$parent || ! $parent instanceof DAV_Collection )
       throw new DAV_Status(DAV::HTTP_CONFLICT);
+    $parent->assertLock();
 
     $parent->create_member( basename( DAV::$PATH ) );
     $resource = DAV::$REGISTRY->resource(DAV::$PATH);
@@ -95,6 +90,8 @@ protected function handle( $resource ) {
   }
   elseif ( $resource instanceof DAV_Collection )
     throw new DAV_Status( DAV::HTTP_METHOD_NOT_ALLOWED, 'Method PUT not supported on collections.' );
+  else
+    $resource->assertLock();
 
   if (is_null($this->range_start)) {
     if ( isset($_SERVER['CONTENT_TYPE']) &&

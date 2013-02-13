@@ -31,6 +31,50 @@ class DAV_Resource {
 
 
 /**
+ * @param string $path
+ */
+public function assertLock() {
+  if ( !DAV::$LOCKPROVIDER ) return null;
+  if ( ( $lock = DAV::$LOCKPROVIDER->getlock($this->path) ) &&
+       !isset( DAV::$SUBMITTEDTOKENS[$lock->locktoken] ) )
+    throw new DAV_Status(
+      DAV::HTTP_LOCKED, array(
+        DAV::COND_LOCK_TOKEN_SUBMITTED =>
+          new DAV_Element_href( $lock->lockroot )
+      )
+    );
+}
+
+
+/**
+ * @param string $path
+ * @return mixed one of the following:
+ * - DAV_Element_href of the lockroot of the missing token
+ * - null if no lock was found.
+ */
+public function assertMemberLocks() {
+  if ( !DAV::$LOCKPROVIDER ) return;
+  if ( ! $this instanceof DAV_Collection ) return;
+  DAV::debug('assertMemberLocks called on', $this->path);
+  $locks = DAV::$LOCKPROVIDER->memberLocks( $this->path );
+  DAV::debug($locks);
+  $unsubmitted = array();
+  foreach ($locks as $token => $lock)
+    if ( !isset( DAV::$SUBMITTEDTOKENS[$token] ) )
+      $unsubmitted[] =
+        DAV::$REGISTRY->resource($lock->lockroot)->isVisible() ?
+        $lock->lockroot : '/';
+  if ( !empty( $unsubmitted ) )
+    throw new DAV_Status(
+      DAV::HTTP_LOCKED, array(
+        DAV::COND_LOCK_TOKEN_SUBMITTED => new DAV_Element_href($unsubmitted)
+      )
+    );
+}
+
+
+
+/**
  * @return DAV_Resource
  */
 public function collection() {

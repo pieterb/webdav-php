@@ -114,11 +114,7 @@ protected function __construct() {
  * @throws DAV_Status
  */
 protected function handle( $resource ) {
-  if (($lockroot = DAV::assertLock(DAV::$PATH) ))
-    throw new DAV_Status(
-      DAV::HTTP_LOCKED,
-      array( DAV::COND_LOCK_TOKEN_SUBMITTED => $lockroot )
-    );
+  $resource->assertLock();
   if (empty($this->props))
     throw new DAV_Status(
       DAV::HTTP_BAD_REQUEST,

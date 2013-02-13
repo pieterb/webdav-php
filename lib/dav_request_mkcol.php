@@ -47,12 +47,7 @@ protected function handle( $resource )
   if ( !$resource or !$resource->isVisible() )
     throw new DAV_Status( DAV::HTTP_CONFLICT );
 
-  $lockroot = DAV::assertLock($resource->path);
-  if ($lockroot)
-    throw new DAV_Status(
-      DAV::HTTP_LOCKED,
-      array( DAV::COND_LOCK_TOKEN_SUBMITTED => $lockroot )
-    );
+  $resource->assertLock();
   if ( ! $resource instanceof DAV_Collection )
     throw new DAV_Status(DAV::HTTP_METHOD_NOT_ALLOWED);
   if ( 0 < (int)@$_SERVER['CONTENT_LENGTH'] )

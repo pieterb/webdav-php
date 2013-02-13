@@ -47,12 +47,10 @@ protected function handle( $resource )
   if (!$parent)
     throw DAV::forbidden();
 
-  $lockroot = DAV::assertLock( $parent->path );
-  if ( $lockroot )
-    throw new DAV_Status(
-      DAV::HTTP_LOCKED,
-      array( DAV::COND_LOCK_TOKEN_SUBMITTED => $lockroot )
-    );
+  $parent->assertLock();
+  $resource->assertLock();
+  if ($this instanceof DAV_Collection)
+    $resource->assertMemberLocks();
 
   if ( DAV::DEPTH_INF != $this->depth() )
     throw new DAV_Status(
@@ -80,11 +78,6 @@ protected function handle( $resource )
 private static function delete_member( $resource, $member )
 {
   $memberPath = $resource->path . $member;
-  if (( $lockroot = DAV::assertLock($memberPath) ))
-    throw new DAV_Status(
-      DAV::HTTP_LOCKED,
-      array( DAV::COND_LOCK_TOKEN_SUBMITTED => $lockroot )
-    );
   if ( '/' == substr($member, -1) ) {
     $failure = false;
     $memberResource = DAV::$REGISTRY->resource($memberPath);

@@ -51,23 +51,11 @@ protected function handle( $resource ) {
   else
     $destination = DAV::unslashify($destination);
 
-  // Assert locks:
-  if (
-       $this instanceof DAV_Request_MOVE && (
-         ( $lockroot = DAV::assertLock( dirname( DAV::$PATH ) ) ) ||
-         ( $lockroot = DAV::assertLock( DAV::$PATH ) ) ||
-         ( $lockroot = DAV::assertMemberLocks( DAV::$PATH ) )
-       ) ||
-       ( $lockroot = DAV::assertLock( dirname( $destination ) ) ) ||
-       $this->overwrite() && (
-         ( $lockroot = DAV::assertLock( $destination ) ) ||
-         ( $lockroot = DAV::assertMemberLocks( $destination ) )
-       )
-     )
-    throw new DAV_Status(
-      DAV::HTTP_LOCKED,
-      array( DAV::COND_LOCK_TOKEN_SUBMITTED => $lockroot )
-    );
+  if ( $this instanceof DAV_Request_MOVE ) {
+    $resource->collection()->assertLock();
+    $resource->assertLock();
+    $resource->assertMemberLocks();
+  }
 
   // Assert proper Depth: header value:
   if ( DAV::DEPTH_1 == $this->depth() or
@@ -79,7 +67,7 @@ protected function handle( $resource ) {
     );
 
   if ( $this instanceof DAV_Request_MOVE &&
-       '/' == DAV::$PATH )
+       '/' === DAV::$PATH )
     throw new DAV_Status(DAV::HTTP_FORBIDDEN);
 
   // Check: Can't move a collection to one of its members.
@@ -116,8 +104,15 @@ protected function handle( $resource ) {
     );
 
   $destinationResource = DAV::$REGISTRY->resource( $destination );
+  $destinationCollection = DAV::$REGISTRY->resource( dirname( $destination ) );
+  if (!$destinationCollection)
+    throw new DAV_Status(DAV::HTTP_CONFLICT);
+  $destinationCollection->assertLock();
+
   if ( $destinationResource ) {
     if ($this->overwrite()) {
+      $destinationResource->assertLock();
+      $destinationResource->assertMemberLocks();
       self::delete($destinationResource);
       if (DAV_Multistatus::active()) {
         DAV_Multistatus::inst()->addStatus(
@@ -130,8 +125,6 @@ protected function handle( $resource ) {
     else
       throw new DAV_Status(DAV::HTTP_PRECONDITION_FAILED);
   }
-  elseif (!DAV::$REGISTRY->resource( dirname( $destination ) ) )
-    throw new DAV_Status(DAV::HTTP_CONFLICT);
 
   if ($this instanceof DAV_Request_MOVE) {
     if ( DAV::$LOCKPROVIDER ) {
@@ -140,8 +133,9 @@ protected function handle( $resource ) {
       if (( $lock = DAV::$LOCKPROVIDER->getlock( DAV::$PATH ) ))
         DAV::$LOCKPROVIDER->unlock( $lock->lockroot );
     }
-    if (!DAV_Multistatus::active())
-      $resource->collection()->method_MOVE( basename($resource->path), $destination );
+    $resource->collection()->method_MOVE(
+      basename($resource->path), $destination
+    );
   }
   else {
     $this->copy_recursively( $resource, $destination );

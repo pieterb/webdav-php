@@ -658,47 +658,6 @@ public static function isValidURI($uri) {
 }
 
 
-/**
- * @param string $path
- * @return mixed one of the following:
- * - DAV_Element_href of the lockroot of the missing token
- * - null if no lock was found.
- */
-public static function assertLock($path) {
-  if ( !self::$LOCKPROVIDER ) return null;
-  if ( ( $lock = self::$LOCKPROVIDER->getlock($path) ) &&
-       !isset( self::$SUBMITTEDTOKENS[$lock->locktoken] ) ) {
-    $lockroot = DAV::$REGISTRY->resource($lock->lockroot);
-    if (!$lockroot)
-      throw new DAV_Status(DAV::HTTP_INTERNAL_SERVER_ERROR);
-    return new DAV_Element_href(
-      $lockroot->isVisible() ?
-      $lock->lockroot : '/undisclosed-resource'
-    );
-  }
-  return null;
-}
-
-
-/**
- * @param string $path
- * @return mixed one of the following:
- * - DAV_Element_href of the lockroot of the missing token
- * - null if no lock was found.
- */
-public static function assertMemberLocks($path) {
-  if ( !self::$LOCKPROVIDER ) return null;
-  $locks = DAV::$LOCKPROVIDER->memberLocks( $path );
-  foreach ($locks as $token => $lock)
-    if ( !isset( self::$SUBMITTEDTOKENS[$token] ) )
-      return new DAV_Element_href(
-        DAV::$REGISTRY->resource($lock->lockroot)->isVisible() ?
-        $lock->lockroot : '/undisclosed-resource'
-      );
-  return null;
-}
-
-
 /*
  * Outputs HTTP/1.1 headers.
  * @param array|string $properties An array of headers to print, e.g.

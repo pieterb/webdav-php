@@ -23,6 +23,8 @@
  */
 
 /**
+ * GET.
+ * @internal
  * @package DAV
  */
 class DAV_Request_POST extends DAV_Request {
@@ -34,11 +36,7 @@ class DAV_Request_POST extends DAV_Request {
  * @throws DAV_Status
  */
 public function handle($resource) {
-  if (($lockroot = DAV::assertLock(DAV::$PATH) ))
-    throw new DAV_Status(
-      DAV::HTTP_LOCKED,
-      array( DAV::COND_LOCK_TOKEN_SUBMITTED => $lockroot )
-    );
+  $resource->assertLock();
   $headers = array();
   try {
     ob_start();
@@ -49,7 +47,8 @@ public function handle($resource) {
     throw $e;
   }
 
-  if (ob_get_length()) {
+  if ($length = ob_get_length()) {
+    $headers['Content-Length'] = $length;
     DAV::header($headers);
     ob_end_flush();
     return;

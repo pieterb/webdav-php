@@ -202,7 +202,6 @@ public $if_header = array();
 private function init_if_header()
 {
   if ( !isset( $_SERVER['HTTP_IF'] ) ) return;
-  DAV::debug($_SERVER['HTTP_IF']);
 
   $pos = 0;
 

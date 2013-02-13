@@ -31,76 +31,6 @@ class DAV_Request_GET extends DAV_Request_HEAD {
 
 
 /**
- * @param int $entity_length
- * @return array of arrays with entries 'start' and 'end'
- */
-public static function range_header( $entity_length ) {
-  $retval = array();
-  if ( !isset( $_SERVER['HTTP_RANGE'] ) )
-    return $retval;
-  $entity_length = (int)($entity_length);
-  if ( !preg_match( '@^\\s*bytes\s*=\s*(.+)$@',
-                    $_SERVER['HTTP_RANGE'],
-                    $matches ) )
-    throw new DAV_Status(
-      DAV::HTTP_BAD_REQUEST,
-      'Can\'t understand Range: ' . $_SERVER['HTTP_RANGE']
-    );
-  // ranges are comma separated
-  foreach (explode(',', $matches[1]) as $range) {
-    if ( !preg_match( '@^\\s*(\\d*)\\s*-\\s*(\\d*)\\s*$@',
-                      $range, $matches ) )
-      throw new DAV_Status(
-        DAV::HTTP_BAD_REQUEST,
-        'Can\'t understand Range: ' . $_SERVER['HTTP_RANGE']
-      );
-    $start = $matches[1];
-    $end   = $matches[2];
-    if ( '' == $start && '' == $end )
-      throw new DAV_Status(
-        DAV::HTTP_BAD_REQUEST,
-        'Can\'t understand Range: ' . $_SERVER['HTTP_RANGE']
-      );
-    // RFC2616: 14.35.1
-    // If the last-byte-pos value is absent, or if the value is greater than or
-    // equal to the current length of the entity-body, last-byte-pos is taken to
-    // be equal to one less than the current length of the entity- body in bytes.
-    if ( '' == $end ) {
-      if (!$entity_length)
-        throw new DAV_Status( DAV::HTTP_REQUESTED_RANGE_NOT_SATISFIABLE );
-      $end = $entity_length - 1;
-    }
-    else $end = (int)$end;
-    if ( $end > $entity_length )
-      $end = $entity_length - 1;
-    if ( '' == $start ) {
-      if ( $end > $entity_length )
-        throw new DAV_Status( DAV::HTTP_REQUESTED_RANGE_NOT_SATISFIABLE );
-      $start = $entity_length - $end;
-      $end = $entity_length - 1;
-    }
-    else $start = (int)$start;
-    if ($end < $start)
-      throw new DAV_Status(
-        DAV::HTTP_BAD_REQUEST,
-        'Can\'t understand Range: ' . $_SERVER['HTTP_RANGE']
-      );
-    // Multiple ranges shouldn't overlap:
-    foreach ($retval as $value)
-      if ( $start <= $value['end'] && $end >= $value['start'] )
-        throw new DAV_Status(
-          DAV::HTTP_BAD_REQUEST,
-          'Can\'t understand Range: ' . $_SERVER['HTTP_RANGE']
-        );
-    $retval[] =
-      array( 'start' => $start,
-             'end'   => $end    );
-  }
-  return $retval;
-}
-
-
-/**
  * @param DAV_Resource $resource
  * @return void
  * @throws DAV_Status
@@ -118,7 +48,8 @@ protected function handle( $resource )
     throw $e;
   }
 
-  if (ob_get_length()) {
+  if ($length = ob_get_length()) {
+    $headers['Content-Length'] = $length;
     DAV::header($headers);
     ob_end_flush();
     return;
@@ -274,6 +205,76 @@ protected function handle( $resource )
   }
   echo "\r\n--{$multipart_separator}--\r\n";
   fclose($entity);
+}
+
+
+/**
+ * @param int $entity_length
+ * @return array of arrays with entries 'start' and 'end'
+ */
+public static function range_header( $entity_length ) {
+  $retval = array();
+  if ( !isset( $_SERVER['HTTP_RANGE'] ) )
+    return $retval;
+  $entity_length = (int)($entity_length);
+  if ( !preg_match( '@^\\s*bytes\s*=\s*(.+)$@',
+                    $_SERVER['HTTP_RANGE'],
+                    $matches ) )
+    throw new DAV_Status(
+      DAV::HTTP_BAD_REQUEST,
+      'Can\'t understand Range: ' . $_SERVER['HTTP_RANGE']
+    );
+  // ranges are comma separated
+  foreach (explode(',', $matches[1]) as $range) {
+    if ( !preg_match( '@^\\s*(\\d*)\\s*-\\s*(\\d*)\\s*$@',
+                      $range, $matches ) )
+      throw new DAV_Status(
+        DAV::HTTP_BAD_REQUEST,
+        'Can\'t understand Range: ' . $_SERVER['HTTP_RANGE']
+      );
+    $start = $matches[1];
+    $end   = $matches[2];
+    if ( '' == $start && '' == $end )
+      throw new DAV_Status(
+        DAV::HTTP_BAD_REQUEST,
+        'Can\'t understand Range: ' . $_SERVER['HTTP_RANGE']
+      );
+    // RFC2616: 14.35.1
+    // If the last-byte-pos value is absent, or if the value is greater than or
+    // equal to the current length of the entity-body, last-byte-pos is taken to
+    // be equal to one less than the current length of the entity- body in bytes.
+    if ( '' == $end ) {
+      if (!$entity_length)
+        throw new DAV_Status( DAV::HTTP_REQUESTED_RANGE_NOT_SATISFIABLE );
+      $end = $entity_length - 1;
+    }
+    else $end = (int)$end;
+    if ( $end > $entity_length )
+      $end = $entity_length - 1;
+    if ( '' == $start ) {
+      if ( $end > $entity_length )
+        throw new DAV_Status( DAV::HTTP_REQUESTED_RANGE_NOT_SATISFIABLE );
+      $start = $entity_length - $end;
+      $end = $entity_length - 1;
+    }
+    else $start = (int)$start;
+    if ($end < $start)
+      throw new DAV_Status(
+        DAV::HTTP_BAD_REQUEST,
+        'Can\'t understand Range: ' . $_SERVER['HTTP_RANGE']
+      );
+    // Multiple ranges shouldn't overlap:
+    foreach ($retval as $value)
+      if ( $start <= $value['end'] && $end >= $value['start'] )
+        throw new DAV_Status(
+          DAV::HTTP_BAD_REQUEST,
+          'Can\'t understand Range: ' . $_SERVER['HTTP_RANGE']
+        );
+    $retval[] =
+      array( 'start' => $start,
+             'end'   => $end    );
+  }
+  return $retval;
 }
 
 
