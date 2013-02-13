@@ -128,6 +128,31 @@ public function assert($privileges) {
  * @param array $properties
  * @return array an array of (property => isWritable) pairs.
  */
+public function property_priv_read($properties) {
+  $retval = parent::property_priv_read($properties);
+  if (isset($properties[DAV::PROP_ACL]))
+    try {
+      $this->assert(DAVACL::PRIV_READ_ACL);
+    }
+    catch( DAV_Status $e ) {
+      $properties[DAV::PROP_ACL] = false;
+    }
+  if (isset($properties[DAV::PROP_CURRENT_USER_PRIVILEGE_SET]))
+    try {
+      $this->assert(DAVACL::PRIV_READ_CURRENT_USER_PRIVILEGE_SET);
+    }
+    catch( DAV_Status $e ) {
+      $properties[DAV::PROP_CURRENT_USER_PRIVILEGE_SET] = false;
+    }
+  return $retval;
+}
+
+
+/**
+ * By default, properties are writeble if the current user has PRIV_WRITE_PROPERTIES.
+ * @param array $properties
+ * @return array an array of (property => isWritable) pairs.
+ */
 public function property_priv_write($properties) {
   try {
     $this->assert(DAVACL::PRIV_WRITE_PROPERTIES);
@@ -169,7 +194,13 @@ public function prop($propname) {
 }
 
 
-public function method_ACL($aces) {
+
+public function set_acl($aces) {
+  return $this->user_set_acl($aces);
+}
+
+
+protected function user_set_acl($aces) {
   throw new DAV_Status( DAV::HTTP_FORBIDDEN );
 }
 
@@ -436,7 +467,7 @@ final public function set_group_member_set($set) {
  * @see DAVACL_Principal
  * @internal must be public because of interface DAVACL_Principal.
  */
-public function user_set_group_member_set($set) {
+protected function user_set_group_member_set($set) {
   throw new DAV_Status( DAV::HTTP_FORBIDDEN );
 }
 

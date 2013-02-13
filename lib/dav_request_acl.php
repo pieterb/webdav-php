@@ -169,7 +169,7 @@ protected function handle( $resource ) {
     }
   }
   //TODO: enforce ACL restrictions
-  $resource->method_ACL($this->aces);
+  $resource->set_acl($this->aces);
 }
 
 

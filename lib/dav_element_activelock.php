@@ -80,18 +80,13 @@ public $timeout;
  * @param int $timeout as absolute unixtime (not seconds remaining!) or 0
  */
 public function __construct($arg = array()) {
-//  $lockroot,
-//  $depth,
-//  $locktoken,
-//  $owner = null,
-//  $timeout = 0
-//) {
   $this->lockroot =  @$arg['lockroot'];
   $this->depth =     @$arg['depth'];
   $this->locktoken = @$arg['locktoken'];
   $this->owner =     @$arg['owner'];
   $this->timeout =   @$arg['timeout'];
 }
+
 
 /**
  * @param array $tokens an array of tokens that may be displayed.
@@ -103,7 +98,7 @@ public function toXML() {
     $t_timeout = 'Infinite';
   else {
     $t_timeout = $this->timeout - time();
-  	$t_timeout = ( $t_timeout < 0 ) ? 'Second-0' : 'Second-' . $t_timeout;
+    $t_timeout = ( $t_timeout < 0 ) ? 'Second-0' : 'Second-' . $t_timeout;
   }
   $t_locktoken = isset(DAV::$SUBMITTEDTOKENS[$this->locktoken])
      ? "\n<D:locktoken>\n<D:href>{$this->locktoken}</D:href>\n</D:locktoken>"
@@ -119,6 +114,18 @@ public function toXML() {
 <D:timeout>{$t_timeout}</D:timeout>{$t_locktoken}{$t_lockroot}
 </D:activelock>
 EOS;
+}
+
+
+public function toJSON() {
+  return json_encode($this);
+}
+
+
+public static function fromJSON($json) {
+  $value = json_decode($json, true);
+  return ($value['timeout'] && $value['timeout'] < time()) ?
+    null : new DAV_Element_activelock( $value );
 }
 
 

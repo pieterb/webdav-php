@@ -50,7 +50,7 @@ protected function handle( $resource ) {
   // but chose to require this behaviour anyway:
   else
     $destination = DAV::unslashify($destination);
-  
+
   // Assert locks:
   if (
        $this instanceof DAV_Request_MOVE && (
@@ -68,7 +68,7 @@ protected function handle( $resource ) {
       DAV::HTTP_LOCKED,
       array( DAV::COND_LOCK_TOKEN_SUBMITTED => $lockroot )
     );
-    
+
   // Assert proper Depth: header value:
   if ( DAV::DEPTH_1 == $this->depth() or
        $this instanceof DAV_Request_MOVE &&
@@ -146,13 +146,31 @@ protected function handle( $resource ) {
   else {
     $this->copy_recursively( $resource, $destination );
   }
-  
+
+  #<<<<<<<<
+  #// This version always returns a 207 Multistatus wrapper:
+  #if (!DAV_Multistatus::active())
+  #  if ( $destinationResource )
+  #    DAV_Multistatus::inst()->addStatus(
+  #      $resource->path,
+  #      new DAV_Status( DAV::HTTP_NO_CONTENT )
+  #    );
+  #  else
+  #    DAV_Multistatus::inst()->addStatus(
+  #      $resource->path,
+  #      new DAV_Status(
+  #        DAV::HTTP_CREATED, DAV::abs2uri($destination)
+  #      )
+  #    );
+  #DAV_Multistatus::inst()->close();
+  #========
   if (DAV_Multistatus::active())
     DAV_Multistatus::inst()->close();
   elseif ( $destinationResource )
     DAV::header( array( 'status' => DAV::HTTP_NO_CONTENT ) );
   else
     DAV::redirect(DAV::HTTP_CREATED, $destination);
+  #>>>>>>>>
 }
 
 
