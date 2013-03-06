@@ -99,9 +99,10 @@ public function output() {
     );
 
   if ( DAV::HTTP_UNAUTHORIZED === $status &&
-       DAV::$ACLPROVIDER &&
-       DAV::$ACLPROVIDER->unauthorized() )
+       DAV::$UNAUTHORIZED ) {
+    call_user_func( DAV::$UNAUTHORIZED );
     return;
+  }
   elseif ( !empty($this->conditions) ) {
     $headers = array(
       'status' => $status,

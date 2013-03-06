@@ -284,6 +284,18 @@ public static $ACLPROVIDER = null;
 
 
 /**
+ * @var callable
+ */
+public static $UNAUTHORIZED = null;
+
+
+/**
+ * @var callable
+ */
+public static $FORBIDDEN = null;
+
+
+/**
  * An array of all statetokens submitted by the user in the If: header.
  * @var array <code>array( <stateToken> => <stateToken>, ... ></code>
  */
@@ -326,12 +338,9 @@ public static function debug() {
 
 
 public static function forbidden( $info = null ) {
-  return new DAV_Status(
-    ( !self::$ACLPROVIDER ||
-       self::$ACLPROVIDER->user_prop_current_user_principal() ) ?
-    self::HTTP_FORBIDDEN : self::HTTP_UNAUTHORIZED,
-    $info
-  );
+  if ( self::$FORBIDDEN )
+    return call_user_func( self::$FORBIDDEN, $info );
+  return new DAV_Status( self::HTTP_FORBIDDEN, $info );
 }
 
 
