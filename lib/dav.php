@@ -482,20 +482,16 @@ public static function parseURI($url, $fail = true) {
 
 
 /**
- * @param string $utf8text
- * @param bool $isAttribute
- * @return string the utf8text, escaped for use in an XML text or attribute element.
+ * @param   string  $utf8text  The text to escape
+ * @return  string             The utf8text, escaped for use in an XML text or attribute element.
  */
-public static function xmlescape($utf8text, $isAttribute = false) {
+public static function xmlescape($utf8text) {
+  defined('ENT_XML1') || define('ENT_XML1', 0);
   $retval = htmlspecialchars(
-    $utf8text, $isAttribute ? ENT_QUOTES : ENT_NOQUOTES, 'UTF-8'
+    $utf8text, ENT_QUOTES | ENT_XML1, 'UTF-8'
   );
   if (empty($retval) && !empty($utf8text)) {
-    return htmlspecialchars(
-      $utf8text,
-      ENT_IGNORE | ( $isAttribute ? ENT_QUOTES : ENT_NOQUOTES ),
-      'UTF-8'
-    );
+    throw new DAV_Exception('String is not UTF-8 encoded!', DAV_Exception::WRONG_CHARACTER_ENCODING);
   }
   return $retval;
 }
