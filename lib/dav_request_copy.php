@@ -45,45 +45,49 @@ protected function handle( $resource ) {
   $destination = $this->destination();
   if ($resource instanceof DAV_Collection)
     $destination = DAV::slashify($destination);
-  // The next two lines are there to make the litmus test succeed. The author
-  // of litmus had eir own doubts wether this is actually desirable behaviour,
-  // but chose to require this behaviour anyway:
   else
+    // The next line is here to make the litmus test succeed. The author of
+    // litmus had eir own doubts wether this is actually desirable behaviour,
+    // but chose to require this behaviour anyway:
     $destination = DAV::unslashify($destination);
 
-  if ( $this instanceof DAV_Request_MOVE ) {
-    $resource->collection()->assertLock();
-    $resource->assertLock();
-    $resource->assertMemberLocks();
-  }
+  // Can't move the root collection:
+  if ( $this instanceof DAV_Request_MOVE &&
+       '/' === DAV::$PATH )
+    throw new DAV_Status(DAV::HTTP_FORBIDDEN);
 
   // Assert proper Depth: header value:
-  if ( DAV::DEPTH_1 == $this->depth() or
+  if ( DAV::DEPTH_1 === $this->depth() or
        $this instanceof DAV_Request_MOVE &&
-       DAV::DEPTH_INF != $this->depth() )
+       DAV::DEPTH_INF !== $this->depth() )
     throw new DAV_Status(
       DAV::HTTP_BAD_REQUEST,
       'Illegal value for Depth: header.'
     );
 
-  if ( $this instanceof DAV_Request_MOVE &&
-       '/' === DAV::$PATH )
-    throw new DAV_Status(DAV::HTTP_FORBIDDEN);
-
   // Check: Can't move a collection to one of its members.
   if ( $this instanceof DAV_Request_MOVE &&
-       '/' == substr(DAV::$PATH, -1) &&
+       '/' === substr(DAV::$PATH, -1) &&
        0 === strpos( $destination, DAV::$PATH ) )
     throw new DAV_Status(
       DAV::HTTP_FORBIDDEN,
       "Can't move a collection to itself or one of its members."
     );
 
+  $resourceCollection = $resource->collection();
+  if ( $this instanceof DAV_Request_MOVE ) {
+    $resourceCollection->assertLock();
+    $resourceCollection->assert(DAVACL::PRIV_UNBIND);
+    $resource->assertLock();
+    $resource->assertMemberLocks();
+  }
+
   if ('/' !== $destination[0] ) {
+    // Copy to an external URI?
     $isCreated = $resource->method_COPY_external( $destination, $this->overwrite() );
     if ( $this instanceof DAV_Request_MOVE &&
          !DAV_Multistatus::active() )
-      self::delete($resource);
+      DAV_Request_DELETE::delete($resource);
     if ( DAV_Multistatus::active())
       DAV_Multistatus::inst()->close();
     elseif ($isCreated)
@@ -107,13 +111,10 @@ protected function handle( $resource ) {
   $destinationCollection = DAV::$REGISTRY->resource( dirname( $destination ) );
   if (!$destinationCollection)
     throw new DAV_Status(DAV::HTTP_CONFLICT);
-  $destinationCollection->assertLock();
 
   if ( $destinationResource ) {
     if ($this->overwrite()) {
-      $destinationResource->assertLock();
-      $destinationResource->assertMemberLocks();
-      self::delete($destinationResource);
+      DAV_Request_DELETE::delete($destinationResource);
       if (DAV_Multistatus::active()) {
         DAV_Multistatus::inst()->addStatus(
           DAV::$PATH, DAV::forbidden()
@@ -124,7 +125,10 @@ protected function handle( $resource ) {
     }
     else
       throw new DAV_Status(DAV::HTTP_PRECONDITION_FAILED);
+  } else {
+    $destinationCollection->assertLock();
   }
+  $destinationCollection->assert(DAVACL::PRIV_BIND);
 
   if ($this instanceof DAV_Request_MOVE) {
     if ( DAV::$LOCKPROVIDER ) {
@@ -133,7 +137,8 @@ protected function handle( $resource ) {
       if (( $lock = DAV::$LOCKPROVIDER->getlock( DAV::$PATH ) ))
         DAV::$LOCKPROVIDER->unlock( $lock->lockroot );
     }
-    $resource->collection()->method_MOVE(
+
+    $resourceCollection->method_MOVE(
       basename($resource->path), $destination
     );
   }
@@ -169,54 +174,14 @@ protected function handle( $resource ) {
 
 
 /**
- * Recursive helper function.
- * Callers must check DAV_Multistatus::active() afterwards.
- * @see delete()
- * @param DAV_Collection $resource
- * @param string $member
- * @throws DAV_Status
- */
-private static function delete_member( $resource, $member )
-{
-  $memberPath = $resource->path . $member;
-  if ( '/' == substr($member, -1) ) { // member is a collection
-    $failure = false;
-    $memberResource = DAV::$REGISTRY->resource($memberPath);
-    foreach ($memberResource as $child)
-      try {
-        self::delete_member($memberResource, $child);
-      }
-      catch (DAV_Status $e) {
-        $failure = true;
-        DAV_Multistatus::inst()->addStatus($memberResource->path . $child, $e);
-      }
-    if ($failure) return;
-  }
-  $resource->method_DELETE($member);
-  DAV::$REGISTRY->forget($memberPath);
-}
-
-
-/**
- * Deletes $resource.
- * Callers must check DAV_Multistatus::active() afterwards.
- * @param DAV_Resource $resource
- * @throws DAV_Status
- */
-protected static function delete( $resource ) {
-  $parent = $resource->collection();
-  self::delete_member($parent, substr( $resource->path, strlen( $parent->path ) ) );
-}
-
-
-/**
  * @param DAV_Collection $resource
  * @param string $destination
  * @param string $dr destinationRoot
  */
 private function copy_recursively( $resource, $destination, $dr = null ) {
   if (!$dr) $dr = $destination;
-  elseif ($dr == $resource->path) return;
+  elseif ($dr === $resource->path) return;
+  $resource->assert(DAVACL::PRIV_READ);
   $resource->method_COPY($destination);
   if ( ! $resource instanceof DAV_Collection ||
        DAV::DEPTH_INF !== $this->depth() )

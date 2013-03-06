@@ -94,7 +94,7 @@ public function __construct($arg = array()) {
  */
 public function toXML() {
   $t_lockroot = "\n<D:lockroot><D:href>{$this->lockroot}</D:href></D:lockroot>";
-  if ( $this->timeout == 0 )
+  if ( $this->timeout === 0 )
     $t_timeout = 'Infinite';
   else {
     $t_timeout = $this->timeout - time();

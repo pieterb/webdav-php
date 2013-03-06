@@ -98,7 +98,7 @@ public function output() {
       var_export($this->getMessage(), true)
     );
 
-  if ( DAV::HTTP_UNAUTHORIZED == $status &&
+  if ( DAV::HTTP_UNAUTHORIZED === $status &&
        DAV::$ACLPROVIDER &&
        DAV::$ACLPROVIDER->unauthorized() )
     return;

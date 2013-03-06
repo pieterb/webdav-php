@@ -108,9 +108,9 @@ private function parse_expand_property_recursively($element) {
   $childNodes = $element->childNodes;
   $retval = array();
   for ($i = 0; $child = $childNodes->item($i); $i++)
-    if ( XML_ELEMENT_NODE == $child->nodeType &&
-         'property' == $child->localName &&
-         'DAV:' == $child->namespaceURI ) {
+    if ( XML_ELEMENT_NODE === $child->nodeType &&
+         'property' === $child->localName &&
+         'DAV:' === $child->namespaceURI ) {
       $namespaceURI = $child->attributes->getNamedItem('namespace');
       $namespaceURI = $namespaceURI ? $namespaceURI->value : 'DAV:';
       if ( !( $localName = $child->attributes->getNamedItem('name') ) )
@@ -220,7 +220,7 @@ private function handle_acl_principal_prop_set($resource) {
     throw DAV::forbidden();
   $principals = array();
   foreach ($resource->user_prop_acl() as $ace) {
-    if ('/' == $ace->principal[0] )
+    if ('/' === $ace->principal[0] )
       $principals[$ace->principal] = true;
     elseif ( isset(DAVACL::$PRINCIPALS[$ace->principal] ) )
       continue;

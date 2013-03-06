@@ -342,9 +342,9 @@ public static function forbidden( $info = null ) {
  */
 public static function expand($property) {
   $property = explode(' ', $property);
-  if (2 != count($property))
+  if (2 !== count($property))
     throw new DAV_Status(DAV::HTTP_INTERNAL_SERVER_ERROR);
-  return ('DAV:' == $property[0] )
+  return ('DAV:' === $property[0] )
     ? ( 'D:' . $property[1] )
     : ( $property[1] . " xmlns=\"{$property[0]}\"" );
 }
@@ -414,7 +414,7 @@ public static function recursiveSerialize(
     // The next if-statement is probably not necessary, because the DOMXML parser
     // doesn't return these attributes as the DOM tree anyway.
     if ( $elementattribute->prefix === 'xmlns' or
-         $elementattribute->namespaceURI == '' &&
+         $elementattribute->namespaceURI === '' &&
          $elementattribute->localName === 'xmlns' )
       continue;
     $p = $namespaces->prefix( $elementattribute->namespaceURI );
@@ -457,8 +457,8 @@ public static function parseURI($url, $fail = true) {
     if (isset($_SERVER['PHP_AUTH_USER']))
       $URI_REGEXP .= '(?:' . preg_quote( rawurlencode($_SERVER['PHP_AUTH_USER']) ) . '\\@)?';
     $URI_REGEXP .= preg_quote($_SERVER['SERVER_NAME'], '@') . '(?::' . $_SERVER['SERVER_PORT'] . ')';
-    if ( empty($_SERVER['HTTPS']) &&  80 == $_SERVER['SERVER_PORT'] or
-        !empty($_SERVER['HTTPS']) && 443 == $_SERVER['SERVER_PORT'] )
+    if ( empty($_SERVER['HTTPS']) &&  80 === $_SERVER['SERVER_PORT'] or
+        !empty($_SERVER['HTTPS']) && 443 === $_SERVER['SERVER_PORT'] )
       $URI_REGEXP .= '?';
     $URI_REGEXP .= ')?(/[^?#]*)(?:\\?[^#]*)?(?:#.*)?$@';
   }
@@ -548,7 +548,7 @@ public static function rawurlencode($path) {
  * @return string
  */
 public static function abs2uri( $absolutePath ) {
-  return ('/' == $absolutePath[0])
+  return ('/' === $absolutePath[0])
     ? self::urlbase() . $absolutePath
     : $absolutePath;
 }
@@ -565,8 +565,8 @@ public static function urlbase() {
     $URLBASE = empty($_SERVER['HTTPS']) ?
       'http://' : 'https://';
     $URLBASE .= $_SERVER['SERVER_NAME'];
-    if ( !empty($_SERVER['HTTPS']) && $_SERVER['SERVER_PORT'] != 443 or
-          empty($_SERVER['HTTPS']) && $_SERVER['SERVER_PORT'] != 80 )
+    if ( !empty($_SERVER['HTTPS']) && $_SERVER['SERVER_PORT'] !== 443 or
+          empty($_SERVER['HTTPS']) && $_SERVER['SERVER_PORT'] !== 80 )
       $URLBASE .= ":{$_SERVER['SERVER_PORT']}";
   }
   return $URLBASE;
@@ -612,7 +612,7 @@ public static function header($properties) {
   // A server sending a response with status code 416 (Requested range not
   // satisfiable) SHOULD include a Content-Range field with a byte-range-
   // resp-spec of "*".
-  if ( self::HTTP_REQUESTED_RANGE_NOT_SATISFIABLE == (int)$status &&
+  if ( self::HTTP_REQUESTED_RANGE_NOT_SATISFIABLE === (int)$status &&
        !isset( $properties['Content-Range'] ) )
     $properties['Content-Range'] = 'bytes */*';
   if (isset($properties['Location']))

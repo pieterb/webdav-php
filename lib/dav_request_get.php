@@ -37,6 +37,7 @@ class DAV_Request_GET extends DAV_Request_HEAD {
  */
 protected function handle( $resource )
 {
+  $resource->assert(DAVACL::PRIV_READ);
   $headers = self::common($resource);
 
   try {
@@ -80,7 +81,7 @@ protected function handle( $resource )
   $ranges = self::range_header( $entity_length );
 
   if ( ( isset($headers['status']) &&
-         substr($header['status'], 0, 3) != '200' ) ||
+         substr($header['status'], 0, 3) !== '200' ) ||
        empty( $ranges ) ) {
     // No byte ranges, or unexpected status code.
     // We just relay everything as-is.
@@ -94,14 +95,14 @@ protected function handle( $resource )
   //echo 'debugdebug'; exit;
   // One or more Ranges!
   $headers['status'] = DAV::HTTP_PARTIAL_CONTENT;
-  if (1 == count($ranges)) {
+  if (1 === count($ranges)) {
     $range = $ranges[0];
     $content_length = $range['end'] - $range['start'] + 1;
     $headers['Content-Length'] = $content_length;
     $headers['Content-Range'] =
       "bytes {$range['start']}-{$range['end']}/$entity_length";
     DAV::header($headers);
-    if ( 0 != fseek ($entity, $range['start'], SEEK_SET) ) {
+    if ( 0 !== fseek ($entity, $range['start'], SEEK_SET) ) {
       // The stream is not seekable
       $size = $range['start'];
       while ($size && !feof($entity)) {
@@ -140,7 +141,7 @@ protected function handle( $resource )
   // They are moved to the body parts.
   $partheaders = array();
   foreach (array_keys($headers) as $header)
-    if ( substr( strtolower($header), 0, 8 ) == 'content-') {
+    if ( substr( strtolower($header), 0, 8 ) === 'content-') {
       $partheaders[$header] = $headers[$header];
       unset ($headers[$header]);
     }
@@ -150,7 +151,7 @@ protected function handle( $resource )
   echo "This is a message in multipart MIME format.\r\n";
   $current_position = 0;
   foreach ($ranges as $range) {
-    if (0 == fseek ($entity, $range['start'], SEEK_SET))
+    if (0 === fseek ($entity, $range['start'], SEEK_SET))
       $current_position = $range['start'];
     elseif ($range['start'] >= $current_position) {
       $skip = $range['start'] - $current_position;
@@ -234,7 +235,7 @@ public static function range_header( $entity_length ) {
       );
     $start = $matches[1];
     $end   = $matches[2];
-    if ( '' == $start && '' == $end )
+    if ( '' === $start && '' === $end )
       throw new DAV_Status(
         DAV::HTTP_BAD_REQUEST,
         'Can\'t understand Range: ' . $_SERVER['HTTP_RANGE']
@@ -243,7 +244,7 @@ public static function range_header( $entity_length ) {
     // If the last-byte-pos value is absent, or if the value is greater than or
     // equal to the current length of the entity-body, last-byte-pos is taken to
     // be equal to one less than the current length of the entity- body in bytes.
-    if ( '' == $end ) {
+    if ( '' === $end ) {
       if (!$entity_length)
         throw new DAV_Status( DAV::HTTP_REQUESTED_RANGE_NOT_SATISFIABLE );
       $end = $entity_length - 1;
@@ -251,7 +252,7 @@ public static function range_header( $entity_length ) {
     else $end = (int)$end;
     if ( $end > $entity_length )
       $end = $entity_length - 1;
-    if ( '' == $start ) {
+    if ( '' === $start ) {
       if ( $end > $entity_length )
         throw new DAV_Status( DAV::HTTP_REQUESTED_RANGE_NOT_SATISFIABLE );
       $start = $entity_length - $end;

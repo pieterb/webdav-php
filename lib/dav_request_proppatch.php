@@ -76,9 +76,9 @@ protected function __construct() {
 //        DAV::HTTP_BAD_REQUEST,
 //        'Empty namespace URIs are not allowed.'
 //      );
-    if ('DAV:' != $element->parentNode->parentNode->namespaceURI)
+    if ('DAV:' !== $element->parentNode->parentNode->namespaceURI)
       continue;
-    if ('remove' == $element->parentNode->parentNode->localName)
+    if ('remove' === $element->parentNode->parentNode->localName)
       $this->props["{$element->namespaceURI} {$element->localName}"] = null;
     else {
       $xml = '';

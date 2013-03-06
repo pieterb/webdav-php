@@ -173,8 +173,8 @@ static private function if_header_lexer(&$pos)
     return array('ETAG', trim($etag));
 
   case 'N':
-    if ( substr( $_SERVER['HTTP_IF'], $pos, 2 ) == 'ot' ) {
-    // "Not" indicates negation
+    if ( substr( $_SERVER['HTTP_IF'], $pos, 2 ) === 'ot' ) {
+      // "Not" indicates negation
       $pos += 2;
       return array('NOT', 'Not');
     }
@@ -210,7 +210,7 @@ private function init_if_header()
 
     $path = DAV::$PATH;
     // check for URI
-    if ($token[0] == 'URI') {
+    if ($token[0] === 'URI') {
       // It's a tagged list!
       $path = DAV::parseURI($token[1]); // May throw an exception
       if ( !( $token = self::if_header_lexer($pos) ) )
@@ -220,7 +220,7 @@ private function init_if_header()
     }
 
     // sanity check
-    if ($token[0] != "CHAR" || $token[1] != '(') {
+    if ($token[0] !== "CHAR" || $token[1] !== '(') {
       throw new DAV_Status(
         DAV::HTTP_BAD_REQUEST,
         "Error while parsing If: header: Found '{$token[1]}' where '(' was expected."
@@ -233,11 +233,11 @@ private function init_if_header()
 
     // Inner parser loop:
     while ( ( $token = self::if_header_lexer($pos) ) &&
-            !( $token[0] == 'CHAR' &&
-               $token[1] == ')' ) ) {
+            !( $token[0] === 'CHAR' &&
+               $token[1] === ')' ) ) {
 
       // Initialize $bool:
-      if ( $token[0] == 'NOT' ) {
+      if ( $token[0] === 'NOT' ) {
         $bool = false;
         if ( !( $token = self::if_header_lexer($pos) ) )
           throw new DAV_Status(
@@ -347,7 +347,7 @@ public function handleRequest()
     if ( '/' !== substr( DAV::$PATH, -1 ) &&
          ( $resource &&
            $resource instanceof DAV_Collection ||
-           'MKCOL' == $_SERVER['REQUEST_METHOD'] ) ) {
+           'MKCOL' === $_SERVER['REQUEST_METHOD'] ) ) {
       DAV::$PATH .= '/';
       header('Content-Location: ' . DAV::abs2uri( DAV::$PATH ) );
     }
@@ -401,9 +401,9 @@ private function check_if_headers() {
           DAV::HTTP_BAD_REQUEST,
           'Missing required Destination: header'
         );
-      if ( '/' == substr( $this->destination(), 0, 1 ) )
+      if ( '/' === substr( $this->destination(), 0, 1 ) )
         $write_locks[ DAV::unslashify( $this->destination() ) ] = 1;
-      if ('COPY' == $_SERVER['REQUEST_METHOD'])
+      if ('COPY' === $_SERVER['REQUEST_METHOD'])
         $read_locks[DAV::unslashify(DAV::$PATH)] = 1;
       else
         $write_locks[DAV::unslashify(DAV::$PATH)] = 1;
@@ -413,7 +413,7 @@ private function check_if_headers() {
   }
   if ( !empty($write_locks) )
     foreach (array_keys($write_locks) as $p) {
-      while ($p != '/') {
+      while ($p !== '/') {
         $p = dirname($p);
         $read_locks[$p] = 1;
       }
@@ -481,7 +481,7 @@ private function check_if_header()
       // Check locks:
       $lock = DAV::$LOCKPROVIDER ? DAV::$LOCKPROVIDER->getlock($path) : null;
       if ( $values['lock'] and
-           !$lock || $values['lock'] != $lock->locktoken )
+           !$lock || $values['lock'] !== $lock->locktoken )
         continue;
 
       // Check notlocks:

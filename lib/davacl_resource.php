@@ -47,6 +47,11 @@ public function effective_acl() {
   $fsps = DAVACL_Element_supported_privilege::flatten(
     $this->user_prop_supported_privilege_set()
   );
+  DAV::debug(
+    'DAVACL_Resource ' . $this->path,
+    $this->user_prop_supported_privilege_set(),
+    $fsps
+  );
   foreach ($aces as $ace) {
     $match = false;
     switch($ace->principal) {
@@ -63,7 +68,7 @@ public function effective_acl() {
         $match = isset($principals[$this->path]);
         break;
       default:
-        if ('/' == $ace->principal[0])
+        if ('/' === $ace->principal[0])
           $match = isset($principals[$ace->principal]);
         elseif ( ( $p = $this->prop($ace->principal) ) instanceof DAV_Element_href )
           foreach ( $p->URIs as $URI )
@@ -239,7 +244,7 @@ public function user_prop_owner() {
 
 final public function set_owner($owner) {
   $owner = DAVACL::parse_hrefs($owner);
-  if (1 != count($owner->URIs))
+  if (1 !== count($owner->URIs))
     throw new DAV_Status(
       DAV::HTTP_BAD_REQUEST,
       'Illegal value for property DAV:owner.'
@@ -273,7 +278,7 @@ public function user_prop_group() { return null; }
 
 final public function set_group($group) {
   $group = DAVACL::parse_hrefs($group);
-  if (1 != count($group->URIs))
+  if (1 !== count($group->URIs))
     throw new DAV_Status(
       DAV::HTTP_BAD_REQUEST,
       'Illegal value for property DAV:group.'
@@ -328,7 +333,7 @@ final public function prop_current_user_privilege_set() {
   foreach ($cups as $cup) {
     $cup = explode(' ', $cup);
     $retval .= '<';
-    if ( 'DAV:' == $cup[0] )
+    if ( 'DAV:' === $cup[0] )
       $retval .= 'D:' . $cup[1] . '/>';
     else
       $retval .= $cup[1] . ' xmlns="' . $cup[0] . '"/>';
@@ -367,7 +372,7 @@ final public function prop_acl_restrictions() {
       foreach ($restriction as $principal)
         if ($p = DAVACL::$PRINCIPALS[$principal])
           $retval .= "\n$p";
-        elseif ('/' == $principal[0] )
+        elseif ('/' === $principal[0] )
           $retval .= "\n<D:href>" . $principal . '</D:href>';
         else
           $retval .= "\n<D:property><" . DAV::expand($principal) . '/></D:property>';

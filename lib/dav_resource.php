@@ -55,9 +55,7 @@ public function assertLock() {
 public function assertMemberLocks() {
   if ( !DAV::$LOCKPROVIDER ) return;
   if ( ! $this instanceof DAV_Collection ) return;
-  DAV::debug('assertMemberLocks called on', $this->path);
   $locks = DAV::$LOCKPROVIDER->memberLocks( $this->path );
-  DAV::debug($locks);
   $unsubmitted = array();
   foreach ($locks as $token => $lock)
     if ( !isset( DAV::$SUBMITTEDTOKENS[$token] ) )
@@ -78,7 +76,7 @@ public function assertMemberLocks() {
  * @return DAV_Resource
  */
 public function collection() {
-  return ('/' == $this->path ) ?
+  return ('/' === $this->path ) ?
     null : DAV::$REGISTRY->resource(dirname($this->path));
 }
 
@@ -116,6 +114,8 @@ public function __construct($path) {
 
 /**
  * Handle the COPY request.
+ * When this method is called, PRIV_READ has already been asserted, but not
+ * PRIV_READ_ACL.
  * This function should call DAV_Multistatus::inst()->addStatus() to report
  * partial failure. DAV_Status Sec.9.8.5 mentions the following status codes:
  * - 403 Forbidden - also applicable if source and destination are equal,
@@ -131,7 +131,7 @@ public function __construct($path) {
  * @throws DAV_Status if the request fails entirely
  */
 public function method_COPY( $path ) {
-  throw new DAV_Status( DAV::HTTP_FORBIDDEN );
+  throw new DAV_Status( DAV::HTTP_NOT_IMPLEMENTED );
 }
 
 
@@ -153,7 +153,7 @@ public function method_COPY( $path ) {
  * - 507 Insufficient Storage
  */
 public function method_COPY_external( $destination, $overwrite ) {
-  throw new DAV_Status( DAV::HTTP_BAD_GATEWAY );
+  throw new DAV_Status( DAV::HTTP_NOT_IMPLEMENTED );
 }
 
 
@@ -203,7 +203,7 @@ public function method_OPTIONS( $headers ) { return $headers; }
  * @throws DAV_Status
  */
 public function method_POST( &$headers ) {
-  throw new DAV_Status( DAV::HTTP_FORBIDDEN );
+  throw new DAV_Status( DAV::HTTP_NOT_IMPLEMENTED );
 }
 
 
@@ -271,7 +271,7 @@ public function user_prop_getcontenttype()     { return null; }
 /**
  * @return string (W/)?"<etag>" not XML, just UTF-8 text
  */
-public function user_prop_getetag()            { return null;  }
+public function user_prop_getetag()            { return null; }
 
 
 /**
@@ -456,7 +456,7 @@ final public function prop_executable() {
  * @throws DAV_Status
  */
 final public function set_executable($value) {
-  if (null !== $value) $value = ($value == 'T');
+  if (null !== $value) $value = ($value === 'T');
   return $this->user_set_executable($value);
 }
 
@@ -595,7 +595,7 @@ final public function prop_ishidden() {
  * @throws DAV_Status
  */
 final public function set_ishidden($value) {
-  if (!is_null($value)) $value = ($value == 'true');
+  if (!is_null($value)) $value = ($value === 'true');
   return $this->user_set_ishidden($value);
 }
 

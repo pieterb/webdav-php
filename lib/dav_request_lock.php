@@ -102,12 +102,12 @@ protected function __construct()
   $xpath = new DOMXPath($document);
   $xpath->registerNamespace('D', 'DAV:');
 
-  if ( $xpath->evaluate('count(/D:lockinfo/D:lockscope/D:shared)') == 1 )
+  if ( $xpath->evaluate('count(/D:lockinfo/D:lockscope/D:shared)') === 1 )
     throw new DAV_Status(DAV::HTTP_BAD_REQUEST, 'Shared locks are not supported.');
-  elseif ( $xpath->evaluate('count(/D:lockinfo/D:lockscope/D:exclusive)') != 1 )
+  elseif ( $xpath->evaluate('count(/D:lockinfo/D:lockscope/D:exclusive)') !== 1 )
     throw new DAV_Status(DAV::HTTP_BAD_REQUEST, 'No &lt;lockscope/&gt; element in LOCK request.');
 
-  if ( $xpath->evaluate('count(/D:lockinfo/D:locktype/D:write)') != 1 )
+  if ( $xpath->evaluate('count(/D:lockinfo/D:locktype/D:write)') !== 1 )
     throw new DAV_Status(
       DAV::HTTP_UNPROCESSABLE_ENTITY, 'Unknown lock type in request body'
     );
@@ -188,6 +188,7 @@ private function handleCreateLock($resource) {
     if (!$parent || !$parent->isVisible())
       throw new DAV_Status(DAV::HTTP_CONFLICT);
     $parent->assertLock();
+    $parent->assert(DAVACL::PRIV_BIND);
     $resource = $parent->create_member(basename(DAV::$PATH));
 
     if ( false !== strpos($_SERVER['HTTP_USER_AGENT'], 'Microsoft') ) {
@@ -198,9 +199,13 @@ private function handleCreateLock($resource) {
       $headers['Location'] = DAV::$PATH;
     }
   }
-  elseif ( $resource instanceof DAV_Collection &&
-             $depth === DAV::DEPTH_INF &&
-             ( $memberLocks = DAV::$LOCKPROVIDER->memberLocks( DAV::$PATH ) ) ) {
+  else {
+    $resource->assert(DAVACL::PRIV_WRITE);
+  }
+
+  if ( $resource instanceof DAV_Collection &&
+       $depth === DAV::DEPTH_INF &&
+       ( $memberLocks = DAV::$LOCKPROVIDER->memberLocks( DAV::$PATH ) ) ) {
     $memberLockPaths = array();
     foreach ($memberLocks as $memberLock)
       $memberLockPaths[] = $memberLock->lockroot;

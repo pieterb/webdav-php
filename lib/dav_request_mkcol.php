@@ -47,11 +47,12 @@ protected function handle( $resource )
   if ( !$resource or !$resource->isVisible() )
     throw new DAV_Status( DAV::HTTP_CONFLICT );
 
-  $resource->assertLock();
   if ( ! $resource instanceof DAV_Collection )
     throw new DAV_Status(DAV::HTTP_METHOD_NOT_ALLOWED);
   if ( 0 < (int)@$_SERVER['CONTENT_LENGTH'] )
     throw new DAV_Status(DAV::HTTP_UNSUPPORTED_MEDIA_TYPE);
+  $resource->assert(DAVACL::PRIV_BIND);
+  $resource->assertLock();
   $resource->method_MKCOL( basename(DAV::$PATH) );
   DAV::redirect(DAV::HTTP_CREATED, DAV::$PATH);
 }

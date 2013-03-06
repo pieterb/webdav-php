@@ -22,37 +22,37 @@
  * @package DAVACL
  */
 
-//<!ELEMENT acl (ace)* > 
-//<!ELEMENT ace ((principal | invert), (grant|deny), protected?, 
-// inherited?)> 
+//<!ELEMENT acl (ace)* >
+//<!ELEMENT ace ((principal | invert), (grant|deny), protected?,
+// inherited?)>
 //
-//<!ELEMENT principal (href) 
-// | all | authenticated | unauthenticated 
-// | property | self)> 
+//<!ELEMENT principal (href)
+// | all | authenticated | unauthenticated
+// | property | self)>
 //
-//<!ELEMENT all EMPTY> 
-//<!ELEMENT authenticated EMPTY> 
-//<!ELEMENT unauthenticated EMPTY> 
-//<!ELEMENT property ANY> 
-//<!ELEMENT self EMPTY> 
+//<!ELEMENT all EMPTY>
+//<!ELEMENT authenticated EMPTY>
+//<!ELEMENT unauthenticated EMPTY>
+//<!ELEMENT property ANY>
+//<!ELEMENT self EMPTY>
 //
-//<!ELEMENT invert principal> 
+//<!ELEMENT invert principal>
 //
-//<!ELEMENT grant (privilege+)> 
-//<!ELEMENT deny (privilege+)> 
-//<!ELEMENT privilege ANY> 
+//<!ELEMENT grant (privilege+)>
+//<!ELEMENT deny (privilege+)>
+//<!ELEMENT privilege ANY>
 //
-//<!ELEMENT protected EMPTY> 
+//<!ELEMENT protected EMPTY>
 //
-//<!ELEMENT inherited (href)> 
+//<!ELEMENT inherited (href)>
 
 /**
  * Set of DAV:href elements
  * @package DAVACL
  */
 class DAVACL_Element_ace {
-  
-    
+
+
 /**
  * @var string a path or property or predefined principal.
  */
@@ -113,7 +113,7 @@ public function __construct(
 public function toXML() {
   $retval = "<D:ace>\n";
   // First the principal (or inversion thereof):
-  if ('/' == $this->principal[0] )
+  if ('/' === $this->principal[0] )
     $principal = new DAV_Element_href( $this->principal );
   elseif ( !( $principal = @DAVACL::$PRINCIPALS[$this->principal] ) ) {
     $principal = explode(' ', $this->principal);
@@ -127,7 +127,7 @@ public function toXML() {
   $privileges = '';
   foreach ($this->privileges as $privilege) {
     $privilege = explode(' ', $privilege);
-    if ('DAV:' == $privilege[0])
+    if ('DAV:' === $privilege[0])
       $privileges .= "<D:{$privilege[1]}/>";
     else
       $privileges .= "<{$privilege[1]} xmlns=\"{$privilege[0]}\"/>";

@@ -67,21 +67,21 @@ protected function __construct() {
   foreach( $nodelist as $ace ) {
     // Find the principal element:
     $principal = $xpath->query("D:principal/* | D:invert/D:principal/*", $ace);
-    if (1 != $principal->length)
+    if (1 !== $principal->length)
       throw new DAV_Status(
         DAV::HTTP_UNPROCESSABLE_ENTITY,
         $principal->length . ' principals in ACE');
     $principal = $principal->item(0);
-    $p_invert = ('invert' == $principal->parentNode->parentNode->localName);
+    $p_invert = ('invert' === $principal->parentNode->parentNode->localName);
 
     $p = $principal->namespaceURI . ' ' . $principal->localName;
-    if ('DAV: href' == $p)
+    if ('DAV: href' === $p)
       $p_principal = trim($principal->textContent);
     elseif (isset(DAVACL::$PRINCIPALS[$p]))
       $p_principal = $p;
-    elseif ('DAV: property' == $p) {
+    elseif ('DAV: property' === $p) {
       $e = $principal->firstChild;
-      while ($e && XML_ELEMENT_NODE != $e->nodeType)
+      while ($e && XML_ELEMENT_NODE !== $e->nodeType)
         $e = $e->nextSibling;
       if (!$e)
         throw new DAV_Status(

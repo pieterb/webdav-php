@@ -47,7 +47,7 @@ private function init_range() {
     );
   $this->range_start = (int)$matches[1];
   $this->range_end   = (int)$matches[2];
-  $this->range_total = ('*' == $matches[3]) ? null : (int)$matches[3];
+  $this->range_total = ('*' === $matches[3]) ? null : (int)$matches[3];
   if ( $this->range_start > $this->range_end or
        !is_null($this->range_total) &&
        $this->range_end >= $this->range_total )
@@ -95,7 +95,7 @@ protected function handle( $resource ) {
 
   if (is_null($this->range_start)) {
     if ( isset($_SERVER['CONTENT_TYPE']) &&
-         'application/octet-stream' != $_SERVER['CONTENT_TYPE'] )
+         'application/octet-stream' !== $_SERVER['CONTENT_TYPE'] )
       try { $resource->set_getcontenttype($_SERVER['CONTENT_TYPE']); }
       catch (DAV_Status $e) {}
     if ( isset($_SERVER['HTTP_CONTENT_LANGUAGE']) )
@@ -118,7 +118,7 @@ protected function handle( $resource ) {
     if ( !is_null($cl) && (
            $this->range_start > $cl or
            !is_null($this->range_total) &&
-           $this->range_total != $cl
+           $this->range_total !== $cl
          ) )
       throw new DAV_Status( DAV::HTTP_REQUESTED_RANGE_NOT_SATISFIABLE );
     $input = fopen('php://input', 'r');

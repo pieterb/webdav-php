@@ -67,7 +67,7 @@ protected function handle( $resource ) {
   if (!DAV::$LOCKPROVIDER)
     throw new DAV_Status(DAV::HTTP_FORBIDDEN);
   $lock = DAV::$LOCKPROVIDER->getlock(DAV::$PATH);
-  if ( !$lock || $this->locktoken != $lock->locktoken )
+  if ( !$lock || $this->locktoken !== $lock->locktoken )
     throw new DAV_Status(
       DAV::HTTP_CONFLICT,
       DAV::COND_LOCK_TOKEN_MATCHES_REQUEST_URI

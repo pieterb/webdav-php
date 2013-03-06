@@ -120,7 +120,7 @@ public static function flatten($sps) {
       foreach( array( DAVACL::PRIV_WRITE_CONTENT, DAVACL::PRIV_WRITE_PROPERTIES,
                       DAVACL::PRIV_BIND, DAVACL::PRIV_UNBIND ) as $priv )
         if (!isset($children[$priv]))
-          $children[$priv] = array( 'children' => array(), 'abstract' => true );
+          $children[$priv] = array( 'children' => array($priv), 'abstract' => true );
 
     $retval = array_merge($retval, $children);
 

@@ -26,8 +26,8 @@
  * @package DAV
  */
 class DAV_Request_OPTIONS extends DAV_Request {
-  
-  
+
+
 /**
  * @param DAV_Resource $resource
  * @return void
@@ -48,7 +48,7 @@ protected function handle( $resource ) {
     $headers['Access-Control-Allow-Headers'] = $_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'];
   DAV::header( $headers );
 }
-    
-    
+
+
 } // class
 

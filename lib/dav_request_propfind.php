@@ -149,7 +149,7 @@ protected function handle( $resource ) {
    * error body.
    */
   if ( $resource instanceof DAV_Collection and
-       DAV::DEPTH_INF == $this->depth() ) {
+       DAV::DEPTH_INF === $this->depth() ) {
     //$d = debug_backtrace();
     throw new DAV_Status (
       DAV::HTTP_FORBIDDEN,
@@ -159,7 +159,7 @@ protected function handle( $resource ) {
 
   $this->handle2( $resource );
   if ( $resource instanceof DAV_Collection &&
-       DAV::DEPTH_1 == $this->depth() )
+       DAV::DEPTH_1 === $this->depth() )
     foreach ($resource as $path) {
       $subpath = DAV::$PATH . $path;
       $subresource = DAV::$REGISTRY->resource( $subpath );
