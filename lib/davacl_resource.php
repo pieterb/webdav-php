@@ -47,11 +47,6 @@ public function effective_acl() {
   $fsps = DAVACL_Element_supported_privilege::flatten(
     $this->user_prop_supported_privilege_set()
   );
-  DAV::debug(
-    'DAVACL_Resource ' . $this->path,
-    $this->user_prop_supported_privilege_set(),
-    $fsps
-  );
   foreach ($aces as $ace) {
     $match = false;
     switch($ace->principal) {
