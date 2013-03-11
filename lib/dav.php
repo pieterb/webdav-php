@@ -466,11 +466,12 @@ public static function parseURI($url, $fail = true) {
     if (isset($_SERVER['PHP_AUTH_USER']))
       $URI_REGEXP .= '(?:' . preg_quote( rawurlencode($_SERVER['PHP_AUTH_USER']) ) . '\\@)?';
     $URI_REGEXP .= preg_quote($_SERVER['SERVER_NAME'], '@') . '(?::' . $_SERVER['SERVER_PORT'] . ')';
-    if ( empty($_SERVER['HTTPS']) &&  80 === $_SERVER['SERVER_PORT'] or
-        !empty($_SERVER['HTTPS']) && 443 === $_SERVER['SERVER_PORT'] )
+    if ( empty($_SERVER['HTTPS']) &&  80 === (int)$_SERVER['SERVER_PORT'] or
+        !empty($_SERVER['HTTPS']) && 443 === (int)$_SERVER['SERVER_PORT'] )
       $URI_REGEXP .= '?';
     $URI_REGEXP .= ')?(/[^?#]*)(?:\\?[^#]*)?(?:#.*)?$@';
   }
+  trigger_error("Regexp: {$URI_REGEXP}", E_USER_WARNING);
   if ( preg_match( $URI_REGEXP, $url, $matches ) ) {
     $retval = preg_replace( '@//+@', '/', $matches[1] );
     if ( preg_match( '@(?:^|/)\\.\\.?(?:$|/)@', $retval ) ||
@@ -486,6 +487,8 @@ public static function parseURI($url, $fail = true) {
       DAV::HTTP_BAD_REQUEST,
       "Resource $url is not within the scope of this server."
     );
+  else
+    trigger_error("Resource $url is not within the scope of this server.", E_USER_WARNING);
   return $url;
 }
 
@@ -570,8 +573,8 @@ public static function urlbase() {
     $URLBASE = empty($_SERVER['HTTPS']) ?
       'http://' : 'https://';
     $URLBASE .= $_SERVER['SERVER_NAME'];
-    if ( !empty($_SERVER['HTTPS']) && $_SERVER['SERVER_PORT'] !== 443 or
-          empty($_SERVER['HTTPS']) && $_SERVER['SERVER_PORT'] !== 80 )
+    if ( !empty($_SERVER['HTTPS']) && 443 !== (int)($_SERVER['SERVER_PORT']) or
+          empty($_SERVER['HTTPS']) && 80  !== (int)($_SERVER['SERVER_PORT']) )
       $URLBASE .= ":{$_SERVER['SERVER_PORT']}";
   }
   return $URLBASE;
