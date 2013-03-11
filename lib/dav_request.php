@@ -52,23 +52,20 @@ static $ALLOWED_METHODS = array(
 
 
 /**
- * @var DAV_Request
- */
-private static $inst = null;
-/**
  * @return DAV_Request or null if some error occured.
  * @throws void
  */
 public static function inst() {
-  if ( is_null( self::$inst ) ) {
+  static $inst = null;
+  if ( is_null( $inst ) ) {
     try {
       $REQUEST_METHOD = strtoupper($_SERVER['REQUEST_METHOD']);
       if ( in_array( $REQUEST_METHOD, self::$ALLOWED_METHODS ) ) {
         $classname = "DAV_Request_{$REQUEST_METHOD}";
-        self::$inst = new $classname();
+        $inst = new $classname();
       }
       else
-        self::$inst = new DAV_Request_DEFAULT();
+        $inst = new DAV_Request_DEFAULT();
     }
     catch (DAV_Status $e) {
       if ($e instanceof DAV_Status)
@@ -82,7 +79,7 @@ public static function inst() {
       }
     }
   }
-  return self::$inst;
+  return $inst;
 }
 
 
