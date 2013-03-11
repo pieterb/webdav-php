@@ -29,7 +29,7 @@
  */
 class DAV_Request_PROPFIND extends DAV_Request {
 
-  
+
 /**
  * One of 'allprop', 'propname', or 'prop'.
  * @var string
@@ -48,7 +48,7 @@ public $props = array();
  */
 protected function __construct() {
   parent::__construct();
-  
+
   /*
    * RFC4918 §9.1:
    * A client may choose not to submit a request body.  An empty PROPFIND
@@ -57,12 +57,10 @@ protected function __construct() {
   $input = $this->inputstring();
   if (!strlen($input)) {
     $this->requestType = 'allprop';
-    //DAV::debug('Empty PROPFIND body.');
     return;
   }
-  
+
   $document = new DOMDocument();
-  //DAV::debug( var_export( array( $_SERVER, DAV_Server::inst()->inputstring() ), true ) );
   if ( ! @$document->loadXML(
            $input,
            LIBXML_NOCDATA | LIBXML_NOENT | LIBXML_NSCLEAN | LIBXML_NOWARNING
@@ -71,14 +69,14 @@ protected function __construct() {
       DAV::HTTP_BAD_REQUEST,
       'Request body is not well-formed XML.'
     );
-    
+
   $xpath = new DOMXPath($document);
   $xpath->registerNamespace('D', 'DAV:');
-  
+
   if ($xpath->evaluate('count(/D:propfind/D:propname)')) {
     $this->requestType = 'propname';
   }
-  
+
   elseif ($xpath->evaluate('count(/D:propfind/D:prop)')) {
     $this->requestType = 'prop';
     $nodelist = $xpath->query('/D:propfind/D:prop/*');
@@ -95,7 +93,7 @@ protected function __construct() {
       $this->props[] = "{$element->namespaceURI} {$element->localName}";
     }
   }
-    
+
   elseif ( $xpath->evaluate('count(/D:propfind/D:allprop)') ) {
     $this->requestType = 'allprop';
     $nodelist = $xpath->query('/D:propfind/D:include/*');
@@ -112,7 +110,7 @@ protected function __construct() {
             $this->props[] = "{$element->namespaceURI} {$element->localName}";
     }
   }
-  
+
   else throw new DAV_Status(
     DAV::HTTP_UNPROCESSABLE_ENTITY,
     'No request type in XML request body.'
@@ -151,25 +149,24 @@ protected function handle( $resource ) {
    * error body.
    */
   if ( $resource instanceof DAV_Collection and
-       DAV::DEPTH_INF == $this->depth() ) {
+       DAV::DEPTH_INF === $this->depth() ) {
     //$d = debug_backtrace();
-    //DAV::debug($d);
     throw new DAV_Status (
       DAV::HTTP_FORBIDDEN,
       DAV::COND_PROPFIND_FINITE_DEPTH
     );
   }
-  
+
   $this->handle2( $resource );
   if ( $resource instanceof DAV_Collection &&
-       DAV::DEPTH_1 == $this->depth() )
+       DAV::DEPTH_1 === $this->depth() )
     foreach ($resource as $path) {
       $subpath = DAV::$PATH . $path;
       $subresource = DAV::$REGISTRY->resource( $subpath );
       if ($subresource->isVisible())
         $this->handle2( $subresource );
     }
-    
+
   DAV_Multistatus::inst()->close();
 }
 
@@ -226,14 +223,12 @@ private function handle2( $resource ) {
  * @param array $props
  */
 private function handle3( $resource, $props ) {
-  if ($resource instanceof DAVACL_Resource)
-    $propprivs = $resource->property_priv_read($props);
+  $propprivs = $resource->property_priv_read($props);
   $response = new DAV_Element_response($resource->path);
   foreach ($props as $prop)
-    if ( $resource instanceof DAVACL_Resource &&
-         array_key_exists( $prop, $propprivs ) &&
+    if ( array_key_exists( $prop, $propprivs ) &&
          !$propprivs[$prop] )
-      $response->setStatus($prop, new DAV_Status(DAV::forbidden()));
+      $response->setStatus($prop, DAV::forbidden());
     else
       try {
         $value = $resource->prop($prop);

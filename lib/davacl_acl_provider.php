@@ -46,19 +46,12 @@ public function user_prop_current_user_principal();
  * @return array an array of paths
  */
 public function user_prop_principal_collection_set();
-  
-  
+
+
 /**
  * @return array of DAVACL_Element_supported_privilege objects.
  */
 public function user_prop_supported_privilege_set();
-
-
-/*
- * This method is called when DAV receives an 401 Unauthenticated exception.
- * @return bool true if a response has been sent to the user.
- */
-public function unauthorized();
 
 
 }

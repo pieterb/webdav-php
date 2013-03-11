@@ -130,7 +130,7 @@ public static $PRINCIPAL_PROPERTIES = array(
   self::PROP_GROUP_MEMBER_SET  => 'group_member_set',
   self::PROP_GROUP_MEMBERSHIP  => 'group_membership',
 );
-  
+
 
 public static $ACL_PROPERTIES = array(
   self::PROP_OWNER                      => 'owner',
@@ -146,64 +146,33 @@ public static $ACL_PROPERTIES = array(
 );
 
 
-public static $SUPPORTED_PROPERTIES = array(
-  // RFC4918:
-  self::PROP_CREATIONDATE       => 'creationdate',
-  self::PROP_DISPLAYNAME        => 'displayname',
-  self::PROP_GETCONTENTLANGUAGE => 'getcontentlanguage',
-  self::PROP_GETCONTENTLENGTH   => 'getcontentlength',
-  self::PROP_GETCONTENTTYPE     => 'getcontenttype',
-  self::PROP_GETETAG            => 'getetag',
-  self::PROP_GETLASTMODIFIED    => 'getlastmodified',
-  self::PROP_LOCKDISCOVERY      => 'lockdiscovery',
-  self::PROP_RESOURCETYPE       => 'resourcetype',
-  self::PROP_SUPPORTEDLOCK      => 'supportedlock',
-  self::PROP_EXECUTABLE         => 'executable',
-  self::PROP_EXECUTABLE2        => 'executable',
-  // RFC3744 principal properties:
-  self::PROP_ALTERNATE_URI_SET => 'alternate_URI_set',
-  self::PROP_PRINCIPAL_URL     => 'principal_URL',
-  self::PROP_GROUP_MEMBER_SET  => 'group_member_set',
-  self::PROP_GROUP_MEMBERSHIP  => 'group_membership',
-  // RFC3744 Access Control properties:
-  self::PROP_OWNER                      => 'owner',
-  self::PROP_GROUP                      => 'group',
-  self::PROP_SUPPORTED_PRIVILEGE_SET    => 'supported_privilege_set',
-  self::PROP_CURRENT_USER_PRIVILEGE_SET => 'current_user_privilege_set',
-  self::PROP_ACL                        => 'acl',
-  self::PROP_ACL_RESTRICTIONS           => 'acl_restrictions',
-  self::PROP_INHERITED_ACL_SET          => 'inherited_acl_set',
-  self::PROP_PRINCIPAL_COLLECTION_SET   => 'principal_collection_set',
-  // RFC3253 REPORT related properties:
-  self::PROP_SUPPORTED_REPORT_SET       => 'supported_report_set',
-  // RFC5397 Access control property:
-  self::PROP_CURRENT_USER_PRINCIPAL     => 'current_user_principal',
-);
+public static $SUPPORTED_PROPERTIES = null;
+
 
 public static $PROTECTED_PROPERTIES = array(
   // RFC4918:
-  self::PROP_CREATIONDATE               => 'creationdate',
-  self::PROP_GETCONTENTLENGTH           => 'getcontentlength',
-  self::PROP_GETETAG                    => 'getetag',
-  self::PROP_GETLASTMODIFIED            => 'getlastmodified',
-  self::PROP_LOCKDISCOVERY              => 'lockdiscovery',
-  self::PROP_RESOURCETYPE               => 'resourcetype',
-  self::PROP_SUPPORTEDLOCK              => 'supportedlock',
+  self::PROP_CREATIONDATE               => true,
+  self::PROP_GETCONTENTLENGTH           => true,
+  self::PROP_GETETAG                    => true,
+  self::PROP_GETLASTMODIFIED            => true,
+  self::PROP_LOCKDISCOVERY              => true,
+  self::PROP_RESOURCETYPE               => true,
+  self::PROP_SUPPORTEDLOCK              => true,
   // RFC3744 Principal properties
-  self::PROP_ALTERNATE_URI_SET          => 'alternate_URI_set',
-  self::PROP_PRINCIPAL_URL              => 'principal_URL',
-  self::PROP_GROUP_MEMBERSHIP           => 'group_membership',
+  self::PROP_ALTERNATE_URI_SET          => true,
+  self::PROP_PRINCIPAL_URL              => true,
+  self::PROP_GROUP_MEMBERSHIP           => true,
   // RFC3744 Access control properties
-  self::PROP_SUPPORTED_PRIVILEGE_SET    => 'supported_privilege_set',
-  self::PROP_CURRENT_USER_PRIVILEGE_SET => 'current_user_privilege_set',
-  self::PROP_ACL                        => 'acl',
-  self::PROP_ACL_RESTRICTIONS           => 'acl_restrictions',
-  self::PROP_INHERITED_ACL_SET          => 'inherited_acl_set',
-  self::PROP_PRINCIPAL_COLLECTION_SET   => 'principal_collection_set',
+  self::PROP_SUPPORTED_PRIVILEGE_SET    => true,
+  self::PROP_CURRENT_USER_PRIVILEGE_SET => true,
+  self::PROP_ACL                        => true,
+  self::PROP_ACL_RESTRICTIONS           => true,
+  self::PROP_INHERITED_ACL_SET          => true,
+  self::PROP_PRINCIPAL_COLLECTION_SET   => true,
   // RFC3253 REPORT related properties:
-  self::PROP_SUPPORTED_REPORT_SET       => 'supported_report_set',
+  self::PROP_SUPPORTED_REPORT_SET       => true,
   // RFC5397 Access control property:
-  self::PROP_CURRENT_USER_PRINCIPAL     => 'current_user_principal',
+  self::PROP_CURRENT_USER_PRINCIPAL     => true,
 );
 
 
@@ -315,6 +284,18 @@ public static $ACLPROVIDER = null;
 
 
 /**
+ * @var callable
+ */
+public static $UNAUTHORIZED = null;
+
+
+/**
+ * @var callable
+ */
+public static $FORBIDDEN = null;
+
+
+/**
  * An array of all statetokens submitted by the user in the If: header.
  * @var array <code>array( <stateToken> => <stateToken>, ... ></code>
  */
@@ -348,17 +329,18 @@ public static function var_dump($var) {
 public static function debug() {
   $data = '';
   foreach (func_get_args() as $arg)
-    $data .= "\n" . ( is_string($arg) ? $arg : self::var_dump($arg) );
+    //$data .= "\n" . ( is_string($arg) ? $arg : self::var_dump($arg) );
+    $data .= "\n" . ( is_string($arg) ? $arg : var_export($arg, true) );
   $fh = fopen( DAV::$CONFIG['debug']['file'], 'a' );
   fwrite($fh, date('r') . ":$data\n\n");
   fclose ($fh);
 }
 
 
-public static function forbidden() {
-  return ( !self::$ACLPROVIDER ||
-           self::$ACLPROVIDER->user_prop_current_user_principal() ) ?
-    self::HTTP_FORBIDDEN : self::HTTP_UNAUTHORIZED;
+public static function forbidden( $info = null ) {
+  if ( self::$FORBIDDEN )
+    return call_user_func( self::$FORBIDDEN, $info );
+  return new DAV_Status( self::HTTP_FORBIDDEN, $info );
 }
 
 
@@ -369,9 +351,9 @@ public static function forbidden() {
  */
 public static function expand($property) {
   $property = explode(' ', $property);
-  if (2 != count($property))
+  if (2 !== count($property))
     throw new DAV_Status(DAV::HTTP_INTERNAL_SERVER_ERROR);
-  return ('DAV:' == $property[0] )
+  return ('DAV:' === $property[0] )
     ? ( 'D:' . $property[1] )
     : ( $property[1] . " xmlns=\"{$property[0]}\"" );
 }
@@ -422,7 +404,8 @@ public static function recursiveSerialize(
       return
         "<?{$node->target} " . str_replace( '?>', '?&lt;', $node->data ) . '?>';
     case XML_CDATA_SECTION_NODE:
-      return '<![CDATA[' . $node->data .']]>';
+      return self::xmlescape($node->data);
+      //return '<![CDATA[' . $node->data .']]>';
     default:
       return DAV::xmlescape($node->nodeValue);
   }
@@ -432,7 +415,7 @@ public static function recursiveSerialize(
   $elementprefix = $namespaces->prefix( $node->namespaceURI );
   $elementlocalName = $node->localName;
   $retval = "<$elementprefix$elementlocalName";
-  
+
   // Attributes handling:
   $elementattributes = $node->attributes;
   $attributes = array();
@@ -440,7 +423,7 @@ public static function recursiveSerialize(
     // The next if-statement is probably not necessary, because the DOMXML parser
     // doesn't return these attributes as the DOM tree anyway.
     if ( $elementattribute->prefix === 'xmlns' or
-         $elementattribute->namespaceURI == '' &&
+         $elementattribute->namespaceURI === '' &&
          $elementattribute->localName === 'xmlns' )
       continue;
     $p = $namespaces->prefix( $elementattribute->namespaceURI );
@@ -449,15 +432,15 @@ public static function recursiveSerialize(
   }
   foreach ($attributes as $key => $value)
     $retval .= " $key=\"" . DAV::xmlescape( $value, true ) . '"';
-    
+
   // The contents of the element:
   $childXML = '';
   for ($i = 0; $childNode = $node->childNodes->item($i); $i++)
     $childXML .= self::recursiveSerialize($childNode, $namespaces);
-    
+
   if ( is_null( $p_namespaces ) )
     $retval .= $namespaces->toXML();
-    
+
   if ( $childXML !== '')
     $retval .= ">$childXML</$elementprefix$elementlocalName>";
   else
@@ -483,8 +466,8 @@ public static function parseURI($url, $fail = true) {
     if (isset($_SERVER['PHP_AUTH_USER']))
       $URI_REGEXP .= '(?:' . preg_quote( rawurlencode($_SERVER['PHP_AUTH_USER']) ) . '\\@)?';
     $URI_REGEXP .= preg_quote($_SERVER['SERVER_NAME'], '@') . '(?::' . $_SERVER['SERVER_PORT'] . ')';
-    if ( empty($_SERVER['HTTPS']) &&  80 == $_SERVER['SERVER_PORT'] or
-        !empty($_SERVER['HTTPS']) && 443 == $_SERVER['SERVER_PORT'] )
+    if ( empty($_SERVER['HTTPS']) &&  80 === $_SERVER['SERVER_PORT'] or
+        !empty($_SERVER['HTTPS']) && 443 === $_SERVER['SERVER_PORT'] )
       $URI_REGEXP .= '?';
     $URI_REGEXP .= ')?(/[^?#]*)(?:\\?[^#]*)?(?:#.*)?$@';
   }
@@ -508,23 +491,34 @@ public static function parseURI($url, $fail = true) {
 
 
 /**
- * @param string $utf8text
- * @param bool $isAttribute
- * @return string the utf8text, escaped for use in an XML text or attribute element.
+ * @param   string  $utf8text  The text to escape
+ * @return  string             The utf8text, escaped for use in an XML text or attribute element.
  */
-public static function xmlescape($utf8text, $isAttribute = false) {
+public static function xmlescape($utf8text) {
+  defined('ENT_XML1') || define('ENT_XML1', 0);
   $retval = htmlspecialchars(
-    $utf8text, $isAttribute ? ENT_QUOTES : ENT_NOQUOTES, 'UTF-8'
+    $utf8text, ENT_QUOTES | ENT_XML1, 'UTF-8'
   );
   if (empty($retval) && !empty($utf8text)) {
-    DAV::debug($utf8text . rawurlencode($utf8text));
-    return htmlspecialchars(
-      $utf8text,
-      ENT_IGNORE | ( $isAttribute ? ENT_QUOTES : ENT_NOQUOTES ),
-      'UTF-8'
-    );
+    throw new DAV_Exception('String is not UTF-8 encoded!', DAV_Exception::WRONG_CHARACTER_ENCODING);
   }
   return $retval;
+}
+
+
+/**
+ * @param string $xml
+ * @return string the utf8text, escaped for use in an XML text or attribute element.
+ */
+public static function xmlunescape($xml) {
+  if (null === $xml) return null;
+  $xml = "$xml";
+  if ( false !== strpos( $xml, '<' ) )
+    throw new DAV_Status(
+      self::HTTP_BAD_REQUEST,
+      "XML not allowed:\n$xml"
+    );
+  return htmlspecialchars_decode($xml);
 }
 
 
@@ -551,20 +545,20 @@ public static function rawurlencode($path) {
   }
   return $newurl;
 }
-  
-  
+
+
 /**
  * Translate an absolute path to a full URI.
  * @param string $absolutePath
  * @return string
  */
 public static function abs2uri( $absolutePath ) {
-  return ('/' == $absolutePath[0])
+  return ('/' === $absolutePath[0])
     ? self::urlbase() . $absolutePath
     : $absolutePath;
 }
-  
-  
+
+
 /**
  * Returns the base URI.
  * The base URI is 'protocol://server.name:port'
@@ -576,14 +570,14 @@ public static function urlbase() {
     $URLBASE = empty($_SERVER['HTTPS']) ?
       'http://' : 'https://';
     $URLBASE .= $_SERVER['SERVER_NAME'];
-    if ( !empty($_SERVER['HTTPS']) && $_SERVER['SERVER_PORT'] != 443 or
-          empty($_SERVER['HTTPS']) && $_SERVER['SERVER_PORT'] != 80 )
+    if ( !empty($_SERVER['HTTPS']) && $_SERVER['SERVER_PORT'] !== 443 or
+          empty($_SERVER['HTTPS']) && $_SERVER['SERVER_PORT'] !== 80 )
       $URLBASE .= ":{$_SERVER['SERVER_PORT']}";
   }
   return $URLBASE;
 }
-  
-  
+
+
 /**
  * The default xml header.
  * @internal
@@ -623,7 +617,7 @@ public static function header($properties) {
   // A server sending a response with status code 416 (Requested range not
   // satisfiable) SHOULD include a Content-Range field with a byte-range-
   // resp-spec of "*".
-  if ( self::HTTP_REQUESTED_RANGE_NOT_SATISFIABLE == (int)$status &&
+  if ( self::HTTP_REQUESTED_RANGE_NOT_SATISFIABLE === (int)$status &&
        !isset( $properties['Content-Range'] ) )
     $properties['Content-Range'] = 'bytes */*';
   if (isset($properties['Location']))
@@ -633,8 +627,8 @@ public static function header($properties) {
   if ($status !== null)
     header( $_SERVER['SERVER_PROTOCOL'] . ' ' . self::status_code($status) );
 }
-  
-  
+
+
 /**
  * Redirects to a URL.
  * @param int $status
@@ -666,47 +660,6 @@ public static function httpDate($timestamp) {
  */
 public static function isValidURI($uri) {
   return preg_match('@^[a-z]+:(?:%[a-fA-F0-9]{2}|[-\\w.~:/?#\\[\\]\\@!$&\'()*+,;=]+)+$@', $uri);
-}
-
-
-/**
- * @param string $path
- * @return mixed one of the following:
- * - DAV_Element_href of the lockroot of the missing token
- * - null if no lock was found.
- */
-public static function assertLock($path) {
-  if ( !self::$LOCKPROVIDER ) return null;
-  if ( ( $lock = self::$LOCKPROVIDER->getlock($path) ) &&
-       !isset( self::$SUBMITTEDTOKENS[$lock->locktoken] ) ) {
-    $lockroot = DAV::$REGISTRY->resource($lock->lockroot);
-    if (!$lockroot)
-      throw new DAV_Status(DAV::HTTP_INTERNAL_SERVER_ERROR);
-    return new DAV_Element_href(
-      $lockroot->isVisible() ?
-      $lock->lockroot : '/undisclosed-resource'
-    );
-  }
-  return null;
-}
-
-
-/**
- * @param string $path
- * @return mixed one of the following:
- * - DAV_Element_href of the lockroot of the missing token
- * - null if no lock was found.
- */
-public static function assertMemberLocks($path) {
-  if ( !self::$LOCKPROVIDER ) return null;
-  $locks = DAV::$LOCKPROVIDER->memberLocks( $path );
-  foreach ($locks as $token => $lock)
-    if ( !isset( self::$SUBMITTEDTOKENS[$token] ) )
-      return new DAV_Element_href(
-        DAV::$REGISTRY->resource($lock->lockroot)->isVisible() ?
-        $lock->lockroot : '/undisclosed-resource'
-      );
-  return null;
 }
 
 
@@ -869,5 +822,12 @@ public static function status_code($code) {
 
 } // namespace DAV
 
+
+DAV::$SUPPORTED_PROPERTIES = array_merge(
+  DAV::$WEBDAV_PROPERTIES,
+  DAV::$PRINCIPAL_PROPERTIES,
+  DAV::$ACL_PROPERTIES
+);
+
 // Read, parse and store de configuration in the ini file
-DAV::$CONFIG = parse_ini_file(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . "config.ini", true);
+DAV::$CONFIG = parse_ini_file(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'config.ini', true);

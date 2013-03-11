@@ -28,8 +28,8 @@
  * @package DAV
  */
 class DAV_Request_ACL extends DAV_Request {
-    
-  
+
+
 /**
  * @var array of DAVACL_Element_ace objects
  */
@@ -49,7 +49,7 @@ protected function __construct() {
 //      DAV::HTTP_UNPROCESSABLE_ENTITY,
 //      'Couldn\'t find a proppatch request body.'
 //    );
-    
+
   // DEBUG
   $document = new DOMDocument();
   if ( ! $document->loadXML(
@@ -59,31 +59,29 @@ protected function __construct() {
     throw new DAV_Status(
       DAV::HTTP_BAD_REQUEST, 'Request body is not well-formed XML.'
     );
-  
+
   $xpath = new DOMXPath($document);
   $xpath->registerNamespace('D', 'DAV:');
-  
+
   $nodelist = $xpath->query('/D:acl/D:ace');
-  DAV::debug($nodelist);
   foreach( $nodelist as $ace ) {
-    DAV::debug($ace);
     // Find the principal element:
     $principal = $xpath->query("D:principal/* | D:invert/D:principal/*", $ace);
-    if (1 != $principal->length)
+    if (1 !== $principal->length)
       throw new DAV_Status(
         DAV::HTTP_UNPROCESSABLE_ENTITY,
         $principal->length . ' principals in ACE');
     $principal = $principal->item(0);
-    $p_invert = ('invert' == $principal->parentNode->parentNode->localName);
-    
+    $p_invert = ('invert' === $principal->parentNode->parentNode->localName);
+
     $p = $principal->namespaceURI . ' ' . $principal->localName;
-    if ('DAV: href' == $p)
+    if ('DAV: href' === $p)
       $p_principal = trim($principal->textContent);
     elseif (isset(DAVACL::$PRINCIPALS[$p]))
       $p_principal = $p;
-    elseif ('DAV: property' == $p) {
+    elseif ('DAV: property' === $p) {
       $e = $principal->firstChild;
-      while ($e && XML_ELEMENT_NODE != $e->nodeType)
+      while ($e && XML_ELEMENT_NODE !== $e->nodeType)
         $e = $e->nextSibling;
       if (!$e)
         throw new DAV_Status(
@@ -96,7 +94,7 @@ protected function __construct() {
         DAV::HTTP_UNPROCESSABLE_ENTITY,
         "Don't understand principal element '$p'"
       );
-    
+
     // Find the grant or deny part:
     $granted = $xpath->query('D:grant/D:privilege/*', $ace);
     $denied  = $xpath->query('D:deny/D:privilege/*',  $ace);
@@ -116,7 +114,7 @@ protected function __construct() {
     $p_privileges = array();
     foreach ($privileges as $p)
       $p_privileges[] = $p->namespaceURI . ' ' . $p->localName;
-    
+
     // Finally, we look for the DAV:protected and DAV:inherited elements:
     $nodelist = $xpath->query('/D:ace/D:protected | /D:ace/D:inherited', $ace);
     if ($nodelist->length)
@@ -124,14 +122,11 @@ protected function __construct() {
         DAV::HTTP_UNPROCESSABLE_ENTITY,
         'Cannot set protected or inherited ACEs'
       );
-      
+
     $this->aces[] = new DAVACL_Element_ace(
       $p_principal, $p_invert, $p_privileges, $p_deny
     );
   }
-    
-  // DEBUG
-  //DAV::debug($this->aces);
 }
 
 
@@ -141,13 +136,10 @@ protected function __construct() {
  * @throws DAV_Status
  */
 protected function handle( $resource ) {
-  if ($lockroot = DAV::assertLock(DAV::$PATH))
-    throw new DAV_Status(
-      DAV::HTTP_LOCKED, 
-      array(DAV::COND_LOCK_TOKEN_SUBMITTED => $lockroot)
-    );
+  $resource->assertLock();
   if ( ! $resource instanceof DAVACL_Resource )
     throw new DAV_Status(DAV::HTTP_METHOD_NOT_ALLOWED);
+  $resource->assert(DAVACL::PRIV_WRITE_ACL);
   $supported = $resource->user_prop_supported_privilege_set();
   $supported = DAVACL_Element_supported_privilege::flatten($supported);
   $restrictions = $resource->user_prop_acl_restrictions();
@@ -174,9 +166,9 @@ protected function handle( $resource ) {
     }
   }
   //TODO: enforce ACL restrictions
-  $resource->method_ACL($this->aces);
+  $resource->set_acl($this->aces);
 }
-  
-  
+
+
 } // class DAV_Request_PROPPATCH
 

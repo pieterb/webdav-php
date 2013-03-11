@@ -29,7 +29,7 @@
  * |-response*
  * `-responsedescription? (not implemented)
  *   `-#PCDATA
- *   
+ *
  * response (status)
  * |-href+
  * | `-URL
@@ -43,7 +43,7 @@
  * `-location?
  *   `-href
  *     `-URL
- * 
+ *
  * response (properties)
  * |-href
  * | `-URL
@@ -69,7 +69,7 @@
  */
 class DAV_Multistatus {
 
-  
+
 private $closed = false;
 public function close() {
   if ($this->closed) return;
@@ -90,7 +90,7 @@ private $currentStatus = null;
  * @var array
  */
 private $paths = array();
-  
+
 
 /**
  * @param string $path
@@ -120,21 +120,19 @@ public function addResponse($response) {
   if ( null !== $this->currentStatus )
     $this->flushStatus();
   echo $response->toXML();
-  //DAV::debug($response->toXML($path));
-  //flush();
   return $this;
 }
 
 
 private function flushStatus() {
   echo "\n<D:response>";
-  
+
   foreach ($this->paths as $path)
     echo "\n<D:href>{$path}</D:href>";
-    
+
   $status = DAV::status_code($this->currentStatus->getCode());
   echo "\n<D:status>HTTP/1.1 $status</D:status>";
-  
+
   if (!empty($this->currentStatus->conditions)) {
     echo '<D:error>';
     foreach ($this->currentStatus->conditions as $condition => $xml) {
@@ -143,25 +141,25 @@ private function flushStatus() {
     }
     echo "\n</D:error>";
   }
-  
+
   $message = $this->currentStatus->getMessage();
   if ( !empty($message) ) {
     $message = DAV::xmlescape($message);
     echo "\n<D:responsedescription>$message</D:responsedescription>";
   }
-  
+
   if (!empty($this->currentStatus->location))
     echo "\n<D:location><D:href>" . $this->currentStatus->location .
       "</D:href></D:location>";
-    
+
   echo "\n</D:response>";
-  
+
   //flush();
   $this->currentStatus = null;
   $this->paths = array();
 }
-  
-  
+
+
 /**
  * Constructor.
  * The caller is responsible for calling DAV_Multistatus::close() as well.
@@ -195,7 +193,7 @@ public static function inst() {
 public static function active() {
   return !is_null(self::$inst);
 }
-  
-  
+
+
 } // class DAV_Status
 

@@ -28,8 +28,8 @@
  * @package DAV
  */
 interface DAV_Registry {
-  
-  
+
+
 /**
  * @return DAV_Resource or null if the resource doesn't exist.
  * @param string $path The path to the resource, with or without trailing slash.
@@ -60,5 +60,5 @@ public function shallowLock($write_paths, $read_paths);
  */
 public function shallowUnlock();
 
-  
+
 }

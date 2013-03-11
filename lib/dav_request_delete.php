@@ -17,6 +17,7 @@
  * $Id: dav_request_delete.php 3364 2011-08-04 14:11:03Z pieterb $
  **************************************************************************/
 
+
 /**
  * File documentation (who cares)
  * @package DAV
@@ -30,6 +31,10 @@
 class DAV_Request_DELETE extends DAV_Request {
 
 
+/**
+ * Sets the default depth to 'infinity'.
+ * @see DAV_Request::depth()
+ */
 public function depth() {
   $retval = parent::depth();
   return is_null($retval) ? DAV::DEPTH_INF : $retval;
@@ -43,24 +48,13 @@ public function depth() {
  */
 protected function handle( $resource )
 {
-  $parent = $resource->collection();
-  if (!$parent)
-    throw new DAV_Status(DAV::forbidden());
-  
-  $lockroot = DAV::assertLock( $parent->path );
-  if ( $lockroot )
-    throw new DAV_Status(
-      DAV::HTTP_LOCKED,
-      array( DAV::COND_LOCK_TOKEN_SUBMITTED => $lockroot )
-    );
-    
-  if ( DAV::DEPTH_INF != $this->depth() )
+  if ( DAV::DEPTH_INF !== $this->depth() )
     throw new DAV_Status(
       DAV::HTTP_BAD_REQUEST,
       'Only Depth: infinity is allowed for DELETE requests.'
     );
-  
-  self::delete_member($parent, substr( $resource->path, strlen( $parent->path ) ) );
+
+  self::delete($resource);
 
   if (DAV_Multistatus::active())
     DAV_Multistatus::inst()->close();
@@ -70,36 +64,63 @@ protected function handle( $resource )
 
 
 /**
+ * Deletes $resource.
+ * Callers must check DAV_Multistatus::active() afterwards.
+ * @param DAV_Resource $resource
+ * @throws DAV_Status
+ */
+public static function delete( $resource ) {
+  $resource->assertLock();
+  $resource->assertMemberLocks();
+  $parent = $resource->collection();
+  if (!$parent)
+    throw new DAV_Status(DAV::HTTP_FORBIDDEN);
+  $parent->assertLock();
+  $parent->assert(DAVACL::PRIV_UNBIND);
+  self::delete_member( $parent, $resource );
+}
+
+
+/**
  * Recursive helper function.
  * Callers must check DAV_Multistatus::active() afterwards.
  * @see delete()
  * @param DAV_Collection $resource
- * @param string $member
+ * @param string $memberPath a path
  * @throws DAV_Status
  */
-private static function delete_member( $resource, $member )
+private static function delete_member( $resource, $memberResource )
 {
-  $memberPath = $resource->path . $member;
-  if (( $lockroot = DAV::assertLock($memberPath) ))
-    throw new DAV_Status(
-      DAV::HTTP_LOCKED,
-      array( DAV::COND_LOCK_TOKEN_SUBMITTED => $lockroot )
-    );
-  if ( '/' == substr($member, -1) ) {
+  if ( $memberResource instanceof DAV_Collection ) {
     $failure = false;
-    $memberResource = DAV::$REGISTRY->resource($memberPath);
+    $first = true;
     foreach ($memberResource as $child)
       try {
-        self::delete_member($memberResource, $child);
+        $childResource = DAV::$REGISTRY->resource(
+          $memberResource->path . $child
+        );
+        if (!$childResource)
+          throw new DAV_Status(
+            DAV::HTTP_INTERNAL_SERVER_ERROR,
+            "Registry didn't generate resource for path " .
+              $memberResource->path . $child
+          );
+        if ($first) {
+          $memberResource->assert( DAVACL::PRIV_UNBIND );
+          $first = false;
+        }
+        self::delete_member( $memberResource, $childResource );
       }
       catch (DAV_Status $e) {
         $failure = true;
-        DAV_Multistatus::inst()->addStatus($memberResource->path . $child, $e);
+        DAV_Multistatus::inst()->addStatus( $childResource->path, $e );
       }
     if ($failure) return;
   }
-  $resource->method_DELETE($member);
-  DAV::$REGISTRY->forget($memberPath);
+  $resource->method_DELETE(
+    substr( $memberResource->path, strlen( $resource->path ) )
+  );
+  DAV::$REGISTRY->forget( $memberResource->path );
 }
 
 

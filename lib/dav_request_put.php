@@ -47,7 +47,7 @@ private function init_range() {
     );
   $this->range_start = (int)$matches[1];
   $this->range_end   = (int)$matches[2];
-  $this->range_total = ('*' == $matches[3]) ? null : (int)$matches[3];
+  $this->range_total = ('*' === $matches[3]) ? null : (int)$matches[3];
   if ( $this->range_start > $this->range_end or
        !is_null($this->range_total) &&
        $this->range_end >= $this->range_total )
@@ -75,12 +75,6 @@ protected function __construct()
  * @param DAV_Resource $resource
  */
 protected function handle( $resource ) {
-  if (( $lockroot = DAV::assertLock( $resource ? DAV::$PATH : dirname( DAV::$PATH ) ) ))
-    throw new DAV_Status(
-      DAV::HTTP_LOCKED,
-      array( DAV::COND_LOCK_TOKEN_SUBMITTED => $lockroot )
-    );
-    
   $created = false;
   if ( !$resource ) {
     if (!is_null($this->range_start))
@@ -88,17 +82,20 @@ protected function handle( $resource ) {
     $parent = DAV::$REGISTRY->resource(dirname(DAV::$PATH));
     if (!$parent || ! $parent instanceof DAV_Collection )
       throw new DAV_Status(DAV::HTTP_CONFLICT);
-        
+    $parent->assertLock();
+
     $parent->create_member( basename( DAV::$PATH ) );
     $resource = DAV::$REGISTRY->resource(DAV::$PATH);
     $created = true;
   }
   elseif ( $resource instanceof DAV_Collection )
     throw new DAV_Status( DAV::HTTP_METHOD_NOT_ALLOWED, 'Method PUT not supported on collections.' );
-    
+  else
+    $resource->assertLock();
+
   if (is_null($this->range_start)) {
     if ( isset($_SERVER['CONTENT_TYPE']) &&
-         'application/octet-stream' != $_SERVER['CONTENT_TYPE'] )
+         'application/octet-stream' !== $_SERVER['CONTENT_TYPE'] )
       try { $resource->set_getcontenttype($_SERVER['CONTENT_TYPE']); }
       catch (DAV_Status $e) {}
     if ( isset($_SERVER['HTTP_CONTENT_LANGUAGE']) )
@@ -121,7 +118,7 @@ protected function handle( $resource ) {
     if ( !is_null($cl) && (
            $this->range_start > $cl or
            !is_null($this->range_total) &&
-           $this->range_total != $cl
+           $this->range_total !== $cl
          ) )
       throw new DAV_Status( DAV::HTTP_REQUESTED_RANGE_NOT_SATISFIABLE );
     $input = fopen('php://input', 'r');
@@ -134,10 +131,9 @@ protected function handle( $resource ) {
       throw $e;
     }
   }
-  
+
   if ($etag = $resource->prop_getetag())
     header('ETag: ' . htmlspecialchars_decode($etag));
-  //DAV::debug($headers);
   if ($created)
     DAV::redirect(DAV::HTTP_CREATED, DAV::$PATH );
   else

@@ -29,7 +29,7 @@
  */
 class DAV_Request_REPORT extends DAV_Request {
 
-  
+
 /**
  * One of 'allprop', 'propname', or 'prop'.
  * @var string
@@ -54,7 +54,7 @@ private static $SUPPORTED_REPORTS = array(
  */
 protected function __construct() {
   parent::__construct();
-  
+
   /*
    * RFC4918 §9.1:
    * A client may choose not to submit a request body.  An empty PROPFIND
@@ -63,9 +63,8 @@ protected function __construct() {
   $input = $this->inputstring();
   if (!strlen($input))
     throw new DAV_Status( DAV::HTTP_BAD_REQUEST, 'Missing required request entity.' );
-  
+
   $document = new DOMDocument();
-  //DAV::debug( var_export( array( $_SERVER, DAV_Server::inst()->inputstring() ), true ) );
   if ( ! $document->loadXML(
            $input,
            LIBXML_NOCDATA | LIBXML_NOENT | LIBXML_NSCLEAN | LIBXML_NOWARNING
@@ -74,7 +73,7 @@ protected function __construct() {
       DAV::HTTP_BAD_REQUEST,
       'Request body is not well-formed XML.'
     );
-    
+
   $documentElement = $document->documentElement;
   $reportType = $documentElement->namespaceURI . ' ' . $documentElement->localName;
   $this->type = @self::$SUPPORTED_REPORTS[$reportType];
@@ -83,10 +82,10 @@ protected function __construct() {
       DAV::HTTP_UNPROCESSABLE_ENTITY,
       'Unsupported REPORT type.'
     );
-    
+
   $xpath = new DOMXPath($document);
   $xpath->registerNamespace('D', 'DAV:');
-  
+
   $parse = 'parse_' . $this->type;
   $this->$parse($document, $xpath);
 }
@@ -109,9 +108,9 @@ private function parse_expand_property_recursively($element) {
   $childNodes = $element->childNodes;
   $retval = array();
   for ($i = 0; $child = $childNodes->item($i); $i++)
-    if ( XML_ELEMENT_NODE == $child->nodeType &&
-         'property' == $child->localName &&
-         'DAV:' == $child->namespaceURI ) {
+    if ( XML_ELEMENT_NODE === $child->nodeType &&
+         'property' === $child->localName &&
+         'DAV:' === $child->namespaceURI ) {
       $namespaceURI = $child->attributes->getNamedItem('namespace');
       $namespaceURI = $namespaceURI ? $namespaceURI->value : 'DAV:';
       if ( !( $localName = $child->attributes->getNamedItem('name') ) )
@@ -181,7 +180,6 @@ protected function handle( $resource ) {
  * @param DAV_Resource $resource
  */
 private function handle_expand_property($resource) {
-  DAV::debug($this->entity);
   $response = $this->handle_expand_property_recursively( DAV::$PATH, $this->entity );
   DAV_Multistatus::inst()->addResponse($response)->close();
 }
@@ -217,11 +215,12 @@ private function handle_expand_property_recursively($path, $properties) {
 
 
 private function handle_acl_principal_prop_set($resource) {
-  DAV::debug($this->entity);
-  $resource->assert(DAVACL::PRIV_READ_ACL);
+  $ppr = $resource->property_priv_read(array(DAV::PROP_ACL));
+  if ( ! $ppr[DAV::PROP_ACL] )
+    throw DAV::forbidden();
   $principals = array();
   foreach ($resource->user_prop_acl() as $ace) {
-    if ('/' == $ace->principal[0] )
+    if ('/' === $ace->principal[0] )
       $principals[$ace->principal] = true;
     elseif ( isset(DAVACL::$PRINCIPALS[$ace->principal] ) )
       continue;

@@ -34,6 +34,7 @@ public $conditions = array();
 // The following two pseudo-constants are initialized at the bottom of this file:
 public static $OK = null;
 public static $NOT_FOUND = null;
+public static $RESPONSE_GENERATOR = null;
 
 /**
  * Constructor.
@@ -80,7 +81,7 @@ public function __construct(
   }
   parent::__construct("$info", $status);
   if ($status >= 500)
-    trigger_error("$this", E_USER_WARNING);
+    trigger_error("{$info}\n{$this}", E_USER_WARNING);
 }
 
 
@@ -89,7 +90,6 @@ public function __construct(
  * @return void
  */
 public function output() {
-  DAV::debug($this);
   $status = $this->getCode();
   if ($status < 300)
     throw new DAV_Status(
@@ -97,11 +97,12 @@ public function output() {
       "DAV_Status object with status $status " .
       var_export($this->getMessage(), true)
     );
-    
-  if ( DAV::HTTP_UNAUTHORIZED == $status &&
-       DAV::$ACLPROVIDER &&
-       DAV::$ACLPROVIDER->unauthorized() )
+
+  if ( DAV::HTTP_UNAUTHORIZED === $status &&
+       DAV::$UNAUTHORIZED ) {
+    call_user_func( DAV::$UNAUTHORIZED );
     return;
+  }
   elseif ( !empty($this->conditions) ) {
     $headers = array(
       'status' => $status,
@@ -120,12 +121,21 @@ public function output() {
   elseif ( $this->location )
     DAV::redirect($status, $this->location);
   else {
-    DAV::header(array(
-      'status' => $status,
-      'Content-Type' => 'text/plain; charset="UTF-8"'
-    ));
-    echo "HTTP/1.1 " . DAV::status_code($status) .
-    	"\n" . $this->getMessage();
+    if ( self::$RESPONSE_GENERATOR &&
+         in_array( $_SERVER['REQUEST_METHOD'],
+                   array( 'GET', 'POST' ) ) ) {
+      DAV::header(array('status' => $status));
+      call_user_func(
+        self::$RESPONSE_GENERATOR, $status, $this->getMessage()
+      );
+    } else {
+      DAV::header(array(
+        'status' => $status,
+        'Content-Type' => 'text/plain; charset="UTF-8"'
+      ));
+      echo "HTTP/1.1 " . DAV::status_code($status) .
+        "\n" . $this->getMessage();
+    }
   }
 }
 

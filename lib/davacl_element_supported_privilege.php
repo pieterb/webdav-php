@@ -33,8 +33,8 @@
  * @package DAVACL
  */
 class DAVACL_Element_supported_privilege {
-  
-  
+
+
 private $privilege;
 
 
@@ -114,11 +114,20 @@ public static function flatten($sps) {
   $retval = array();
   foreach ($sps as $sp) {
     $children = self::flatten($sp->supported_privileges);
+
+    # Add sub-privileges according to RFC3744 §3.12
+    if ( $sp->privilege === DAVACL::PRIV_WRITE )
+      foreach( array( DAVACL::PRIV_WRITE_CONTENT, DAVACL::PRIV_WRITE_PROPERTIES,
+                      DAVACL::PRIV_BIND, DAVACL::PRIV_UNBIND ) as $priv )
+        if (!isset($children[$priv]))
+          $children[$priv] = array( 'children' => array($priv), 'abstract' => true );
+
     $retval = array_merge($retval, $children);
-    
+
     $descendants = array( $sp->privilege );
-    foreach ($children as $property => $child)
+    foreach ($children as $child)
       $descendants = array_merge($descendants, $child['children']);
+
     $retval[$sp->privilege] = array(
       'children' => $descendants,
       'abstract' => $sp->abstract

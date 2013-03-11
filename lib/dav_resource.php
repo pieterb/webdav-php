@@ -28,16 +28,58 @@
  */
 
 class DAV_Resource {
-  
+
+
+/**
+ * @param string $path
+ */
+public function assertLock() {
+  if ( !DAV::$LOCKPROVIDER ) return null;
+  if ( ( $lock = DAV::$LOCKPROVIDER->getlock($this->path) ) &&
+       !isset( DAV::$SUBMITTEDTOKENS[$lock->locktoken] ) )
+    throw new DAV_Status(
+      DAV::HTTP_LOCKED, array(
+        DAV::COND_LOCK_TOKEN_SUBMITTED =>
+          new DAV_Element_href( $lock->lockroot )
+      )
+    );
+}
+
+
+/**
+ * @param string $path
+ * @return mixed one of the following:
+ * - DAV_Element_href of the lockroot of the missing token
+ * - null if no lock was found.
+ */
+public function assertMemberLocks() {
+  if ( !DAV::$LOCKPROVIDER ) return;
+  if ( ! $this instanceof DAV_Collection ) return;
+  $locks = DAV::$LOCKPROVIDER->memberLocks( $this->path );
+  $unsubmitted = array();
+  foreach ($locks as $token => $lock)
+    if ( !isset( DAV::$SUBMITTEDTOKENS[$token] ) )
+      $unsubmitted[] =
+        DAV::$REGISTRY->resource($lock->lockroot)->isVisible() ?
+        $lock->lockroot : '/';
+  if ( !empty( $unsubmitted ) )
+    throw new DAV_Status(
+      DAV::HTTP_LOCKED, array(
+        DAV::COND_LOCK_TOKEN_SUBMITTED => new DAV_Element_href($unsubmitted)
+      )
+    );
+}
+
+
 
 /**
  * @return DAV_Resource
  */
 public function collection() {
-  return ('/' == $this->path ) ?
+  return ('/' === $this->path ) ?
     null : DAV::$REGISTRY->resource(dirname($this->path));
 }
-  
+
 
 /**
  * @return bool
@@ -63,7 +105,7 @@ public function __construct($path) {
  * Report the capabilities of this resource.
  * Returns an binary ORed combination of the CAPABILITY_* constants defined in
  * this class.
- * 
+ *
  * The default implementation returns 0.
  * @return int
  */
@@ -72,6 +114,8 @@ public function __construct($path) {
 
 /**
  * Handle the COPY request.
+ * When this method is called, PRIV_READ has already been asserted, but not
+ * PRIV_READ_ACL.
  * This function should call DAV_Multistatus::inst()->addStatus() to report
  * partial failure. DAV_Status Sec.9.8.5 mentions the following status codes:
  * - 403 Forbidden - also applicable if source and destination are equal,
@@ -87,7 +131,7 @@ public function __construct($path) {
  * @throws DAV_Status if the request fails entirely
  */
 public function method_COPY( $path ) {
-  throw new DAV_Status( DAV::HTTP_FORBIDDEN );
+  throw new DAV_Status( DAV::HTTP_NOT_IMPLEMENTED );
 }
 
 
@@ -109,17 +153,20 @@ public function method_COPY( $path ) {
  * - 507 Insufficient Storage
  */
 public function method_COPY_external( $destination, $overwrite ) {
-  throw new DAV_Status( DAV::HTTP_BAD_GATEWAY );
+  throw new DAV_Status( DAV::HTTP_NOT_IMPLEMENTED );
 }
 
 
 /**
  * Handle a GET request.
- * @return resource|string a stream or a string, or null if no content.
+ * @param Hash $headers the headers that are about to be sent.
+ * @return resource|string|void a stream or a string. Alternatively, you can
+ *   start streaming output from within this method. Don't forget to send the
+ *   headers first, with <code>DAV::header($headers)</code>.
  * @throws DAV_Status
  */
 public function method_GET() {
-  return null;
+  throw new DAV_Status( DAV::HTTP_NOT_IMPLEMENTED );
 }
 
 
@@ -137,25 +184,9 @@ public function method_HEAD() {
 }
 
 
-/*
- * Handle a GET request.
- * @param array &$headers Headers you want to submit in the HTTP response.
- * The following headers are set automatically if you don't return them:
- * - Content-Type
- * - Content-Length
- * - ETag
- * - Last-Modified
- * @return mixed either a non-seekable stream or a string.
- * @throws DAV_Status
- */
-//public function method_GET_unseekable( &$headers ) {
-//  throw new DAV_Status( DAV::HTTP_FORBIDDEN );
-//}
-
-
 /**
  * @param array $headers By default, DAV_Server returns same standard response
- * to an OPTIONS request. This method allows you to filter this response. 
+ * to an OPTIONS request. This method allows you to filter this response.
  * Especially, you may want to override the default Allow: and DAV: headers.
  * @return array the $headers array
  * @throws DAV_Status You could throw a DAV_Status if you think this is
@@ -172,7 +203,7 @@ public function method_OPTIONS( $headers ) { return $headers; }
  * @throws DAV_Status
  */
 public function method_POST( &$headers ) {
-  throw new DAV_Status( DAV::HTTP_FORBIDDEN );
+  throw new DAV_Status( DAV::HTTP_NOT_IMPLEMENTED );
 }
 
 
@@ -183,7 +214,7 @@ public function method_POST( &$headers ) {
  * @return void
  */
 public function method_PUT($stream) {
-  throw new DAV_Status( DAV::HTTP_FORBIDDEN );
+  throw new DAV_Status( DAV::HTTP_NOT_IMPLEMENTED );
 }
 
 
@@ -240,7 +271,7 @@ public function user_prop_getcontenttype()     { return null; }
 /**
  * @return string (W/)?"<etag>" not XML, just UTF-8 text
  */
-public function user_prop_getetag()            { return null;  }
+public function user_prop_getetag()            { return null; }
 
 
 /**
@@ -294,6 +325,30 @@ public function propname() {
 
 
 /**
+ * By default, all properties are readable.
+ * @param array $properties
+ * @return array an array of (property => isReadable) pairs.
+ */
+public function property_priv_read($properties) {
+  $retval = array();
+  foreach ($properties as $prop) $retval[$prop] = true;
+  return $retval;
+}
+
+
+/**
+ * By default, all properties are not writable.
+ * @param array $properties
+ * @return array an array of (property => isWritable) pairs.
+ */
+public function property_priv_write($properties) {
+  $retval = array();
+  foreach ($properties as $prop) $retval[$prop] = false;
+  return $retval;
+}
+
+
+/**
  * All available properties of the current resource.
  * This method must return an array with ALL property names as keys and a
  * boolean as value, indicating if the property should be returned in an
@@ -321,20 +376,20 @@ protected function user_prop($propname) {
  * @param string $value an XML fragment, or null to unset the property.
  * @return void
  * @throws DAV_Status §9.2.1 specifically mentions the following statusses.
- * - 200 (OK): The property set or change succeeded. Note that if this appears 
- *   for one property, it appears for every property in the response, due to the 
+ * - 200 (OK): The property set or change succeeded. Note that if this appears
+ *   for one property, it appears for every property in the response, due to the
  *   atomicity of PROPPATCH.
- * - 403 (Forbidden): The client, for reasons the server chooses not to 
+ * - 403 (Forbidden): The client, for reasons the server chooses not to
  *   specify, cannot alter one of the properties.
- * - 403 (Forbidden): The client has attempted to set a protected property, such 
- *   as DAV:getetag. If returning this error, the server SHOULD use the 
- *   precondition code 'cannot-modify-protected-property' inside the response 
+ * - 403 (Forbidden): The client has attempted to set a protected property, such
+ *   as DAV:getetag. If returning this error, the server SHOULD use the
+ *   precondition code 'cannot-modify-protected-property' inside the response
  *   body.
- * - 409 (Conflict): The client has provided a value whose semantics are not 
+ * - 409 (Conflict): The client has provided a value whose semantics are not
  *   appropriate for the property.
- * - 424 (Failed Dependency): The property change could not be made because of 
+ * - 424 (Failed Dependency): The property change could not be made because of
  *   another property change that failed.
- * - 507 (Insufficient Storage): The server did not have sufficient space to 
+ * - 507 (Insufficient Storage): The server did not have sufficient space to
  *   record the property.
  */
 protected function user_set($propname, $value = null) {
@@ -401,7 +456,7 @@ final public function prop_executable() {
  * @throws DAV_Status
  */
 final public function set_executable($value) {
-  if (null !== $value) $value = ($value == 'T');
+  if (null !== $value) $value = ($value === 'T');
   return $this->user_set_executable($value);
 }
 
@@ -411,10 +466,7 @@ final public function set_executable($value) {
  * @throws DAV_Status
  */
 protected function user_set_executable($value) {
-  throw new DAV_Status(
-    DAV::HTTP_PRECONDITION_FAILED,
-    DAV::COND_CANNOT_MODIFY_PROTECTED_PROPERTY
-  );
+  throw new DAV_Status( DAV::HTTP_FORBIDDEN );
 }
 
 
@@ -451,10 +503,7 @@ final public function set_getcontentlanguage($value) {
  * @throws DAV_Status
  */
 protected function user_set_getcontentlanguage($value) {
-  throw new DAV_Status(
-    DAV::HTTP_PRECONDITION_FAILED,
-    DAV::COND_CANNOT_MODIFY_PROTECTED_PROPERTY
-  );
+  throw new DAV_Status( DAV::HTTP_FORBIDDEN );
 }
 
 
@@ -488,7 +537,7 @@ final public function set_getcontenttype($value) {
     //                | "," | ";" | ":" | "\" | <">
     //                | "/" | "[" | "]" | "?" | "="
     //                | "{" | "}" | SP | HT
-    
+
     // A token. Note that it's escaped for use between @@ delimiters.
     $token = "[^\\x00-\\x20\\x7f-\\xff\\(\\)<>\\@,;:\\\\\"/\\[\\]?={}]+";
     //                                   escaped^         ^unescaped
@@ -509,10 +558,7 @@ final public function set_getcontenttype($value) {
  * @throws DAV_Status
  */
 protected function user_set_getcontenttype($value) {
-  throw new DAV_Status(
-    DAV::HTTP_PRECONDITION_FAILED,
-    DAV::COND_CANNOT_MODIFY_PROTECTED_PROPERTY
-  );
+  throw new DAV_Status( DAV::HTTP_FORBIDDEN );
 }
 
 
@@ -549,7 +595,7 @@ final public function prop_ishidden() {
  * @throws DAV_Status
  */
 final public function set_ishidden($value) {
-  if (!is_null($value)) $value = ($value == 'true');
+  if (!is_null($value)) $value = ($value === 'true');
   return $this->user_set_ishidden($value);
 }
 
@@ -559,10 +605,7 @@ final public function set_ishidden($value) {
  * @throws DAV_Status
  */
 //protected function user_set_ishidden($value) {
-//  throw new DAV_Status(
-//    DAV::HTTP_PRECONDITION_FAILED,
-//    array(DAV::COND_CANNOT_MODIFY_PROTECTED_PROPERTY)
-//  );
+//  throw new DAV_Status( DAV::HTTP_FORBIDDEN );
 //}
 
 
@@ -636,8 +679,6 @@ EOS;
 public function prop($propname) {
   if ($method = @DAV::$WEBDAV_PROPERTIES[$propname])
     return call_user_func(array($this, "prop_$method"));
-    //$propname = DAV::$SUPPORTED_PROPERTIES[$propname];
-    //return "<$propname>$value</$propname>";
   return $this->user_prop($propname);
 }
 
@@ -657,15 +698,15 @@ public function storeProperties() {
  * @param string $value an XML fragment, or null to unset the property.
  * @return void
  * @throws DAV_Status §9.2.1 specifically mentions o.a. the following statusses.
- * - 403 (Forbidden): The client, for reasons the server chooses not to 
+ * - 403 (Forbidden): The client, for reasons the server chooses not to
  *   specify, cannot alter one of the properties.
- * - 403 (Forbidden): The client has attempted to set a protected property, such 
- *   as DAV:getetag. If returning this error, the server SHOULD use the 
- *   precondition code 'cannot-modify-protected-property' inside the response 
+ * - 403 (Forbidden): The client has attempted to set a protected property, such
+ *   as DAV:getetag. If returning this error, the server SHOULD use the
+ *   precondition code 'cannot-modify-protected-property' inside the response
  *   body.
- * - 409 (Conflict): The client has provided a value whose semantics are not 
+ * - 409 (Conflict): The client has provided a value whose semantics are not
  *   appropriate for the property.
- * - 507 (Insufficient Storage): The server did not have sufficient space to 
+ * - 507 (Insufficient Storage): The server did not have sufficient space to
  *   record the property.
  */
 public function method_PROPPATCH($propname, $value = null) {
@@ -676,4 +717,4 @@ public function method_PROPPATCH($propname, $value = null) {
 
 
 } // class DAV_Resource
-  
+

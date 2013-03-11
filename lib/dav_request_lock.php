@@ -28,8 +28,8 @@
  * @package DAV
  */
 class DAV_Request_LOCK extends DAV_Request {
-    
-    
+
+
 /**
  * @var string XML fragment
  */
@@ -81,37 +81,37 @@ protected function __construct()
 {
   parent::__construct();
   $this->init_timeout();
-  
+
   $input = $this->inputstring();
   if (empty($input)) return;
 
   // New lock!
   $this->newlock = true;
-  
+
   $document = new DOMDocument();
   $result = $document->loadXML(
     $input,
     LIBXML_NOCDATA | LIBXML_NOENT | LIBXML_NSCLEAN | LIBXML_NOWARNING
   );
-  
+
   if (!$result)
     throw new DAV_Status(
       DAV::HTTP_BAD_REQUEST, 'Request body is not well-formed XML.'
     );
-    
+
   $xpath = new DOMXPath($document);
   $xpath->registerNamespace('D', 'DAV:');
-  
-  if ( $xpath->evaluate('count(/D:lockinfo/D:lockscope/D:shared)') == 1 )
+
+  if ( $xpath->evaluate('count(/D:lockinfo/D:lockscope/D:shared)') === 1 )
     throw new DAV_Status(DAV::HTTP_BAD_REQUEST, 'Shared locks are not supported.');
-  elseif ( $xpath->evaluate('count(/D:lockinfo/D:lockscope/D:exclusive)') != 1 )
+  elseif ( $xpath->evaluate('count(/D:lockinfo/D:lockscope/D:exclusive)') !== 1 )
     throw new DAV_Status(DAV::HTTP_BAD_REQUEST, 'No &lt;lockscope/&gt; element in LOCK request.');
-    
-  if ( $xpath->evaluate('count(/D:lockinfo/D:locktype/D:write)') != 1 )
+
+  if ( $xpath->evaluate('count(/D:lockinfo/D:locktype/D:write)') !== 1 )
     throw new DAV_Status(
       DAV::HTTP_UNPROCESSABLE_ENTITY, 'Unknown lock type in request body'
     );
-    
+
   $ownerlist = $xpath->query('/D:lockinfo/D:owner');
   if ($ownerlist->length) {
     $ownerxml = '';
@@ -120,7 +120,6 @@ protected function __construct()
       $ownerxml .= DAV::recursiveSerialize($child);
     $this->owner = $ownerxml;
   }
-  $this->newlock = true;
 }
 
 
@@ -137,7 +136,7 @@ public function depth() {
  */
 protected function handle( $resource ) {
   if (!DAV::$LOCKPROVIDER)
-    throw new DAV_Status(DAV::HTTP_FORBIDDEN);
+    throw new DAV_Status(DAV::HTTP_NOT_IMPLEMENTED);
   return $this->newlock ?
     $this->handleCreateLock($resource) :
     $this->handleRefreshLock($resource);
@@ -161,50 +160,60 @@ protected function handle( $resource ) {
  * @throws DAV_Status
  */
 private function handleCreateLock($resource) {
-  if ( ! $resource &&
-       ( $lockroot = DAV::assertLock( dirname( DAV::$PATH ) ) ) )
-    throw new DAV_Status(
-      DAV::HTTP_LOCKED,
-      array( DAV::COND_LOCK_TOKEN_SUBMITTED => $lockroot )
-    );
-    
   // Check conflicting (parent) locks:
   if ( ( $lock = DAV::$LOCKPROVIDER->getlock( DAV::$PATH ) ) )
     throw new DAV_Status(
       DAV::HTTP_LOCKED,
       array( DAV::COND_NO_CONFLICTING_LOCK => new DAV_Element_href( $lock->lockroot ) )
     );
-  if ( DAV::$LOCKPROVIDER->memberLocks( DAV::$PATH ) )
-    throw new DAV_Status(
-      DAV::HTTP_LOCKED,
-      DAV::COND_NO_CONFLICTING_LOCK
-    );
+
   // Find out the depth:
   $depth = $this->depth();
-  if (DAV::DEPTH_1 == $depth)
+  if (DAV::DEPTH_1 === $depth)
     throw new DAV_Status(
       DAV::HTTP_BAD_REQUEST,
       'Depth: 1 is not supported for method LOCK.'
     );
-    
-  // Check unmapped collection resource:
-  if ( !$resource && substr( DAV::$PATH, -1 ) === '/' )
-    throw new DAV_Status(
-      DAV::HTTP_NOT_FOUND,
-      'Unmapped collection resource'
-    );
-    
+
+
   $headers = array( 'Content-Type' => 'application/xml; charset="utf-8"' );
   if ( !$resource ) {
+    // Check unmapped collection resource:
+    if ( substr( DAV::$PATH, -1 ) === '/' )
+      throw new DAV_Status(
+        DAV::HTTP_NOT_FOUND,
+        'Unmapped collection resource'
+      );
     $parent = DAV::$REGISTRY->resource(dirname(DAV::$PATH));
     if (!$parent || !$parent->isVisible())
       throw new DAV_Status(DAV::HTTP_CONFLICT);
+    $parent->assertLock();
+    $parent->assert(DAVACL::PRIV_BIND);
     $resource = $parent->create_member(basename(DAV::$PATH));
-    // For M$, we need to mimic RFC2518:
-    if ( false === strpos($_SERVER['HTTP_USER_AGENT'], 'Microsoft') ) {
+
+    if ( false !== strpos($_SERVER['HTTP_USER_AGENT'], 'Microsoft') ) {
+      $headers['status'] = DAV::HTTP_OK;
+    } else {
+      // For M$, we need to mimic RFC2518:
       $headers['status'] = DAV::HTTP_CREATED;
       $headers['Location'] = DAV::$PATH;
     }
+  }
+  else {
+    $resource->assert(DAVACL::PRIV_WRITE);
+  }
+
+  if ( $resource instanceof DAV_Collection &&
+       $depth === DAV::DEPTH_INF &&
+       ( $memberLocks = DAV::$LOCKPROVIDER->memberLocks( DAV::$PATH ) ) ) {
+    $memberLockPaths = array();
+    foreach ($memberLocks as $memberLock)
+      $memberLockPaths[] = $memberLock->lockroot;
+    throw new DAV_Status(
+      DAV::HTTP_LOCKED, array(
+        DAV::COND_NO_CONFLICTING_LOCK => new DAV_Element_href($memberLockPaths)
+      )
+    );
   }
 
   $token = DAV::$LOCKPROVIDER->setlock(
@@ -212,7 +221,7 @@ private function handleCreateLock($resource) {
   );
   DAV::$SUBMITTEDTOKENS[$token] = $token;
   $headers['Lock-Token'] = "<{$token}>";
-  
+
   if ( !( $lockdiscovery = $resource->prop_lockdiscovery() ) )
     throw new DAV_Status( DAV::HTTP_INTERNAL_SERVER_ERROR );
 
@@ -233,15 +242,20 @@ private function handleRefreshLock($resource) {
   if ( !isset( $if_header[DAV::$PATH] ) ||
        !$if_header[DAV::$PATH]['lock'] )
     throw new DAV_Status(
-      DAV::HTTP_BAD_REQUEST,
-      DAV::COND_LOCK_TOKEN_SUBMITTED
+      DAV::HTTP_BAD_REQUEST, array(
+        DAV::COND_LOCK_TOKEN_SUBMITTED => new DAV_Element_href(DAV::$PATH)
+      )
     );
   if ( !( $lock = DAV::$LOCKPROVIDER->getlock(DAV::$PATH) ) )
     throw new DAV_Status(
       DAV::HTTP_PRECONDITION_FAILED,
       array(DAV::COND_LOCK_TOKEN_MATCHES_REQUEST_URI)
     );
-  DAV::$LOCKPROVIDER->refresh( $lock->lockroot, $lock->locktoken, $this->timeout );
+  DAV::$LOCKPROVIDER->refresh(
+    $lock->lockroot,
+    $lock->locktoken,
+    $this->timeout
+  );
 
   if ( !( $lockdiscovery = $resource->prop_lockdiscovery() ) )
     throw new DAV_Status( DAV::HTTP_INTERNAL_SERVER_ERROR );

@@ -27,8 +27,8 @@
  * @package DAVACL
  */
 abstract class DAVACL_Resource extends DAV_Resource {
-  
-  
+
+
 private $eaclCache = null;
 /**
  * Called by self::assert() and self::prop_current_user_privilege_set()
@@ -37,18 +37,21 @@ private $eaclCache = null;
 public function effective_acl() {
   if (null !== $this->eaclCache)
     return $this->eaclCache;
-  
+
   $this->eaclCache = array();
-  
+
   // Get a list of principals:
   $principals = $this->current_user_principals();
-  //DAV::debug($principals);
-  
+
   $aces = $this->user_prop_acl();
   $fsps = DAVACL_Element_supported_privilege::flatten(
     $this->user_prop_supported_privilege_set()
   );
-  //DAV::debug($aces);
+  DAV::debug(
+    'DAVACL_Resource ' . $this->path,
+    $this->user_prop_supported_privilege_set(),
+    $fsps
+  );
   foreach ($aces as $ace) {
     $match = false;
     switch($ace->principal) {
@@ -65,19 +68,15 @@ public function effective_acl() {
         $match = isset($principals[$this->path]);
         break;
       default:
-        //DAV::debug($principals);
-        if ('/' == $ace->principal[0])
+        if ('/' === $ace->principal[0])
           $match = isset($principals[$ace->principal]);
         elseif ( ( $p = $this->prop($ace->principal) ) instanceof DAV_Element_href )
-          //DAV::debug($p);
           foreach ( $p->URIs as $URI )
             if ( isset($principals[$URI]) )
               $match = true;
     }
     if (!$match && !$ace->invert ||
          $match &&  $ace->invert) continue;
-//    DAV::debug($ace->principal);
-//    DAV::debug($fsps);
     $privs = array();
     foreach ($ace->privileges as $p)
       $privs = array_merge($privs, $fsps[$p]['children']);
@@ -96,14 +95,14 @@ public function assert($privileges) {
   if (!is_array($privileges))
     $privileges = array((string)$privileges);
   sort($privileges);
-  
+
   $privstring = implode(',', $privileges);
   if (array_key_exists($privstring, $this->assertCache))
     if ($this->assertCache[$privstring])
       throw $this->assertCache[$privstring];
     else
       return true;
-      
+
   $eacl = $this->effective_acl();
   $flags = array();
   foreach ($privileges as $p)
@@ -122,11 +121,54 @@ public function assert($privileges) {
   foreach (array_keys($flags) as $priv)
     if (!$flags[$priv])
       $need_privileges .= '<' . DAV::expand($priv) . '/>';
-  $this->assertCache[$privstring] = new DAV_Status(
-    DAV::forbidden(),
+  $this->assertCache[$privstring] = DAV::forbidden(
     array( DAV::COND_NEED_PRIVILEGES => $need_privileges )
   );
   throw $this->assertCache[$privstring];
+}
+
+
+/**
+ * By default, properties are writeble if the current user has PRIV_WRITE_PROPERTIES.
+ * @param array $properties
+ * @return array an array of (property => isWritable) pairs.
+ */
+public function property_priv_read($properties) {
+  $retval = parent::property_priv_read($properties);
+  if (isset($properties[DAV::PROP_ACL]))
+    try {
+      $this->assert(DAVACL::PRIV_READ_ACL);
+    }
+    catch( DAV_Status $e ) {
+      $properties[DAV::PROP_ACL] = false;
+    }
+  if (isset($properties[DAV::PROP_CURRENT_USER_PRIVILEGE_SET]))
+    try {
+      $this->assert(DAVACL::PRIV_READ_CURRENT_USER_PRIVILEGE_SET);
+    }
+    catch( DAV_Status $e ) {
+      $properties[DAV::PROP_CURRENT_USER_PRIVILEGE_SET] = false;
+    }
+  return $retval;
+}
+
+
+/**
+ * By default, properties are writeble if the current user has PRIV_WRITE_PROPERTIES.
+ * @param array $properties
+ * @return array an array of (property => isWritable) pairs.
+ */
+public function property_priv_write($properties) {
+  try {
+    $this->assert(DAVACL::PRIV_WRITE_PROPERTIES);
+    $allow = true;
+  }
+  catch( DAV_Status $e ) {
+    $allow = false;
+  }
+  $retval = array();
+  foreach ($properties as $prop) $retval[$prop] = $allow;
+  return $retval;
 }
 
 
@@ -144,31 +186,26 @@ public function propname() {
 
 
 /**
- * @param array $properties
- * @return array an array of (property => isReadable) pairs.
- */
-public function property_priv_read($properties) {
-  $retval = array();
-  foreach ($properties as $prop) $retval[$prop] = true;
-  return $retval;
-}
-
-
-/**
  * @param string $propname the name of the property to be returned,
  *        eg. "mynamespace: myprop"
  * @return string XML or NULL if the property is not defined.
  */
 public function prop($propname) {
-  if ( $this instanceof DAVACL_Principal &&
-       ( $method = @DAV::$PRINCIPAL_PROPERTIES[$propname] ) or
-       ( $method = @DAV::$ACL_PROPERTIES[$propname] ) )
+  if ( ( $method = @DAV::$ACL_PROPERTIES[$propname] ) or
+       $this instanceof DAVACL_Principal &&
+       ( $method = @DAV::$PRINCIPAL_PROPERTIES[$propname] ) )
     return call_user_func(array($this, "prop_$method"));
   return parent::prop($propname);
 }
 
 
-public function method_ACL($aces) {
+
+public function set_acl($aces) {
+  return $this->user_set_acl($aces);
+}
+
+
+protected function user_set_acl($aces) {
   throw new DAV_Status( DAV::HTTP_FORBIDDEN );
 }
 
@@ -179,6 +216,12 @@ public function method_PROPPATCH($propname, $value = null) {
        ( $method = @DAV::$PRINCIPAL_PROPERTIES[$propname] ) )
     return call_user_func(array($this, "set_$method"), $value);
   return parent::method_PROPPATCH($propname, $value);
+}
+
+
+public function method_HEAD() {
+  $this->assert(DAVACL::PRIV_READ);
+  return parent::method_HEAD();
 }
 
 
@@ -201,7 +244,7 @@ public function user_prop_owner() {
 
 final public function set_owner($owner) {
   $owner = DAVACL::parse_hrefs($owner);
-  if (1 != count($owner->URIs))
+  if (1 !== count($owner->URIs))
     throw new DAV_Status(
       DAV::HTTP_BAD_REQUEST,
       'Illegal value for property DAV:owner.'
@@ -214,10 +257,7 @@ final public function set_owner($owner) {
  * @param string $owner path
  */
 protected function user_set_owner($owner) {
-  throw new DAV_Status(
-    DAV::HTTP_PRECONDITION_FAILED,
-    DAV::COND_CANNOT_MODIFY_PROTECTED_PROPERTY
-  );
+  throw new DAV_Status( DAV::HTTP_FORBIDDEN );
 }
 
 
@@ -238,7 +278,7 @@ public function user_prop_group() { return null; }
 
 final public function set_group($group) {
   $group = DAVACL::parse_hrefs($group);
-  if (1 != count($group->URIs))
+  if (1 !== count($group->URIs))
     throw new DAV_Status(
       DAV::HTTP_BAD_REQUEST,
       'Illegal value for property DAV:group.'
@@ -251,10 +291,7 @@ final public function set_group($group) {
  * @param string $group path
  */
 protected function user_set_group($group) {
-  throw new DAV_Status(
-    DAV::HTTP_PRECONDITION_FAILED,
-    DAV::COND_CANNOT_MODIFY_PROTECTED_PROPERTY
-  );
+  throw new DAV_Status( DAV::HTTP_FORBIDDEN );
 }
 
 
@@ -283,7 +320,6 @@ public function user_prop_supported_privilege_set() {
  */
 final public function prop_current_user_privilege_set() {
   $eacl = $this->effective_acl();
-  //DAV::debug($eacl);
   $grant = $deny = array();
   foreach ($eacl as $acl) {
     foreach ($acl[1] as $priv)
@@ -297,7 +333,7 @@ final public function prop_current_user_privilege_set() {
   foreach ($cups as $cup) {
     $cup = explode(' ', $cup);
     $retval .= '<';
-    if ( 'DAV:' == $cup[0] )
+    if ( 'DAV:' === $cup[0] )
       $retval .= 'D:' . $cup[1] . '/>';
     else
       $retval .= $cup[1] . ' xmlns="' . $cup[0] . '"/>';
@@ -336,9 +372,9 @@ final public function prop_acl_restrictions() {
       foreach ($restriction as $principal)
         if ($p = DAVACL::$PRINCIPALS[$principal])
           $retval .= "\n$p";
-        elseif ('/' == $principal[0] )
+        elseif ('/' === $principal[0] )
           $retval .= "\n<D:href>" . $principal . '</D:href>';
-        else 
+        else
           $retval .= "\n<D:property><" . DAV::expand($principal) . '/></D:property>';
       $retval .= "\n</D:required-principal>";
     } else
@@ -387,8 +423,8 @@ final public function prop_principal_collection_set() {
 public function user_prop_principal_collection_set() {
   return DAV::$ACLPROVIDER->user_prop_principal_collection_set();
 }
-  
-  
+
+
 /**
  * @return DAV_Element_href
  * @see DAVACL_Principal
@@ -436,11 +472,8 @@ final public function set_group_member_set($set) {
  * @see DAVACL_Principal
  * @internal must be public because of interface DAVACL_Principal.
  */
-public function user_set_group_member_set($set) {
-  throw new DAV_Status(
-    DAV::HTTP_PRECONDITION_FAILED,
-    DAV::COND_CANNOT_MODIFY_PROTECTED_PROPERTY
-  );
+protected function user_set_group_member_set($set) {
+  throw new DAV_Status( DAV::HTTP_FORBIDDEN );
 }
 
 
@@ -477,6 +510,7 @@ final private static function current_user_principals_recursive($path) {
     $retval = array_merge($retval, self::current_user_principals_recursive($group));
   return $retval;
 }
+
 
 /**
  * @return array of principals (either paths or properties),

@@ -66,7 +66,7 @@ protected static function common($resource) {
        !is_null( $tmp = $resource->prop_getcontentlanguage() ) )
     $headers['Content-Language'] = htmlspecialchars_decode( $tmp );
   $headers['Accept-Ranges'] = 'bytes';
-  
+
   return $headers;
 }
 
@@ -78,6 +78,7 @@ protected static function common($resource) {
  */
 protected function handle( $resource )
 {
+  $resource->assert(DAVACL::PRIV_READ);
   $headers = self::common($resource);
   DAV::header($headers);
   return;

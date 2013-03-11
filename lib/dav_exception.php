@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * $Id: dav_element_href.php 3364 2011-08-04 14:11:03Z pieterb $
  **************************************************************************/
 
 /**
@@ -23,49 +22,14 @@
  */
 
 /**
- * Set of DAV:href elements
+ * All non-status exceptions
  * @package DAV
  */
-class DAV_Element_href {
+class DAV_Exception extends Exception {
 
+  /**
+   * String uses a wrong character encoding
+   */
+  const WRONG_CHARACTER_ENCODING = 1;
 
-/**
- * Array of properties.
- * @var array
- */
-public $URIs;
-
-
-/**
- * Constructor
- * @param string $URI
- */
-public function __construct($URIs = null) {
-  if (is_array($URIs))
-    $this->URIs = $URIs;
-  elseif ($URIs)
-    $this->URIs = array("$URIs");
-  else
-    $this->URIs = array();
-}
-
-
-public function addURI($URI) {
-  $this->URIs[] = $URI;
-}
-
-
-/**
- * An XML representation of the object.
- * @return string
- */
-public function __toString() {
-  return empty($this->URIs) ? '' :
-    '<D:href>' . implode(
-      "</D:href>\n<D:href>", array_unique($this->URIs)
-    ). '</D:href>';
-}
-
-
-} // class DAV_Element_href
-
+} // class DAV_Exception

@@ -37,26 +37,22 @@ class DAV_Request_MKCOL extends DAV_Request {
  */
 protected function handle( $resource )
 {
-  
+
   if ($resource) {
     if ( $resource->isVisible() )
       throw new DAV_Status(DAV::HTTP_METHOD_NOT_ALLOWED);
-    throw new DAV_Status(DAV::forbidden());
+    throw DAV::forbidden();
   }
   $resource = DAV::$REGISTRY->resource(dirname(DAV::$PATH));
   if ( !$resource or !$resource->isVisible() )
     throw new DAV_Status( DAV::HTTP_CONFLICT );
-      
-  $lockroot = DAV::assertLock($resource->path);
-  if ($lockroot)
-    throw new DAV_Status(
-      DAV::HTTP_LOCKED,
-      array( DAV::COND_LOCK_TOKEN_SUBMITTED => $lockroot )
-    );
+
   if ( ! $resource instanceof DAV_Collection )
     throw new DAV_Status(DAV::HTTP_METHOD_NOT_ALLOWED);
   if ( 0 < (int)@$_SERVER['CONTENT_LENGTH'] )
     throw new DAV_Status(DAV::HTTP_UNSUPPORTED_MEDIA_TYPE);
+  $resource->assert(DAVACL::PRIV_BIND);
+  $resource->assertLock();
   $resource->method_MKCOL( basename(DAV::$PATH) );
   DAV::redirect(DAV::HTTP_CREATED, DAV::$PATH);
 }

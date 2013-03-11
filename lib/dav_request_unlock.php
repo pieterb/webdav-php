@@ -28,8 +28,8 @@
  * @package DAV
  */
 class DAV_Request_UNLOCK extends DAV_Request {
-    
-    
+
+
 /**
  * @var string XML fragment
  */
@@ -45,7 +45,7 @@ public $locktoken;
 protected function __construct()
 {
   parent::__construct();
-  
+
   // Parse the Timeout: request header:
   if ( !isset( $_SERVER['HTTP_LOCK_TOKEN']) ||
        !preg_match( '@^\\s*<([^>]+)>\\s*$@',
@@ -67,7 +67,7 @@ protected function handle( $resource ) {
   if (!DAV::$LOCKPROVIDER)
     throw new DAV_Status(DAV::HTTP_FORBIDDEN);
   $lock = DAV::$LOCKPROVIDER->getlock(DAV::$PATH);
-  if ( !$lock || $this->locktoken != $lock->locktoken )
+  if ( !$lock || $this->locktoken !== $lock->locktoken )
     throw new DAV_Status(
       DAV::HTTP_CONFLICT,
       DAV::COND_LOCK_TOKEN_MATCHES_REQUEST_URI
@@ -77,8 +77,8 @@ protected function handle( $resource ) {
     'status' => DAV::HTTP_NO_CONTENT
   ));
 }
-    
-    
+
+
 } // class DAV_Request_LOCK
 
 

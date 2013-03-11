@@ -28,8 +28,8 @@
  * @package DAV
  */
 class DAV_Request_PROPPATCH extends DAV_Request {
-    
-  
+
+
 /**
  * @var array( array( 'type'  => 'set|remove',
  *                    'name'  => '<namespaceURI> <localName>',
@@ -52,8 +52,6 @@ protected function __construct() {
 //      DAV::HTTP_BAD_REQUEST,
 //      'Couldn\'t find a proppatch request body.'
 //    );
-    
-//  DAV::debug($this->inputstring());
 
   $document = new DOMDocument();
   if ( ! $document->loadXML(
@@ -63,10 +61,10 @@ protected function __construct() {
     throw new DAV_Status(
       DAV::HTTP_BAD_REQUEST, 'Request body is not well-formed XML.'
     );
-  
+
   $xpath = new DOMXPath($document);
   $xpath->registerNamespace('D', 'DAV:');
-  
+
   $nodelist = $xpath->query('/D:propertyupdate/*/D:prop/*');
   for ($i = 0; $i < $nodelist->length; $i++) {
     $element = $nodelist->item($i);
@@ -78,9 +76,9 @@ protected function __construct() {
 //        DAV::HTTP_BAD_REQUEST,
 //        'Empty namespace URIs are not allowed.'
 //      );
-    if ('DAV:' != $element->parentNode->parentNode->namespaceURI)
+    if ('DAV:' !== $element->parentNode->parentNode->namespaceURI)
       continue;
-    if ('remove' == $element->parentNode->parentNode->localName)
+    if ('remove' === $element->parentNode->parentNode->localName)
       $this->props["{$element->namespaceURI} {$element->localName}"] = null;
     else {
       $xml = '';
@@ -89,7 +87,7 @@ protected function __construct() {
       $this->props["{$element->namespaceURI} {$element->localName}"] = $xml;
     }
   }
-  
+
 //  $nodelist = $xpath->query('/D:propertyupdate/D:remove/D:prop/*');
 //  for ($i = 0; $i < $nodelist->length; $i++) {
 //    $element = $nodelist->item($i);
@@ -107,7 +105,6 @@ protected function __construct() {
 //    $this->props["{$element->namespaceURI} {$element->localName}"] = null;
 //  }
   // DEBUG
-  //DAV::debug(var_export($this->props, true));
 }
 
 
@@ -117,27 +114,25 @@ protected function __construct() {
  * @throws DAV_Status
  */
 protected function handle( $resource ) {
-  if (($lockroot = DAV::assertLock(DAV::$PATH) ))
-    throw new DAV_Status(
-      DAV::HTTP_LOCKED,
-      array( DAV::COND_LOCK_TOKEN_SUBMITTED => $lockroot )
-    );
-  //DAV::debug(DAV::$PATH);
-  //DAV::debug($this->props);
+  $resource->assertLock();
   if (empty($this->props))
     throw new DAV_Status(
       DAV::HTTP_BAD_REQUEST,
       'No properties found in request body.'
     );
-    
+
+  $priv_write = $resource->property_priv_write( array_keys( $this->props ) );
+
   $errors = array();
   foreach ($this->props as $name => $value) {
     try {
-      if (isset(DAV::$PROTECTED_PROPERTIES[$name]))
+      if (@DAV::$PROTECTED_PROPERTIES[$name])
         throw new DAV_Status(
           DAV::HTTP_FORBIDDEN,
           DAV::COND_CANNOT_MODIFY_PROTECTED_PROPERTY
         );
+      if ( !@$priv_write[$name] )
+        throw DAV::forbidden();
       $resource->method_PROPPATCH($name, $value);
     }
     catch (DAV_Status $e) {
@@ -166,7 +161,7 @@ protected function handle( $resource ) {
   DAV_Multistatus::inst()->addResponse($response);
   DAV_Multistatus::inst()->close();
 }
-  
-  
+
+
 } // class DAV_Request_PROPPATCH
 
