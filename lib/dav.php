@@ -471,7 +471,6 @@ public static function parseURI($url, $fail = true) {
       $URI_REGEXP .= '?';
     $URI_REGEXP .= ')?(/[^?#]*)(?:\\?[^#]*)?(?:#.*)?$@';
   }
-  trigger_error("Regexp: {$URI_REGEXP}", E_USER_WARNING);
   if ( preg_match( $URI_REGEXP, $url, $matches ) ) {
     $retval = preg_replace( '@//+@', '/', $matches[1] );
     if ( preg_match( '@(?:^|/)\\.\\.?(?:$|/)@', $retval ) ||
