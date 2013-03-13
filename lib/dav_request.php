@@ -68,15 +68,12 @@ public static function inst() {
         $inst = new DAV_Request_DEFAULT();
     }
     catch (DAV_Status $e) {
-      if ($e instanceof DAV_Status)
-        $e->output();
-      else {
+      if (! $e instanceof DAV_Status)
         $e = new DAV_Status(
           DAV::HTTP_INTERNAL_SERVER_ERROR,
           "$e"
         );
-        $e->output();
-      }
+      $e->output();
     }
   }
   return $inst;

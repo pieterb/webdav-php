@@ -102,12 +102,13 @@ protected function __construct()
   $xpath = new DOMXPath($document);
   $xpath->registerNamespace('D', 'DAV:');
 
-  if ( $xpath->evaluate('count(/D:lockinfo/D:lockscope/D:shared)') === 1 )
+  if ( (int)($xpath->evaluate('count(/D:lockinfo/D:lockscope/D:shared)')) > 0 )
     throw new DAV_Status(DAV::HTTP_BAD_REQUEST, 'Shared locks are not supported.');
-  elseif ( $xpath->evaluate('count(/D:lockinfo/D:lockscope/D:exclusive)') !== 1 )
-    throw new DAV_Status(DAV::HTTP_BAD_REQUEST, 'No &lt;lockscope/&gt; element in LOCK request.');
+  elseif ( (int)($xpath->evaluate('count(/D:lockinfo/D:lockscope/D:exclusive)')) !== 1 ) {
+    throw new DAV_Status(DAV::HTTP_BAD_REQUEST, 'No &lt;lockscope/&gt; element in LOCK request, hmm.');
+  }
 
-  if ( $xpath->evaluate('count(/D:lockinfo/D:locktype/D:write)') !== 1 )
+  if ( (int)($xpath->evaluate('count(/D:lockinfo/D:locktype/D:write)')) !== 1 )
     throw new DAV_Status(
       DAV::HTTP_UNPROCESSABLE_ENTITY, 'Unknown lock type in request body'
     );
@@ -118,7 +119,7 @@ protected function __construct()
     $ownerchildnodes = $ownerlist->item(0)->childNodes;
     for ($i = 0; $child = $ownerchildnodes->item($i); $i++)
       $ownerxml .= DAV::recursiveSerialize($child);
-    $this->owner = $ownerxml;
+    $this->owner = trim($ownerxml);
   }
 }
 
@@ -192,9 +193,9 @@ private function handleCreateLock($resource) {
     $resource = $parent->create_member(basename(DAV::$PATH));
 
     if ( false !== strpos($_SERVER['HTTP_USER_AGENT'], 'Microsoft') ) {
+      // For M$, we need to mimic RFC2518:
       $headers['status'] = DAV::HTTP_OK;
     } else {
-      // For M$, we need to mimic RFC2518:
       $headers['status'] = DAV::HTTP_CREATED;
       $headers['Location'] = DAV::$PATH;
     }
