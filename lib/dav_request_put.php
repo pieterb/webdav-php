@@ -75,7 +75,8 @@ protected function __construct()
  * @param DAV_Resource $resource
  */
 protected function handle( $resource ) {
-  $created = false;
+  # This variable also flags if a new resource was created.
+  $parent = null;
   if ( !$resource ) {
     if (!is_null($this->range_start))
       throw new DAV_Status(DAV::HTTP_NOT_FOUND);
@@ -86,7 +87,6 @@ protected function handle( $resource ) {
 
     $parent->create_member( basename( DAV::$PATH ) );
     $resource = DAV::$REGISTRY->resource(DAV::$PATH);
-    $created = true;
   }
   elseif ( $resource instanceof DAV_Collection )
     throw new DAV_Status( DAV::HTTP_METHOD_NOT_ALLOWED, 'Method PUT not supported on collections.' );
@@ -109,7 +109,7 @@ protected function handle( $resource ) {
     }
     catch(DAV_Status $e) {
       fclose($input);
-      if ($created) $resource->method_DELETE();
+      if ($parent) $parent->method_DELETE( basename( DAV::$PATH ) );
       throw $e;
     }
   }
@@ -134,7 +134,7 @@ protected function handle( $resource ) {
 
   if ($etag = $resource->prop_getetag())
     header('ETag: ' . htmlspecialchars_decode($etag));
-  if ($created)
+  if ($parent)
     DAV::redirect(DAV::HTTP_CREATED, DAV::$PATH );
   else
     DAV::header(array('status' => DAV::HTTP_NO_CONTENT));

@@ -349,20 +349,17 @@ public function handleRequest()
     $this->handle( $resource );
   }
   catch (Exception $e) {
-    if ($e instanceof DAV_Status)
-      $e->output();
-    else {
+    if (! $e instanceof DAV_Status)
       $e = new DAV_Status(
         DAV::HTTP_INTERNAL_SERVER_ERROR,
         "$e"
       );
-      $e->output();
-    }
+    $e->output();
   }
-  if (DAV_Multistatus::active())
-    DAV_Multistatus::inst()->close();
   if ($shallow_lock)
     DAV::$REGISTRY->shallowUnlock();
+  if (DAV_Multistatus::active())
+    DAV_Multistatus::inst()->close();
 }
 
 
@@ -428,10 +425,13 @@ private function check_if_headers() {
   if (empty($write_locks) && empty($read_locks))
     return false;
 
+  $timestamp = time();
   DAV::$REGISTRY->shallowLock(
     array_keys( $write_locks ),
     array_keys( $read_locks )
   );
+  if (time() - $timestamp > 2)
+    DAV::debug('Shallow locking took multiple seconds:', $_SERVER);
   try { // to guarantee unlocking i.c.o. exceptions
     $this->check_if_match_header();
     $this->check_if_modified_since_header();
