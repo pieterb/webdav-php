@@ -824,12 +824,12 @@ public static function status_code($code) {
 
 } // namespace DAV
 
-
 DAV::$SUPPORTED_PROPERTIES = array_merge(
   DAV::$WEBDAV_PROPERTIES,
   DAV::$PRINCIPAL_PROPERTIES,
   DAV::$ACL_PROPERTIES
 );
+DAV::$PATH = DAV::parseURI($_SERVER['REQUEST_URI'], true);
 
 // Read, parse and store de configuration in the ini file
 DAV::$CONFIG = parse_ini_file(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'config.ini', true);

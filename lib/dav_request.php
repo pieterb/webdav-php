@@ -299,7 +299,6 @@ EOS
  */
 protected function __construct()
 {
-  DAV::$PATH = DAV::parseURI($_SERVER['REQUEST_URI'], false);
   // Prevent warning in litmus check 'delete_fragment'.
   // Should we really do this for all requests? What does the WebDAV spec
   // say about fragments?
