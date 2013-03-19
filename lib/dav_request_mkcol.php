@@ -45,7 +45,7 @@ protected function handle( $resource )
   }
   $resource = DAV::$REGISTRY->resource(dirname(DAV::$PATH));
   if ( !$resource or !$resource->isVisible() )
-    throw new DAV_Status( DAV::HTTP_CONFLICT );
+    throw new DAV_Status( DAV::HTTP_CONFLICT, 'Unable to MKCOL in unknown resource' );
 
   if ( ! $resource instanceof DAV_Collection )
     throw new DAV_Status(DAV::HTTP_METHOD_NOT_ALLOWED);

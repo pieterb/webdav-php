@@ -81,8 +81,9 @@ protected function handle( $resource ) {
     if (!is_null($this->range_start))
       throw new DAV_Status(DAV::HTTP_NOT_FOUND);
     $parent = DAV::$REGISTRY->resource(dirname(DAV::$PATH));
-    if (!$parent || ! $parent instanceof DAV_Collection )
-      throw new DAV_Status(DAV::HTTP_CONFLICT);
+    if (!$parent || ! $parent instanceof DAV_Collection ) {
+      throw new DAV_Status(DAV::HTTP_CONFLICT, 'Unable to PUT file in non-existing collection.');
+    }
     $parent->assertLock();
 
     $parent->create_member( basename( DAV::$PATH ) );

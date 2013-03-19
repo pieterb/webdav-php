@@ -110,7 +110,7 @@ protected function handle( $resource ) {
   $destinationResource = DAV::$REGISTRY->resource( $destination );
   $destinationCollection = DAV::$REGISTRY->resource( dirname( $destination ) );
   if (!$destinationCollection)
-    throw new DAV_Status(DAV::HTTP_CONFLICT);
+    throw new DAV_Status(DAV::HTTP_CONFLICT, 'Unable to COPY to unexisting destination collection' );
 
   if ( $destinationResource ) {
     if ($this->overwrite()) {

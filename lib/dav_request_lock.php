@@ -187,7 +187,7 @@ private function handleCreateLock($resource) {
       );
     $parent = DAV::$REGISTRY->resource(dirname(DAV::$PATH));
     if (!$parent || !$parent->isVisible())
-      throw new DAV_Status(DAV::HTTP_CONFLICT);
+      throw new DAV_Status(DAV::HTTP_CONFLICT, 'Unable to LOCK unexisting parent collection');
     $parent->assertLock();
     $parent->assert(DAVACL::PRIV_BIND);
     $resource = $parent->create_member(basename(DAV::$PATH));
