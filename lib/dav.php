@@ -822,6 +822,61 @@ public static function status_code($code) {
 }
 
 
+/**
+ * Determine which client is used to access the server
+ *
+ * This function maps the HTTP User-Agent header against a set of recognized
+ * rules. The return value is one of the CLIENT_* class constants. If we
+ * distinguish different versions, then they will also map to the general
+ * browser constant on a bit comparison:
+ *
+ * CLIENT_IE & CLIENT_IE8 & CLIENT_IE9 & CLIENT_IE10 === CLIENT_IE
+ *
+ * So this will check if the client is any IE browser or firefox:
+ *
+ * if ( (CLIENT_IE | CLIENT_FIREFOX) & DAV::determine_client() ) 'IE or Firefox'
+ *
+ * @return  int  One of the CLIENT_* class constants
+ */
+public static function determine_client() {
+  $user_agent = strtolower( $_SERVER['HTTP_USER_AGENT'] );
+  if ( strpos( $user_agent, 'Microsoft Data Access Internet Publishing Provider' ) )
+    return self::CLIENT_WINDOWS_WEBFOLDER;
+  if ( ( strpos( $user_agent, 'chromium' ) !== false ) ||
+       ( strpos( $user_agent, 'chrome' ) !== false ) ) {
+    return self::CLIENT_CHROME;
+       }
+  if ( strpos( $user_agent, 'firefox' ) !== false )
+    return self::CLIENT_FIREFOX;
+  if ( strpos ($user_agent, 'msie 10') !== false )
+    return self::CLIENT_IE10;
+  if ( strpos ($user_agent, 'msie 9') !== false )
+    return self::CLIENT_IE9;
+  if ( strpos ($user_agent, 'msie 8') !== false )
+    return self::CLIENT_IE8;
+  if ( strpos ($user_agent, 'msie') !== false )
+    return self::CLIENT_IE_OLD;
+  if ( strpos ($user_agent, 'safari') !== false )
+    return self::CLIENT_SAFARI;
+  if ( strpos ($user_agent, 'gvfs') !== false )
+    return self::CLIENT_GVFS;
+  return self::CLIENT_UNKNOWN;
+}
+
+// Different client constants (unfortunately, PHP 5.3 doesn't support binary notation yet. 5.4 does!)
+const CLIENT_UNKNOWN           = 0x000; // 0b000000000000;
+const CLIENT_IE                = 0x010; // 0b000000010000;
+const CLIENT_IE_OLD            = 0x011; // 0b000000010001;
+const CLIENT_IE8               = 0x012; // 0b000000010010;
+const CLIENT_IE9               = 0x014; // 0b000000010100;
+const CLIENT_IE10              = 0x018; // 0b000000011000;
+const CLIENT_CHROME            = 0x020; // 0b000000100000;
+const CLIENT_FIREFOX           = 0x040; // 0b000001000000;
+const CLIENT_SAFARI            = 0x080; // 0b000010000000;
+const CLIENT_GVFS              = 0x100; // 0b000100000000;
+const CLIENT_WINDOWS_WEBFOLDER = 0x200; // 0b000100000000;
+
+
 } // namespace DAV
 
 DAV::$SUPPORTED_PROPERTIES = array_merge(
