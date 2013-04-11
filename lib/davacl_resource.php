@@ -310,10 +310,7 @@ public function user_prop_supported_privilege_set() {
 }
 
 
-/**
- * @return string XML
- */
-final public function prop_current_user_privilege_set() {
+public function user_prop_current_user_privilege_set() {
   $eacl = $this->effective_acl();
   $grant = $deny = array();
   foreach ($eacl as $acl) {
@@ -323,8 +320,16 @@ final public function prop_current_user_privilege_set() {
       elseif (!$acl[0] && !@$deny[$priv])
         $grant[$priv] = true;
   }
-  $cups = array_keys($grant);
+  return array_keys($grant);
+}
+
+
+/**
+ * @return string XML
+ */
+final public function prop_current_user_privilege_set() {
   $retval = '';
+  $cups = $this->user_prop_current_user_privilege_set();
   foreach ($cups as $cup) {
     $cup = explode(' ', $cup);
     $retval .= '<';
