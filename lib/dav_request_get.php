@@ -86,8 +86,14 @@ protected function handle( $resource )
     // No byte ranges, or unexpected status code.
     // We just relay everything as-is.
     DAV::header($headers);
-    while (!feof($entity))
+    $time = time() + 60;
+    while (!feof($entity)) {
+      if ( time() > $time ) {
+        set_time_limit(120);
+        $time = time() + 60;
+      }
       echo fread($entity, DAV::$CHUNK_SIZE);
+    }
     fclose($entity);
     return;
   }
