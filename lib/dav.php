@@ -1,5 +1,4 @@
 <?php
-
 /*·************************************************************************
  * Copyright ©2007-2011 Pieter van Beek, Almere, The Netherlands
  * 		    <http://purl.org/net/6086052759deb18f4c0c9fb2c3d3e83e>
@@ -18,22 +17,9 @@
  **************************************************************************/
 
 /**
- * File documentation (who cares)
+ * Contains the DAV class
  * @package DAV
  */
-
-// PHP messages destroy XML output -> switch them off.
-ini_set('display_errors', 0);
-// magic quotes spoil everything.
-if (ini_get('magic_quotes_gpc'))
-  trigger_error('Please disable magic_quotes_gpc first.', E_USER_ERROR);
-
-// We use autoloading of classes:
-set_include_path(
-  dirname(__FILE__) . PATH_SEPARATOR . get_include_path()
-);
-spl_autoload_register();
-
 
 /**
  * Just a namespace for constants and helper functions
@@ -337,6 +323,11 @@ public static function debug() {
 }
 
 
+/**
+ * Returns a DAV_Status object to send HTTP 403 Forbidden response to the user
+ * @param   string      $info  A description for the end user
+ * @return  DAV_Status
+ */
 public static function forbidden( $info = null ) {
   if ( self::$FORBIDDEN )
     return call_user_func( self::$FORBIDDEN, $info );
@@ -345,6 +336,11 @@ public static function forbidden( $info = null ) {
 
 
 /**
+ * Create a piece of XML string for the property
+ * 
+ * Properties are internally handled as strings: '<namespace> <property_name>'.
+ * This function converts such a string to the correct piece of XML.
+ * 
  * @param string $property
  * @return string XML
  * @throws DAV_Status
@@ -493,6 +489,7 @@ public static function parseURI($url, $fail = true) {
 
 
 /**
+ * Escapes a string for insertion into XML
  * @param   string  $utf8text  The text to escape
  * @return  string             The utf8text, escaped for use in an XML text or attribute element.
  */
@@ -509,6 +506,7 @@ public static function xmlescape($utf8text) {
 
 
 /**
+ * Unescapes a string from XML
  * @param string $xml
  * @return string the utf8text, escaped for use in an XML text or attribute element.
  */
@@ -657,6 +655,7 @@ public static function httpDate($timestamp) {
 
 
 /**
+ * Checks whether an URI is syntactically valid
  * @param $uri string
  * @return boolean
  */
@@ -755,6 +754,7 @@ const HTTP_NOT_EXTENDED                    = 510; // an RFC2774 extension
 
 
 /**
+ * Converts an HTTP status code to a status string (code + short description)
  * @param $code int some code
  * @return string
  * @throws Exception if $code is unknown.
