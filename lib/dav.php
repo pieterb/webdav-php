@@ -336,10 +336,10 @@ public static function forbidden( $info = null ) {
 
 
 /**
- * Create a piece of XML string for the property
+ * The XML tag content for the property
  * 
  * Properties are internally handled as strings: '<namespace> <property_name>'.
- * This function converts such a string to the correct piece of XML.
+ * This function converts such a string to the correct name for use in an XML tag.
  * 
  * @param string $property
  * @return string XML
@@ -454,7 +454,8 @@ public static function recursiveSerialize(
  * @throws DAV_Status
  */
 public static function parseURI($url, $fail = true) {
-  static $URI_REGEXP = null;
+  $cache = DAV_Cache::inst( 'DAV' );
+	$URI_REGEXP = $cache->get( 'uri_regexp' );
   if (is_null($URI_REGEXP)) {
     $URI_REGEXP = '@^(?:http';
     if (!empty($_SERVER['HTTPS'])) $URI_REGEXP .= 's';
@@ -466,6 +467,7 @@ public static function parseURI($url, $fail = true) {
         !empty($_SERVER['HTTPS']) && 443 === (int)$_SERVER['SERVER_PORT'] )
       $URI_REGEXP .= '?';
     $URI_REGEXP .= ')?(/[^?#]*)(?:\\?[^#]*)?(?:#.*)?$@';
+    $cache->set( 'uri_regexp', $URI_REGEXP );
   }
   if ( preg_match( $URI_REGEXP, $url, $matches ) ) {
     $retval = preg_replace( '@//+@', '/', $matches[1] );
@@ -548,14 +550,16 @@ public static function rawurlencode($path) {
 
 
 /**
- * Translate an absolute path to a full URI.
- * @param string $absolutePath
+ * Translate a path to a full URI.
+ * @param string $path
  * @return string
  */
-public static function abs2uri( $absolutePath ) {
-  return ('/' === $absolutePath[0])
-    ? self::urlbase() . $absolutePath
-    : $absolutePath;
+public static function path2uri( $path ) {
+  if ( substr( $path, 0, 1 ) === '/' ) {
+    return self::urlbase() . $path;
+  }else{
+    return self::urlbase() . self::slashify( $_SERVER['REQUEST_URI'] ) . $path;
+  }
 }
 
 
@@ -565,7 +569,8 @@ public static function abs2uri( $absolutePath ) {
  * @return string
  */
 public static function urlbase() {
-	static $URLBASE = null;
+  $cache = DAV_Cache::inst( 'DAV' );
+	$URLBASE = $cache->get( 'urlbase' );
   if ( is_null( $URLBASE ) ) {
     $URLBASE = empty($_SERVER['HTTPS']) ?
       'http://' : 'https://';
@@ -573,6 +578,7 @@ public static function urlbase() {
     if ( !empty($_SERVER['HTTPS']) && 443 !== (int)($_SERVER['SERVER_PORT']) or
           empty($_SERVER['HTTPS']) && 80  !== (int)($_SERVER['SERVER_PORT']) )
       $URLBASE .= ":{$_SERVER['SERVER_PORT']}";
+    $cache->set( 'urlbase', $URLBASE );
   }
   return $URLBASE;
 }
@@ -586,6 +592,18 @@ public static function urlbase() {
 public static function xml_header($encoding = 'utf-8', $version = '1.0') {
   return "<?xml version=\"$version\" encoding=\"$encoding\"?>\n";
 }
+
+
+/**
+ * @var  array  All (extra) headers to sent
+ */
+private static $headers = array();
+
+
+/**
+ * @var  string  The status header (e.g. 'HTTP/1.1 200 OK')
+ */
+private static $statusHeader = null;
 
 
 /**
@@ -621,7 +639,7 @@ public static function header($properties) {
        !isset( $properties['Content-Range'] ) )
     $properties['Content-Range'] = 'bytes */*';
   if (isset($properties['Location']))
-    $properties['Location'] = self::abs2uri($properties['Location']);
+    $properties['Location'] = self::path2uri($properties['Location']);
   foreach($properties as $key => $value)
     header("$key: $value");
   if ($status !== null)
@@ -638,7 +656,7 @@ public static function redirect($status, $uri) {
   self::header( array(
     'status' => $status,
     'Content-Type' => 'text/plain; charset=US-ASCII',
-    'Location' => self::abs2uri($uri)
+    'Location' => self::path2uri($uri)
   ));
   echo $uri;
 }
@@ -660,7 +678,7 @@ public static function httpDate($timestamp) {
  * @return boolean
  */
 public static function isValidURI($uri) {
-  return preg_match('@^[a-z]+:(?:%[a-fA-F0-9]{2}|[-\\w.~:/?#\\[\\]\\@!$&\'()*+,;=]+)+$@', $uri);
+  return (bool) preg_match('@^[a-z]+:(?:%[a-fA-F0-9]{2}|[-\\w.~:/?#\\[\\]\\@!$&\'()*+,;=]+)+$@', $uri);
 }
 
 
@@ -840,12 +858,8 @@ public static function status_code($code) {
  */
 public static function determine_client() {
   $user_agent = strtolower( $_SERVER['HTTP_USER_AGENT'] );
-  if ( strpos( $user_agent, 'Microsoft Data Access Internet Publishing Provider' ) )
+  if ( strpos( $user_agent, 'microsoft data access internet publishing provider' ) !== false )
     return self::CLIENT_WINDOWS_WEBFOLDER;
-  if ( ( strpos( $user_agent, 'chromium' ) !== false ) ||
-       ( strpos( $user_agent, 'chrome' ) !== false ) ) {
-    return self::CLIENT_CHROME;
-       }
   if ( strpos( $user_agent, 'firefox' ) !== false )
     return self::CLIENT_FIREFOX;
   if ( strpos ($user_agent, 'msie 10') !== false )
@@ -856,6 +870,10 @@ public static function determine_client() {
     return self::CLIENT_IE8;
   if ( strpos ($user_agent, 'msie') !== false )
     return self::CLIENT_IE_OLD;
+  if ( ( strpos( $user_agent, 'chromium' ) !== false ) ||
+       ( strpos( $user_agent, 'chrome' ) !== false ) ) {
+    return self::CLIENT_CHROME;
+  }
   if ( strpos ($user_agent, 'safari') !== false )
     return self::CLIENT_SAFARI;
   if ( strpos ($user_agent, 'gvfs') !== false )
@@ -864,17 +882,17 @@ public static function determine_client() {
 }
 
 // Different client constants (unfortunately, PHP 5.3 doesn't support binary notation yet. 5.4 does!)
-const CLIENT_UNKNOWN           = 0x000; // 0b000000000000;
-const CLIENT_IE                = 0x010; // 0b000000010000;
-const CLIENT_IE_OLD            = 0x011; // 0b000000010001;
-const CLIENT_IE8               = 0x012; // 0b000000010010;
-const CLIENT_IE9               = 0x014; // 0b000000010100;
-const CLIENT_IE10              = 0x018; // 0b000000011000;
-const CLIENT_CHROME            = 0x020; // 0b000000100000;
-const CLIENT_FIREFOX           = 0x040; // 0b000001000000;
-const CLIENT_SAFARI            = 0x080; // 0b000010000000;
-const CLIENT_GVFS              = 0x100; // 0b000100000000;
-const CLIENT_WINDOWS_WEBFOLDER = 0x200; // 0b000100000000;
+const CLIENT_UNKNOWN           = 0x000; // 0b0000 0000 0000;
+const CLIENT_IE                = 0x010; // 0b0000 0001 0000;
+const CLIENT_IE_OLD            = 0x011; // 0b0000 0001 0001;
+const CLIENT_IE8               = 0x012; // 0b0000 0001 0010;
+const CLIENT_IE9               = 0x014; // 0b0000 0001 0100;
+const CLIENT_IE10              = 0x018; // 0b0000 0001 1000;
+const CLIENT_CHROME            = 0x020; // 0b0000 0010 0000;
+const CLIENT_FIREFOX           = 0x040; // 0b0000 0100 0000;
+const CLIENT_SAFARI            = 0x080; // 0b0000 1000 0000;
+const CLIENT_GVFS              = 0x100; // 0b0001 0000 0000;
+const CLIENT_WINDOWS_WEBFOLDER = 0x200; // 0b0010 0000 0000;
 
 
 } // namespace DAV

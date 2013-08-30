@@ -1,0 +1,4 @@
+API changes made while creating unit tests
+
+* To load the library, you need to include /lib/bootstrap.php (instead of /lib/dav.php)
+* DAV::abs2uri() is changed to DAV::path2uri() and now always returns an uri (if you supply a relative path instead of an absolute path, it prefixes the path with the current request URI)

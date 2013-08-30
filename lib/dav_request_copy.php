@@ -158,7 +158,7 @@ protected function handle( $resource ) {
   #    DAV_Multistatus::inst()->addStatus(
   #      $resource->path,
   #      new DAV_Status(
-  #        DAV::HTTP_CREATED, DAV::abs2uri($destination)
+  #        DAV::HTTP_CREATED, DAV::path2uri($destination)
   #      )
   #    );
   #DAV_Multistatus::inst()->close();

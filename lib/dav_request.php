@@ -342,7 +342,7 @@ public function handleRequest()
            $resource instanceof DAV_Collection ||
            'MKCOL' === $_SERVER['REQUEST_METHOD'] ) ) {
       DAV::$PATH .= '/';
-      header('Content-Location: ' . DAV::abs2uri( DAV::$PATH ) );
+      header('Content-Location: ' . DAV::path2uri( DAV::$PATH ) );
     }
 
     $this->handle( $resource );

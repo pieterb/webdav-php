@@ -1,6 +1,6 @@
 <?php
 /**
- * Sets up an environment to emulate a webserver environment
+ * Contains the DAV_Cache class
  * 
  * Copyright ©2013 SURFsara b.v., Amsterdam, The Netherlands
  *
@@ -15,26 +15,20 @@
  * limitations under the License.
  * 
  * @package DAV
- * @subpackage tests
  */
 
-
 /**
- * A copy of the key-value cache so the real DAV_Cache won't be loaded
- * 
- * This copy doesn't function and will always return NULL for each value. This
- * is useful for testing purposes
+ * Key-value cache
  * 
  * @internal
  * @package DAV
- * @subpackage tests
  */
 class DAV_Cache {
   
   /**
    * @var  DAV_Cache  All created caches
    */
-  private static $instance = null;
+  private static $instances = array();
   
   
   /**
@@ -45,42 +39,49 @@ class DAV_Cache {
   
   
   /**
-   * Returns always the only instance of this class
+   * Returns a specific cache and creates it first if needed
    * 
    * @param   string     $cacheName  The name of the cache
    * @return  DAV_Cache              The requested cache
    */
   public static function inst( $cacheName ) {
-    if ( is_null( self::$instance ) ) {
+    if ( ! isset( self::$instances[ $cacheName ] ) ) {
       $class = get_called_class();
-      self::$instance = new $class();
+      self::$instances[ $cacheName ] = new $class();
     }
-    return self::$instance;
+    return self::$instances[ $cacheName ];
   }
 
   /**
-   * Always returns NULL, as this class doesn't actually cache anything
+   * @var  array  The internal cache
+   */
+  private $cache = array();
+
+  /**
+   * Get a value from cache
    * 
    * @param   string  $key  The key to return the value for
    * @return  mixed         The value from cache or NULL when the key doesn't exist
    */
   public function get( $key ) {
-    return null;
+    if ( isset( $this->cache[ $key ] ) ) {
+      return $this->cache[ $key ];
+    }else{
+      return null;
+    }
   }
 
   /**
-   * Doesn't do anything
+   * Set a value in cache
    * 
    * @param   string  $key    The key for which to set the value
    * @param   mixed   $value  The value to set
    * @return  void
    */
   public function set( $key, $value ) {
+    $this->cache[ $key ] = $value;
   }
 
 } // DAV_Cache
-
-
-require_once( dirname( dirname( __FILE__ ) ) . '/lib/bootstrap.php' );
 
 // End of file
