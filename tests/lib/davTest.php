@@ -193,6 +193,30 @@ class DAVTest extends PHPUnit_Framework_TestCase {
   public function testXmlunescape() {
     $this->assertEquals( '&"\'<>', DAV::xmlunescape( '&amp;&quot;&apos;&lt;&gt;' ), 'DAV::xmlunescape() should return regular characters' );
   }
+  
+  
+  public function testGetSupported_Properties() {
+    $value = DAV::getSupported_Properties();
+    $expectedResult = array_merge(
+      DAV::$WEBDAV_PROPERTIES,
+      DAV::$PRINCIPAL_PROPERTIES,
+      DAV::$ACL_PROPERTIES
+    );
+    $this->assertEquals( $expectedResult, $value );
+  }
+  
+  
+  public function testGetPath() {
+    $this->assertEquals( DAV::parseURI( $_SERVER['REQUEST_URI'], true ), DAV::getPath(), 'DAV::getPath() should return the correct path' );
+  }
+  
+  
+  public function testGetConfig() {
+    // Because DAV::getConfig() does very little, this test is more a configuration file syntax check, but at least it's something
+    $this->assertFileExists( dirname( dirname( dirname( __FILE__ ) ) ) . DIRECTORY_SEPARATOR . 'config.ini', 'Configuration file should exist' );
+    $this->assertArrayHasKey( 'debug', DAV::getConfig(), 'DAV::getConfig() should contain the key \'debug\'' );
+
+  }
 
 
 } // End of DAVTest

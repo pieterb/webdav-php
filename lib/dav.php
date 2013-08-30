@@ -132,9 +132,6 @@ public static $ACL_PROPERTIES = array(
 );
 
 
-public static $SUPPORTED_PROPERTIES = null;
-
-
 public static $PROTECTED_PROPERTIES = array(
   // RFC4918:
   self::PROP_CREATIONDATE               => true,
@@ -238,13 +235,6 @@ public static $CHUNK_SIZE = 67108864; // 64MiB
 
 
 /**
- * Initialized at bottom of file.
- * @var string
- */
-public static $PATH;
-
-
-/**
  * Defines if lock tokens are hidden in lockdiscovery properties.
  * @var boolean
  */
@@ -286,12 +276,6 @@ public static $FORBIDDEN = null;
  * @var array <code>array( <stateToken> => <stateToken>, ... ></code>
  */
 public static $SUBMITTEDTOKENS = array();
-
-/**
- * An array with the parsed config.ini file
- * @var array <code>array( <section> => array( <key> => <value,... ) )</code>
- */
-public static $CONFIG;
 
 
 /**
@@ -896,14 +880,63 @@ const CLIENT_GVFS              = 0x100; // 0b0001 0000 0000;
 const CLIENT_WINDOWS_WEBFOLDER = 0x200; // 0b0010 0000 0000;
 
 
+  /**
+   * @var  array  All supported properties
+   */
+  private static $SUPPORTED_PROPERTIES = null;
+
+
+  /**
+   * Returns the supported properties
+   * @return  array  All supported properties
+   */
+  public static function getSupported_Properties() {
+    if ( is_null( DAV::$SUPPORTED_PROPERTIES ) ) {
+      DAV::$SUPPORTED_PROPERTIES = array_merge(
+        DAV::$WEBDAV_PROPERTIES,
+        DAV::$PRINCIPAL_PROPERTIES,
+        DAV::$ACL_PROPERTIES
+      );
+    }
+    return DAV::$SUPPORTED_PROPERTIES;
+  }
+
+
+  /**
+   * @var  string  The path of the current request
+   */
+  private static $PATH = null;
+
+
+  /**
+   * Returns the current (requested) path
+   * @return  string  The path
+   */
+  public static function getPath() {
+    if ( is_null( DAV::$PATH ) ) {
+      DAV::$PATH = DAV::parseURI($_SERVER['REQUEST_URI'], true);
+    }
+    return DAV::$PATH;
+  }
+
+  /**
+   * An array with the parsed config.ini file
+   * @var  array  <code>array( <section> => array( <key> => <value,... ) )</code>
+   */
+  private static $CONFIG = null;
+
+
+  /**
+   * Returns the configuration (= parsed configuration file)
+   * @return  array  The configuration
+   */
+  public static function getConfig() {
+    if ( is_null( DAV::$CONFIG ) ) {
+      DAV::$CONFIG = parse_ini_file(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'config.ini', true);
+    }
+    return DAV::$CONFIG;
+  }
+
 } // namespace DAV
 
-DAV::$SUPPORTED_PROPERTIES = array_merge(
-  DAV::$WEBDAV_PROPERTIES,
-  DAV::$PRINCIPAL_PROPERTIES,
-  DAV::$ACL_PROPERTIES
-);
-DAV::$PATH = DAV::parseURI($_SERVER['REQUEST_URI'], true);
-
-// Read, parse and store de configuration in the ini file
-DAV::$CONFIG = parse_ini_file(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'config.ini', true);
+// End of file
