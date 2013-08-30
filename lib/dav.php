@@ -513,6 +513,7 @@ public static function xmlescape($utf8text) {
  * @return string the utf8text, escaped for use in an XML text or attribute element.
  */
 public static function xmlunescape($xml) {
+  defined('ENT_XML1') || define('ENT_XML1', 0);
   if (null === $xml) return null;
   $xml = "$xml";
   if ( false !== strpos( $xml, '<' ) )
@@ -520,7 +521,7 @@ public static function xmlunescape($xml) {
       self::HTTP_BAD_REQUEST,
       "XML not allowed:\n$xml"
     );
-  return htmlspecialchars_decode($xml);
+  return htmlspecialchars_decode( $xml, ENT_QUOTES | ENT_XML1 );
 }
 
 

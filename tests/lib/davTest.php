@@ -114,10 +114,31 @@ class DAVTest extends PHPUnit_Framework_TestCase {
     $_SERVER['REQUEST_URI'] = '/requested/path';
     $this->assertEquals( 'https://webdav.org/requested/path/relative/path', DAV::path2uri( 'relative/path' ), 'DAV::path2uri() should return correct uri with relative path' );
   }
-//
-//
-//  public function testRecursiveSerialize() {
-//  }
+
+
+  public function testRecursiveSerialize() {
+    $ns1 = 'tests://test/';
+    $ns2 = 'tests://test_more/';
+    $xmlDoc = new DOMDocument( '1.0', 'UTF-8' );
+    $root = $xmlDoc->createElementNS( $ns1, 'root' );
+    $sub1 = $xmlDoc->createElementNS( $ns1, 'sub1' );
+    $sub1_1 = $xmlDoc->createElementNS( $ns1, 'sub1_1' );
+    $cdata1_1 = $xmlDoc->createCDATASection( 'test text' );
+    $sub2 = $xmlDoc->createElementNS( $ns2, 'sub2' );
+    $sub2_1 = $xmlDoc->createElementNS( $ns1, 'sub2_1' );
+    $comment2_1 = $xmlDoc->createComment( 'test comment' );
+    
+    $xmlDoc->appendChild( $root );
+    $root->appendChild( $sub1 );
+    $sub1->appendChild( $sub1_1 );
+    $sub1_1->appendChild( $cdata1_1 );
+    $root->appendChild( $sub2 );
+    $sub2->appendChild( $sub2_1 );
+    $sub2_1->appendChild( $comment2_1 );
+    
+    // Because recursiveSerialize is not forced to use ns1 and ns2 as namespace prefixes, this test is a bit awkward. But it works for now, so let's just ignore it :)
+    $this->assertEquals( '<ns1:root xmlns:ns1="tests://test/" xmlns:ns2="tests://test_more/"><ns1:sub1><ns1:sub1_1>test text</ns1:sub1_1></ns1:sub1><ns2:sub2><ns1:sub2_1><!--test comment--></ns1:sub2_1></ns2:sub2></ns1:root>', DAV::recursiveSerialize( $root ), 'DAV::recursiveSerialize() should return correct XML' );
+  }
 
 
   public function testSlashify() {
@@ -164,12 +185,14 @@ class DAVTest extends PHPUnit_Framework_TestCase {
   }
 
 
-//  public function testXmlescape() {
-//  }
-//
-//
-//  public function testXmlunescape() {
-//  }
+  public function testXmlescape() {
+    $this->assertEquals( '&amp;&quot;&apos;&lt;&gt;', DAV::xmlescape( '&"\'<>' ), 'DAV::xmlescape() should return escaped characters' );
+  }
+
+
+  public function testXmlunescape() {
+    $this->assertEquals( '&"\'<>', DAV::xmlunescape( '&amp;&quot;&apos;&lt;&gt;' ), 'DAV::xmlunescape() should return regular characters' );
+  }
 
 
 } // End of DAVTest
