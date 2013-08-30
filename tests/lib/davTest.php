@@ -29,13 +29,11 @@ class DAVTest extends PHPUnit_Framework_TestCase {
    * Set up the $_SERVER superglobal to contain all elements required by the DAV class
    */
   protected function setUp() {
-    $_SERVER = array();
     $_SERVER['HTTP_USER_AGENT'] = '';
     $_SERVER['HTTPS'] = true;
     $_SERVER['REQUEST_URI'] = '/';
     $_SERVER['SERVER_NAME'] = 'webdav.org';
     $_SERVER['SERVER_PORT'] = 443;
-    $_SERVER['SERVER_PROTOCOL'] = 'HTTP/1.1';
   }
 
 
@@ -75,6 +73,30 @@ class DAVTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals( 403             , $status->getCode()   , 'DAV::forbidden() should return a DAV_Status object with code 403' );
     $this->assertEquals( 'Test message'  , $status->getMessage(), 'DAV::forbidden() should return a DAV_Status object with code 403' );
   }
+  
+  
+  public function testGetConfig() {
+    // Because DAV::getConfig() does very little, this test is more a configuration file syntax check, but at least it's something
+    $this->assertFileExists( dirname( dirname( dirname( __FILE__ ) ) ) . DIRECTORY_SEPARATOR . 'config.ini', 'Configuration file should exist' );
+    $this->assertArrayHasKey( 'debug', DAV::getConfig(), 'DAV::getConfig() should contain the key \'debug\'' );
+
+  }
+  
+  
+  public function testGetPath() {
+    $this->assertEquals( DAV::parseURI( $_SERVER['REQUEST_URI'], true ), DAV::getPath(), 'DAV::getPath() should return the correct path' );
+  }
+  
+  
+  public function testGetSupported_Properties() {
+    $value = DAV::getSupported_Properties();
+    $expectedResult = array_merge(
+      DAV::$WEBDAV_PROPERTIES,
+      DAV::$PRINCIPAL_PROPERTIES,
+      DAV::$ACL_PROPERTIES
+    );
+    $this->assertEquals( $expectedResult, $value );
+  }
 
 
   public function testHeader() {
@@ -85,7 +107,7 @@ class DAVTest extends PHPUnit_Framework_TestCase {
     ) );
     $returnedValue = ob_get_contents();
     ob_end_clean();
-    $this->assertEquals( "x-test-header: with a test value\nHTTP/1.1 417 Expectation Failed", $returnedValue, 'DAV::header() should print the correct headers (print them, not sent them, because we\'re in testing mode' );
+    $this->assertEquals( "x-test-header: with a test value\nHTTP/1.1 417 Expectation Failed\n", $returnedValue, 'DAV::header() should print the correct headers (print them, not sent them, because we\'re in testing mode' );
   }
 
 
@@ -204,30 +226,6 @@ class DAVTest extends PHPUnit_Framework_TestCase {
 
   public function testXmlunescape() {
     $this->assertEquals( '&"\'<>', DAV::xmlunescape( '&amp;&quot;&apos;&lt;&gt;' ), 'DAV::xmlunescape() should return regular characters' );
-  }
-  
-  
-  public function testGetSupported_Properties() {
-    $value = DAV::getSupported_Properties();
-    $expectedResult = array_merge(
-      DAV::$WEBDAV_PROPERTIES,
-      DAV::$PRINCIPAL_PROPERTIES,
-      DAV::$ACL_PROPERTIES
-    );
-    $this->assertEquals( $expectedResult, $value );
-  }
-  
-  
-  public function testGetPath() {
-    $this->assertEquals( DAV::parseURI( $_SERVER['REQUEST_URI'], true ), DAV::getPath(), 'DAV::getPath() should return the correct path' );
-  }
-  
-  
-  public function testGetConfig() {
-    // Because DAV::getConfig() does very little, this test is more a configuration file syntax check, but at least it's something
-    $this->assertFileExists( dirname( dirname( dirname( __FILE__ ) ) ) . DIRECTORY_SEPARATOR . 'config.ini', 'Configuration file should exist' );
-    $this->assertArrayHasKey( 'debug', DAV::getConfig(), 'DAV::getConfig() should contain the key \'debug\'' );
-
   }
 
 

@@ -644,7 +644,7 @@ public static function header($properties) {
   }
   if ($status !== null) {
     if ( self::$testMode ) {
-      print( $_SERVER['SERVER_PROTOCOL'] . ' ' . self::status_code( $status ) );
+      print( $_SERVER['SERVER_PROTOCOL'] . ' ' . self::status_code( $status ) . "\n" );
     }else{
       header( $_SERVER['SERVER_PROTOCOL'] . ' ' . self::status_code($status) );
     }
