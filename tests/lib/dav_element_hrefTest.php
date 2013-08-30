@@ -25,7 +25,6 @@
  */
 class DAV_Element_hrefTest extends PHPUnit_Framework_TestCase {
 
-  public $URIs;
   public function testConstructor() {
     $objEmpty = new DAV_Element_href();
     $this->assertCount( 0                , $objEmpty->URIs , 'DAV_Element_href->URIs should be empty when created without constructor parameters' );
