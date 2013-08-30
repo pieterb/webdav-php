@@ -35,7 +35,7 @@ class DAVTest extends PHPUnit_Framework_TestCase {
     $_SERVER['REQUEST_URI'] = '/';
     $_SERVER['SERVER_NAME'] = 'webdav.org';
     $_SERVER['SERVER_PORT'] = 443;
-    $_SERVER['SERVER_PROTOCOL'] = 'https';
+    $_SERVER['SERVER_PROTOCOL'] = 'HTTP/1.1';
   }
 
 
@@ -74,6 +74,18 @@ class DAVTest extends PHPUnit_Framework_TestCase {
     $this->assertInstanceOf( 'DAV_Status', $status              , 'DAV::forbidden() should return a DAV_Status object' );
     $this->assertEquals( 403             , $status->getCode()   , 'DAV::forbidden() should return a DAV_Status object with code 403' );
     $this->assertEquals( 'Test message'  , $status->getMessage(), 'DAV::forbidden() should return a DAV_Status object with code 403' );
+  }
+
+
+  public function testHeader() {
+    ob_start();
+    DAV::header( array( 
+        'status' => DAV::HTTP_EXPECTATION_FAILED,
+        'x-test-header' => 'with a test value'
+    ) );
+    $returnedValue = ob_get_contents();
+    ob_end_clean();
+    $this->assertEquals( "x-test-header: with a test value\nHTTP/1.1 417 Expectation Failed", $returnedValue, 'DAV::header() should print the correct headers (print them, not sent them, because we\'re in testing mode' );
   }
 
 

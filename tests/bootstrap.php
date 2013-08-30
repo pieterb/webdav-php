@@ -82,5 +82,6 @@ class DAV_Cache {
 
 
 require_once( dirname( dirname( __FILE__ ) ) . '/lib/bootstrap.php' );
+DAV::$testMode = true; // Turn on test mode, so headers won't be sent, because sending headers won't work as all tests are run from the commandline
 
 // End of file

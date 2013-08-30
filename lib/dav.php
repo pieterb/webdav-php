@@ -580,6 +580,16 @@ public static function xml_header($encoding = 'utf-8', $version = '1.0') {
 
 
 /**
+ * Unfortunately, there are some things which can only be done when running as
+ * an httpd module. For example, sending out headers won't work when running
+ * from the commandline. Because PHPunit is used for unit testing and this is
+ * run from the commandline, we can't really set headers.
+ * @var  boolean  Set to true when (unit) testing
+ */
+public static $testMode = false;
+
+
+/**
  * @var  array  All (extra) headers to sent
  */
 private static $headers = array();
@@ -625,10 +635,20 @@ public static function header($properties) {
     $properties['Content-Range'] = 'bytes */*';
   if (isset($properties['Location']))
     $properties['Location'] = self::path2uri($properties['Location']);
-  foreach($properties as $key => $value)
-    header("$key: $value");
-  if ($status !== null)
-    header( $_SERVER['SERVER_PROTOCOL'] . ' ' . self::status_code($status) );
+  foreach($properties as $key => $value) {
+    if ( self::$testMode ) {
+      print( $key . ': ' . $value . "\n" );
+    }else{
+      header("$key: $value");
+    }
+  }
+  if ($status !== null) {
+    if ( self::$testMode ) {
+      print( $_SERVER['SERVER_PROTOCOL'] . ' ' . self::status_code( $status ) );
+    }else{
+      header( $_SERVER['SERVER_PROTOCOL'] . ' ' . self::status_code($status) );
+    }
+  }
 }
 
 
