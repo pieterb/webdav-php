@@ -219,13 +219,21 @@ class DAVTest extends PHPUnit_Framework_TestCase {
   }
 
 
+  /**
+   * @return  string  An XML encoded string
+   */
   public function testXmlescape() {
-    $this->assertEquals( '&amp;&quot;&apos;&lt;&gt;', DAV::xmlescape( '&"\'<>' ), 'DAV::xmlescape() should return escaped characters' );
+    $returnValue = DAV::xmlescape( '&"\'<>' );
+    $this->assertRegExp( '/&amp;&quot;&(apos|#039);&lt;&gt;/', $returnValue, 'DAV::xmlescape() should return escaped characters' );
+    return $returnValue;
   }
 
 
-  public function testXmlunescape() {
-    $this->assertEquals( '&"\'<>', DAV::xmlunescape( '&amp;&quot;&apos;&lt;&gt;' ), 'DAV::xmlunescape() should return regular characters' );
+  /**
+   * @depends testXmlescape
+   */
+  public function testXmlunescape( $encodedString ) {
+    $this->assertEquals( '&"\'<>', DAV::xmlunescape( $encodedString ), 'DAV::xmlunescape() should return regular characters' );
   }
 
 
