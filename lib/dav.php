@@ -367,6 +367,7 @@ public static function unslashify($string) {
 
 
 /**
+ * Serializes a DOMNode to an XML string
  * @internal
  * @param DOMNode $node
  * @param DAV_Namespaces $p_namespaces

@@ -44,6 +44,7 @@ private $namespaces = array(
 
 
 /**
+ * Add an XML namespace to the set of namespaces
  * @param $namespaceURI The URI of the namespace you want to get a prefix for.
  * @return string a prefix, including the trailing colon.
  */

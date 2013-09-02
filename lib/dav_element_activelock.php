@@ -89,6 +89,7 @@ public function __construct($arg = array()) {
 
 
 /**
+ * Serializes this lock to an XML string
  * @param array $tokens an array of tokens that may be displayed.
  * @return string an XML element
  */
@@ -117,11 +118,20 @@ EOS;
 }
 
 
+/**
+ * Serializes this lock to a JSON string
+ * @return  string  The JSON string
+ */
 public function toJSON() {
   return json_encode($this);
 }
 
 
+/**
+ * Creates a lock object from a JSON serialized lock
+ * @param   string                     $json  A JSON serialized lock
+ * @return  DAV_Element_activelock
+ */
 public static function fromJSON($json) {
   $value = json_decode($json, true);
   return ($value['timeout'] && $value['timeout'] < time()) ?
@@ -129,6 +139,6 @@ public static function fromJSON($json) {
 }
 
 
-} // class DAV_Element_lockdiscovery
+} // class DAV_Element_activelock
 
-
+// End of file

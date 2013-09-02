@@ -50,6 +50,10 @@ public function __construct($URIs = null) {
 }
 
 
+/**
+ * Adds an URI to this href object
+ * @param  string  $URI  The URI to add
+ */
 public function addURI($URI) {
   $this->URIs[] = $URI;
 }
@@ -69,3 +73,4 @@ public function __toString() {
 
 } // class DAV_Element_href
 
+// End of file

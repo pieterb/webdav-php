@@ -71,6 +71,12 @@ class DAV_Multistatus {
 
 
 private $closed = false;
+
+
+/**
+ * Closes the multistatus output
+ * @return  void
+ */
 public function close() {
   if ($this->closed) return;
   if ($this->currentStatus)
@@ -93,6 +99,7 @@ private $paths = array();
 
 
 /**
+ * Adds a status to this multistatus
  * @param string $path
  * @param DAV_Status $status
  * @return DAV_Multistatus $this;
@@ -177,6 +184,7 @@ private function __construct()
 
 private static $inst = null;
 /**
+ * Returns the only instance of this class
  * @return DAV_Multistatus
  */
 public static function inst() {
@@ -187,6 +195,7 @@ public static function inst() {
 
 
 /**
+ * Check whether the multistatus object is already active/instantiated
  * @return bool true if a Multistatus body has been (partially) sent, otherwise
  *         false.
  */
