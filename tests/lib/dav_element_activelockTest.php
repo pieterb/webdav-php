@@ -41,28 +41,33 @@ class DAV_Element_activelockTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testConstructor() {
-    $this->assertEquals( '/path'        , $this->lock->lockroot , 'DAV_Element_activelock::__constructor should set lockroot attribute' );
-    $this->assertEquals( DAV::DEPTH_INF , $this->lock->depth    , 'DAV_Element_activelock::__constructor should set depth attribute' );
-    $this->assertEquals( 'qwerty'       , $this->lock->locktoken, 'DAV_Element_activelock::__constructor should set locktoken attribute' );
-    $this->assertEquals( '/path/to/user', $this->lock->owner    , 'DAV_Element_activelock::__constructor should set owner attribute' );
-    $this->assertEquals( $this->timeout , $this->lock->timeout  , 'DAV_Element_activelock::__constructor should set timeout attribute' );
+    $this->assertSame( '/path'        , $this->lock->lockroot , 'DAV_Element_activelock::__constructor should set lockroot attribute' );
+    $this->assertSame( DAV::DEPTH_INF , $this->lock->depth    , 'DAV_Element_activelock::__constructor should set depth attribute' );
+    $this->assertSame( 'qwerty'       , $this->lock->locktoken, 'DAV_Element_activelock::__constructor should set locktoken attribute' );
+    $this->assertSame( '/path/to/user', $this->lock->owner    , 'DAV_Element_activelock::__constructor should set owner attribute' );
+    $this->assertSame( $this->timeout , $this->lock->timeout  , 'DAV_Element_activelock::__constructor should set timeout attribute' );
   }
 
 
   public function testToXML() {
     $this->lock->timeout = time() - 1; // Pretend the lock has timed out, because else we can't be sure what the timeout value in the XML will be
-    $this->assertEquals( "<D:activelock>\n<D:lockscope><D:exclusive/></D:lockscope>\n<D:locktype><D:write/></D:locktype>\n<D:depth>infinity</D:depth>\n<D:owner>/path/to/user</D:owner>\n<D:timeout>Second-0</D:timeout>\n<D:locktoken>\n<D:href>qwerty</D:href>\n</D:locktoken>\n<D:lockroot><D:href>/path</D:href></D:lockroot>\n</D:activelock>", $this->lock->toXML(), 'DAV_Element_activelock::toXML() should return the correct XML string' );
+    $this->assertSame( "<D:activelock>\n<D:lockscope><D:exclusive/></D:lockscope>\n<D:locktype><D:write/></D:locktype>\n<D:depth>infinity</D:depth>\n<D:owner>/path/to/user</D:owner>\n<D:timeout>Second-0</D:timeout>\n<D:locktoken>\n<D:href>qwerty</D:href>\n</D:locktoken>\n<D:lockroot><D:href>/path</D:href></D:lockroot>\n</D:activelock>", $this->lock->toXML(), 'DAV_Element_activelock::toXML() should return the correct XML string' );
   }
 
 
   public function testToJSON() {
-    $this->assertEquals( json_encode( $this->lock ), $this->lock->toJSON(), 'DAV_Element_activelock::toJSON() should return the correct json value' );
+    $this->assertSame( json_encode( $this->lock ), $this->lock->toJSON(), 'DAV_Element_activelock::toJSON() should return the correct json value' );
   }
 
 
   public function testFromJSON() {
     $json = $this->lock->toJSON();
-    $this->assertEquals( $this->lock, DAV_Element_activelock::fromJSON( $json ), 'DAV_Element_activelock::fromJSON() should create a propper new object' );
+    $lock = DAV_Element_activelock::fromJSON( $json );    
+    $this->assertSame( '/path'        , $lock->lockroot , 'DAV_Element_activelock::fromJSON() should create a new object with the same lockroot' );
+    $this->assertSame( DAV::DEPTH_INF , $lock->depth    , 'DAV_Element_activelock::fromJSON() should create a new object with the same depth' );
+    $this->assertSame( 'qwerty'       , $lock->locktoken, 'DAV_Element_activelock::fromJSON() should create a new object with the same locktoken' );
+    $this->assertSame( '/path/to/user', $lock->owner    , 'DAV_Element_activelock::fromJSON() should create a new object with the same owner' );
+    $this->assertSame( $this->timeout , $lock->timeout  , 'DAV_Element_activelock::fromJSON() should create a new object with the same timeout' );
     $this->lock->timeout = time() - 1; // Pretend the lock has not timed out
     $timedout_json = $this->lock->toJSON();
     $this->assertNull( DAV_Element_activelock::fromJSON( $timedout_json ), 'DAV_Element_activelock::fromJSON() should return null when the lock has timed out' );

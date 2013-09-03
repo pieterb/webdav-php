@@ -37,7 +37,7 @@ class DAV_MultistatusTest extends PHPUnit_Framework_TestCase {
       DAV_Multistatus::inst();
       $startString = ob_get_contents();
       ob_end_clean();
-      $this->assertEquals( 'Content-Type: application/xml; charset="utf-8"HTTP/1.1 207 Multi-Status<?xml version="1.0" encoding="utf-8"?><D:multistatus xmlns:D="DAV:">', str_replace( "\n", '', $startString ), 'DAV_Multistatus::inst() should call the constructor and start the correct output' );
+      $this->assertSame( 'Content-Type: application/xml; charset="utf-8"HTTP/1.1 207 Multi-Status<?xml version="1.0" encoding="utf-8"?><D:multistatus xmlns:D="DAV:">', str_replace( "\n", '', $startString ), 'DAV_Multistatus::inst() should call the constructor and start the correct output' );
     }
     $this->assertTrue( DAV_Multistatus::active(), 'DAV_Multistatus::active() should return true after instantiation' );
   }

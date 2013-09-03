@@ -27,7 +27,7 @@ class DAV_Element_responseTest extends PHPUnit_Framework_TestCase {
   
   public function testContructor() {
     $obj = new DAV_Element_Response( '/path' );
-    $this->assertEquals( '<D:response><D:href>/path</D:href></D:response>', str_replace( "\n", '', $obj->toXML() ) , 'DAV_Element_response: the path set by the constructor should be used in toXML()' );
+    $this->assertSame( '<D:response><D:href>/path</D:href></D:response>', str_replace( "\n", '', $obj->toXML() ) , 'DAV_Element_response: the path set by the constructor should be used in toXML()' );
     return $obj;
   }
 
@@ -39,9 +39,9 @@ class DAV_Element_responseTest extends PHPUnit_Framework_TestCase {
    */
   public function testSetProperty( $obj ) {
     $obj->setProperty( 'test://test/ empty_prop' );
-    $this->assertEquals( '<D:response><D:href>/path</D:href><D:propstat><D:prop><ns:empty_prop xmlns:ns="test://test/"/></D:prop><D:status>HTTP/1.1 200 OK</D:status></D:propstat></D:response>', str_replace( "\n", '', $obj->toXML() ) , 'DAV_Element_response: the path set by the constructor should be used in toXML()' );
+    $this->assertSame( '<D:response><D:href>/path</D:href><D:propstat><D:prop><ns:empty_prop xmlns:ns="test://test/"/></D:prop><D:status>HTTP/1.1 200 OK</D:status></D:propstat></D:response>', str_replace( "\n", '', $obj->toXML() ) , 'DAV_Element_response: the path set by the constructor should be used in toXML()' );
     $obj->setProperty( 'test://test/ prop_with_value', '<![CDATA[Some piece of data]]>' );
-    $this->assertEquals( '<D:response><D:href>/path</D:href><D:propstat><D:prop><ns:empty_prop xmlns:ns="test://test/"/><ns:prop_with_value xmlns:ns="test://test/"><![CDATA[Some piece of data]]></ns:prop_with_value></D:prop><D:status>HTTP/1.1 200 OK</D:status></D:propstat></D:response>', str_replace( "\n", '', $obj->toXML() ) , 'DAV_Element_response: the path set by the constructor should be used in toXML()' );
+    $this->assertSame( '<D:response><D:href>/path</D:href><D:propstat><D:prop><ns:empty_prop xmlns:ns="test://test/"/><ns:prop_with_value xmlns:ns="test://test/"><![CDATA[Some piece of data]]></ns:prop_with_value></D:prop><D:status>HTTP/1.1 200 OK</D:status></D:propstat></D:response>', str_replace( "\n", '', $obj->toXML() ) , 'DAV_Element_response: the path set by the constructor should be used in toXML()' );
     return $obj;
   }
 
@@ -54,7 +54,7 @@ class DAV_Element_responseTest extends PHPUnit_Framework_TestCase {
   public function testSetStatus( $obj ) {
     $obj->setStatus( 'test://test/ empty_prop', new DAV_Status( DAV::HTTP_CONFLICT ) );
     $obj->setStatus( 'test://test/ prop_with_value', new DAV_Status( DAV::HTTP_METHOD_NOT_ALLOWED ) );
-    $this->assertEquals( '<D:response><D:href>/path</D:href><D:propstat><D:prop><ns:empty_prop xmlns:ns="test://test/"/></D:prop><D:status>HTTP/1.1 409 Conflict</D:status></D:propstat><D:propstat><D:prop><ns:prop_with_value xmlns:ns="test://test/"><![CDATA[Some piece of data]]></ns:prop_with_value></D:prop><D:status>HTTP/1.1 405 Method Not Allowed</D:status></D:propstat></D:response>', str_replace( "\n", '', $obj->toXML() ) , 'DAV_Element_response: the path set by the constructor should be used in toXML()' );
+    $this->assertSame( '<D:response><D:href>/path</D:href><D:propstat><D:prop><ns:empty_prop xmlns:ns="test://test/"/></D:prop><D:status>HTTP/1.1 409 Conflict</D:status></D:propstat><D:propstat><D:prop><ns:prop_with_value xmlns:ns="test://test/"><![CDATA[Some piece of data]]></ns:prop_with_value></D:prop><D:status>HTTP/1.1 405 Method Not Allowed</D:status></D:propstat></D:response>', str_replace( "\n", '', $obj->toXML() ) , 'DAV_Element_response: the path set by the constructor should be used in toXML()' );
   }
 
 } // class DAV_Element_responseTest

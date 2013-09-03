@@ -36,11 +36,11 @@ class DAV_NamespacesTest extends PHPUnit_Framework_TestCase {
    */
   public function testPrefixAndToXML() {
     $obj = new DAV_Namespaces();
-    $this->assertEquals( '', $obj->toXML(), 'Before adding additional namespaces, no namespaces should be returned' );
+    $this->assertSame( '', $obj->toXML(), 'Before adding additional namespaces, no namespaces should be returned' );
     $obj->prefix( 'tests://test/' );
     $obj->prefix( 'tests://more_tests/' );
     $obj->prefix( 'tests://test/' ); // We add this twice to test if it is only returned once
-    $this->assertEquals( ' xmlns:ns1="tests://test/" xmlns:ns2="tests://more_tests/"', $obj->toXML(), 'After adding additional namespaces, the two additional namespaces should be returned' );
+    $this->assertSame( ' xmlns:ns1="tests://test/" xmlns:ns2="tests://more_tests/"', $obj->toXML(), 'After adding additional namespaces, the two additional namespaces should be returned' );
   }
 
 } // class DAV_NamespacesTest

@@ -38,18 +38,18 @@ class DAV_RequestTest extends PHPUnit_Framework_TestCase {
 
   public function testDepth() {
     $obj = DAV_Test_Request::inst();
-    $this->assertEquals( 0, $obj->depth(), 'DAV_Request::depth() should return 0 if that\'s the value of the Depth header' );
+    $this->assertSame( 0, $obj->depth(), 'DAV_Request::depth() should return 0 if that\'s the value of the Depth header' );
     $_SERVER['HTTP_DEPTH'] = 1;
-    $this->assertEquals( 1, $obj->depth(), 'DAV_Request::depth() should return 1 if that\'s the value of the Depth header' );
+    $this->assertSame( 1, $obj->depth(), 'DAV_Request::depth() should return 1 if that\'s the value of the Depth header' );
     $_SERVER['HTTP_DEPTH'] = 'infinity';
-    $this->assertEquals( 'infinity', $obj->depth(), 'DAV_Request::depth() should return \'infinite\' if that\'s the value of the Depth header' );
+    $this->assertSame( 'infinity', $obj->depth(), 'DAV_Request::depth() should return \'infinite\' if that\'s the value of the Depth header' );
     $_SERVER['HTTP_DEPTH'] = 666;
     try {
       $obj->depth();
       $this->assertTrue( false, 'DAV_Request::depth() should throw an exception if the value of the Depth header is not valid' );
     }catch ( Exception $e ) {
       if ( $e instanceof DAV_Status ) {
-        $this->assertEquals( DAV::HTTP_BAD_REQUEST, $e->getCode(), 'DAV_Request::depth() should throw a DAV_Status exception with the 400 Bad Request code if the value of the Depth header is not valid' );
+        $this->assertSame( DAV::HTTP_BAD_REQUEST, $e->getCode(), 'DAV_Request::depth() should throw a DAV_Status exception with the 400 Bad Request code if the value of the Depth header is not valid' );
       }else{
         $this->assertTrue( false, 'DAV_Request::depth() should throw a DAV_Status exception if the value of the Depth header is not valid' );
       }
@@ -58,7 +58,7 @@ class DAV_RequestTest extends PHPUnit_Framework_TestCase {
 
 
   public function testDestination() {
-    $this->assertEquals( '/destination/path', DAV_Request::destination(), 'DAV_Request::destination() should return the correct destination' );
+    $this->assertSame( '/destination/path', DAV_Request::destination(), 'DAV_Request::destination() should return the correct destination' );
   }
 
 

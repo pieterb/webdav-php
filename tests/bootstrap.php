@@ -86,5 +86,6 @@ DAV::$testMode = true; // Turn on test mode, so headers won't be sent, because s
 
 $_SERVER = array();
 $_SERVER['SERVER_PROTOCOL'] = 'HTTP/1.1';
+$_SERVER['SCRIPT_NAME'] = 'bootstrap.php'; // Strange enough, PHPunit seems to use this, so let's set it to some value
 
 // End of file
