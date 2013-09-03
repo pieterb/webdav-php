@@ -145,7 +145,7 @@ protected function handle( $resource ) {
 
 
 //private function respond($lock_token = null) {
-//  $lock = DAV::$LOCKPROVIDER->getlock(DAV::$PATH);
+//  $lock = DAV::$LOCKPROVIDER->getlock(DAV::getPath());
 //  $headers = array( 'Content-Type' => 'application/xml; charset="utf-8"' );
 //  if ($lock_token) $headers['Lock-Token'] = "<{$token}>";
 //  DAV::header($headers);
@@ -162,7 +162,7 @@ protected function handle( $resource ) {
  */
 private function handleCreateLock($resource) {
   // Check conflicting (parent) locks:
-  if ( ( $lock = DAV::$LOCKPROVIDER->getlock( DAV::$PATH ) ) )
+  if ( ( $lock = DAV::$LOCKPROVIDER->getlock( DAV::getPath() ) ) )
     throw new DAV_Status(
       DAV::HTTP_LOCKED,
       array( DAV::COND_NO_CONFLICTING_LOCK => new DAV_Element_href( $lock->lockroot ) )
@@ -180,24 +180,24 @@ private function handleCreateLock($resource) {
   $headers = array( 'Content-Type' => 'application/xml; charset="utf-8"' );
   if ( !$resource ) {
     // Check unmapped collection resource:
-    if ( substr( DAV::$PATH, -1 ) === '/' )
+    if ( substr( DAV::getPath(), -1 ) === '/' )
       throw new DAV_Status(
         DAV::HTTP_NOT_FOUND,
         'Unmapped collection resource'
       );
-    $parent = DAV::$REGISTRY->resource(dirname(DAV::$PATH));
+    $parent = DAV::$REGISTRY->resource(dirname(DAV::getPath()));
     if (!$parent || !$parent->isVisible())
       throw new DAV_Status(DAV::HTTP_CONFLICT, 'Unable to LOCK unexisting parent collection');
     $parent->assertLock();
     $parent->assert(DAVACL::PRIV_BIND);
-    $resource = $parent->create_member(basename(DAV::$PATH));
+    $resource = $parent->create_member(basename(DAV::getPath()));
 
     if ( false !== strpos($_SERVER['HTTP_USER_AGENT'], 'Microsoft') ) {
       // For M$, we need to mimic RFC2518:
       $headers['status'] = DAV::HTTP_OK;
     } else {
       $headers['status'] = DAV::HTTP_CREATED;
-      $headers['Location'] = DAV::$PATH;
+      $headers['Location'] = DAV::getPath();
     }
   }
   else {
@@ -206,7 +206,7 @@ private function handleCreateLock($resource) {
 
   if ( $resource instanceof DAV_Collection &&
        $depth === DAV::DEPTH_INF &&
-       ( $memberLocks = DAV::$LOCKPROVIDER->memberLocks( DAV::$PATH ) ) ) {
+       ( $memberLocks = DAV::$LOCKPROVIDER->memberLocks( DAV::getPath() ) ) ) {
     $memberLockPaths = array();
     foreach ($memberLocks as $memberLock)
       $memberLockPaths[] = $memberLock->lockroot;
@@ -218,7 +218,7 @@ private function handleCreateLock($resource) {
   }
 
   $token = DAV::$LOCKPROVIDER->setlock(
-    DAV::$PATH, $depth, $this->owner, $this->timeout
+    DAV::getPath(), $depth, $this->owner, $this->timeout
   );
   DAV::$SUBMITTEDTOKENS[$token] = $token;
   $headers['Lock-Token'] = "<{$token}>";
@@ -240,14 +240,14 @@ private function handleCreateLock($resource) {
  */
 private function handleRefreshLock($resource) {
   $if_header = $this->if_header;
-  if ( !isset( $if_header[DAV::$PATH] ) ||
-       !$if_header[DAV::$PATH]['lock'] )
+  if ( !isset( $if_header[DAV::getPath()] ) ||
+       !$if_header[DAV::getPath()]['lock'] )
     throw new DAV_Status(
       DAV::HTTP_BAD_REQUEST, array(
-        DAV::COND_LOCK_TOKEN_SUBMITTED => new DAV_Element_href(DAV::$PATH)
+        DAV::COND_LOCK_TOKEN_SUBMITTED => new DAV_Element_href(DAV::getPath())
       )
     );
-  if ( !( $lock = DAV::$LOCKPROVIDER->getlock(DAV::$PATH) ) )
+  if ( !( $lock = DAV::$LOCKPROVIDER->getlock(DAV::getPath()) ) )
     throw new DAV_Status(
       DAV::HTTP_PRECONDITION_FAILED,
       array(DAV::COND_LOCK_TOKEN_MATCHES_REQUEST_URI)

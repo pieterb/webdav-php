@@ -52,6 +52,7 @@ static $ALLOWED_METHODS = array(
 
 
 /**
+ * Returns the only instance of the correct child class
  * @return DAV_Request or null if some error occured.
  * @throws void
  */
@@ -85,6 +86,7 @@ public static function inst() {
  */
 private $inputstring = null;
 /**
+ * Returns the request body
  * @return string
  */
 protected static function inputstring() {
@@ -96,6 +98,7 @@ protected static function inputstring() {
 
 
 /**
+ * Returns the value of the Destination header
  * @return string either an (internal) path or an external URI.
  */
 public static function destination() {
@@ -107,11 +110,20 @@ public static function destination() {
 }
 
 
+/**
+ * Determines whether the destination can be overwritten
+ * @return  boolean  True if the overwrite header indicates that the destination can be overwritten
+ */
 public function overwrite() {
   return ('F' !== @$_SERVER['HTTP_OVERWRITE'] );
 }
 
 
+/**
+ * Returns the Depth header
+ * @return  mixed  The value of the Depth header
+ * @throws  DAV_Status  A '400 BAD REQUEST' status is returned if an invalid value was specified in the request header
+ */
 public function depth() {
   switch ( @$_SERVER['HTTP_DEPTH'] ) {
   case null:
@@ -202,7 +214,7 @@ private function init_if_header()
   // Outer parser loop. Iterates over (No-)Tag-Lists
   while ( ( $token = self::if_header_lexer($pos) ) ) {
 
-    $path = DAV::$PATH;
+    $path = DAV::getPath();
     // check for URI
     if ($token[0] === 'URI') {
       // It's a tagged list!
@@ -292,7 +304,7 @@ EOS
 
 
 /**
- * Enter description here...
+ * The constructor
  *
  * @param string $path
  * @throws DAV_Status
@@ -310,6 +322,11 @@ protected function __construct()
 
 
 /**
+ * This method is called to handle the request.
+ * 
+ * This method should be implemented by a child class to handle the request the
+ * propper way. The depends on the request method (GET, POST, PUT, ...).
+ * 
  * @param Resource $resource
  * @return bool
  * @throws DAV_Status
@@ -329,7 +346,7 @@ public function handleRequest()
   try {
     $shallow_lock = $this->check_if_headers();
 
-    $resource = DAV::$REGISTRY->resource(DAV::$PATH);
+    $resource = DAV::$REGISTRY->resource( DAV::getPath() );
     if ( !$resource || !$resource->isVisible() and
          in_array( $_SERVER['REQUEST_METHOD'], array(
              'ACL', 'COPY', 'DELETE', 'GET', 'HEAD', 'MOVE',
@@ -337,12 +354,12 @@ public function handleRequest()
        ) ) )
       throw new DAV_Status( DAV::HTTP_NOT_FOUND );
 
-    if ( '/' !== substr( DAV::$PATH, -1 ) &&
+    if ( '/' !== substr( DAV::getPath(), -1 ) &&
          ( $resource &&
            $resource instanceof DAV_Collection ||
            'MKCOL' === $_SERVER['REQUEST_METHOD'] ) ) {
-      DAV::$PATH .= '/';
-      header('Content-Location: ' . DAV::path2uri( DAV::$PATH ) );
+      DAV::setPath( DAV::getPath() . '/' );
+      header('Content-Location: ' . DAV::path2uri( DAV::getPath() ) );
     }
 
     $this->handle( $resource );
@@ -382,7 +399,7 @@ private function check_if_headers() {
     case 'PROPPATCH':
     case 'PUT':
     case 'UNLOCK':
-      $write_locks[DAV::unslashify(DAV::$PATH)] = 1;
+      $write_locks[DAV::unslashify(DAV::getPath())] = 1;
       break;
     case 'COPY':
     case 'MOVE':
@@ -394,9 +411,9 @@ private function check_if_headers() {
       if ( '/' === substr( $this->destination(), 0, 1 ) )
         $write_locks[ DAV::unslashify( $this->destination() ) ] = 1;
       if ('COPY' === $_SERVER['REQUEST_METHOD'])
-        $read_locks[DAV::unslashify(DAV::$PATH)] = 1;
+        $read_locks[DAV::unslashify(DAV::getPath())] = 1;
       else
-        $write_locks[DAV::unslashify(DAV::$PATH)] = 1;
+        $write_locks[DAV::unslashify(DAV::getPath())] = 1;
       break;
     default:
       throw new DAV_Status( DAV::HTTP_METHOD_NOT_ALLOWED );
@@ -411,7 +428,7 @@ private function check_if_headers() {
 
   foreach( array( 'MATCH', 'UNMODIFIED_SINCE' ) as $value ) // Conditions 'NONE_MATCH', 'MODIFIED_SINCE' are not relevant
     if ( isset( $_SERVER['HTTP_IF_' . $value] ) ) {
-      $read_locks[DAV::unslashify(DAV::$PATH)] = 1;
+      $read_locks[DAV::unslashify(DAV::getPath())] = 1;
       break;
     }
 
@@ -493,7 +510,7 @@ private function check_if_header()
  * @return void
  */
 private function check_if_modified_since_header() {
-  $resource = DAV::$REGISTRY->resource(DAV::$PATH);
+  $resource = DAV::$REGISTRY->resource(DAV::getPath());
   if ( !$resource || !$resource->isVisible() )
     return;
   if ( !( $lastModified = $resource->user_prop_getlastmodified() ) )
@@ -523,7 +540,7 @@ private function check_if_match_header() {
   }
   else return;
 
-  $resource = DAV::$REGISTRY->resource( DAV::$PATH );
+  $resource = DAV::$REGISTRY->resource( DAV::getPath() );
 
   // The simplest case: just an asterisk '*'.
   if ( preg_match( '@^\\s*\\*\\s*$@', $header ) ) {
@@ -583,6 +600,6 @@ public static function equalETags( $a, $b ) {
 }
 
 
-} // class DAV_Request_LOCK
+} // class DAV_Request
 
-
+// End of file

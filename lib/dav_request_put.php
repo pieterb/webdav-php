@@ -80,14 +80,14 @@ protected function handle( $resource ) {
   if ( !$resource ) {
     if (!is_null($this->range_start))
       throw new DAV_Status(DAV::HTTP_NOT_FOUND);
-    $parent = DAV::$REGISTRY->resource(dirname(DAV::$PATH));
+    $parent = DAV::$REGISTRY->resource(dirname(DAV::getPath()));
     if (!$parent || ! $parent instanceof DAV_Collection ) {
       throw new DAV_Status(DAV::HTTP_CONFLICT, 'Unable to PUT file in non-existing collection.');
     }
     $parent->assertLock();
 
-    $parent->create_member( basename( DAV::$PATH ) );
-    $resource = DAV::$REGISTRY->resource(DAV::$PATH);
+    $parent->create_member( basename( DAV::getPath() ) );
+    $resource = DAV::$REGISTRY->resource(DAV::getPath());
   }
   elseif ( $resource instanceof DAV_Collection )
     throw new DAV_Status( DAV::HTTP_METHOD_NOT_ALLOWED, 'Method PUT not supported on collections.' );
@@ -110,7 +110,7 @@ protected function handle( $resource ) {
     }
     catch(DAV_Status $e) {
       fclose($input);
-      if ($parent) $parent->method_DELETE( basename( DAV::$PATH ) );
+      if ($parent) $parent->method_DELETE( basename( DAV::getPath() ) );
       throw $e;
     }
   }
@@ -136,7 +136,7 @@ protected function handle( $resource ) {
   if ($etag = $resource->prop_getetag())
     header('ETag: ' . htmlspecialchars_decode($etag));
   if ($parent)
-    DAV::redirect(DAV::HTTP_CREATED, DAV::$PATH );
+    DAV::redirect(DAV::HTTP_CREATED, DAV::getPath() );
   else
     DAV::header(array('status' => DAV::HTTP_NO_CONTENT));
 }

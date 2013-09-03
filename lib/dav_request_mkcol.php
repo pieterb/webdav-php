@@ -43,7 +43,7 @@ protected function handle( $resource )
       throw new DAV_Status(DAV::HTTP_METHOD_NOT_ALLOWED);
     throw DAV::forbidden();
   }
-  $resource = DAV::$REGISTRY->resource(dirname(DAV::$PATH));
+  $resource = DAV::$REGISTRY->resource(dirname(DAV::getPath()));
   if ( !$resource or !$resource->isVisible() )
     throw new DAV_Status( DAV::HTTP_CONFLICT, 'Unable to MKCOL in unknown resource' );
 
@@ -53,8 +53,8 @@ protected function handle( $resource )
     throw new DAV_Status(DAV::HTTP_UNSUPPORTED_MEDIA_TYPE);
   $resource->assert(DAVACL::PRIV_BIND);
   $resource->assertLock();
-  $resource->method_MKCOL( basename(DAV::$PATH) );
-  DAV::redirect(DAV::HTTP_CREATED, DAV::$PATH);
+  $resource->method_MKCOL( basename(DAV::getPath()) );
+  DAV::redirect(DAV::HTTP_CREATED, DAV::getPath());
 }
 
 

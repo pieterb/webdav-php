@@ -940,6 +940,16 @@ const CLIENT_WINDOWS_WEBFOLDER = 0x200; // 0b0010 0000 0000;
     return DAV::$PATH;
   }
 
+
+  /**
+   * Set the (requested) path
+   * @param   string  $path  The path
+   * @return  void
+   */
+  public static function setPath( $path ) {
+    DAV::$PATH = DAV::parseURI($path, true);
+  }
+
   /**
    * An array with the parsed config.ini file
    * @var  array  <code>array( <section> => array( <key> => <value,... ) )</code>

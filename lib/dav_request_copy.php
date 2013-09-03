@@ -53,7 +53,7 @@ protected function handle( $resource ) {
 
   // Can't move the root collection:
   if ( $this instanceof DAV_Request_MOVE &&
-       '/' === DAV::$PATH )
+       '/' === DAV::getPath() )
     throw new DAV_Status(DAV::HTTP_FORBIDDEN);
 
   // Assert proper Depth: header value:
@@ -67,8 +67,8 @@ protected function handle( $resource ) {
 
   // Check: Can't move a collection to one of its members.
   if ( $this instanceof DAV_Request_MOVE &&
-       '/' === substr(DAV::$PATH, -1) &&
-       0 === strpos( $destination, DAV::$PATH ) )
+       '/' === substr(DAV::getPath(), -1) &&
+       0 === strpos( $destination, DAV::getPath() ) )
     throw new DAV_Status(
       DAV::HTTP_FORBIDDEN,
       "Can't move a collection to itself or one of its members."
@@ -99,7 +99,7 @@ protected function handle( $resource ) {
 
   // Check: Won't move a resource to one of its parents.
   if ( 0 === strpos(
-         DAV::slashify(DAV::$PATH),
+         DAV::slashify(DAV::getPath()),
          DAV::slashify($destination)
        ) )
     throw new DAV_Status(
@@ -117,7 +117,7 @@ protected function handle( $resource ) {
       DAV_Request_DELETE::delete($destinationResource);
       if (DAV_Multistatus::active()) {
         DAV_Multistatus::inst()->addStatus(
-          DAV::$PATH, DAV::forbidden()
+          DAV::getPath(), DAV::forbidden()
         );
         DAV_Multistatus::inst()->close();
         return;
@@ -132,9 +132,9 @@ protected function handle( $resource ) {
 
   if ($this instanceof DAV_Request_MOVE) {
     if ( DAV::$LOCKPROVIDER ) {
-      foreach (DAV::$LOCKPROVIDER->memberLocks( DAV::$PATH ) as $lock)
+      foreach (DAV::$LOCKPROVIDER->memberLocks( DAV::getPath() ) as $lock)
         DAV::$LOCKPROVIDER->unlock( $lock->lockroot );
-      if (( $lock = DAV::$LOCKPROVIDER->getlock( DAV::$PATH ) ))
+      if (( $lock = DAV::$LOCKPROVIDER->getlock( DAV::getPath() ) ))
         DAV::$LOCKPROVIDER->unlock( $lock->lockroot );
     }
 

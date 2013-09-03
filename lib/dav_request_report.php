@@ -180,7 +180,7 @@ protected function handle( $resource ) {
  * @param DAV_Resource $resource
  */
 private function handle_expand_property($resource) {
-  $response = $this->handle_expand_property_recursively( DAV::$PATH, $this->entity );
+  $response = $this->handle_expand_property_recursively( DAV::getPath(), $this->entity );
   DAV_Multistatus::inst()->addResponse($response)->close();
 }
 

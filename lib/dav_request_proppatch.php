@@ -139,7 +139,7 @@ protected function handle( $resource ) {
       $errors[$name] = $e;
     }
   }
-  $response = new DAV_Element_response(DAV::$PATH);
+  $response = new DAV_Element_response(DAV::getPath());
   if (empty($errors)) {
     try { $resource->storeProperties(); }
     catch (DAV_Status $e) {

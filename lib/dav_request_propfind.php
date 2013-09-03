@@ -161,7 +161,7 @@ protected function handle( $resource ) {
   if ( $resource instanceof DAV_Collection &&
        DAV::DEPTH_1 === $this->depth() )
     foreach ($resource as $path) {
-      $subpath = DAV::$PATH . $path;
+      $subpath = DAV::getPath() . $path;
       $subresource = DAV::$REGISTRY->resource( $subpath );
       if ($subresource->isVisible())
         $this->handle2( $subresource );
