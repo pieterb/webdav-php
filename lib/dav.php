@@ -902,31 +902,22 @@ const CLIENT_WINDOWS_WEBFOLDER = 0x200; // 0b0010 0000 0000;
 
 
   /**
-   * @var  array  All supported properties
-   */
-  private static $SUPPORTED_PROPERTIES = null;
-
-
-  /**
    * Returns the supported properties
    * @return  array  All supported properties
    */
   public static function getSupported_Properties() {
-    if ( is_null( DAV::$SUPPORTED_PROPERTIES ) ) {
-      DAV::$SUPPORTED_PROPERTIES = array_merge(
+    $cache = DAV_Cache::inst( 'DAV' );
+    $SUPPORTED_PROPERTIES = $cache->get( 'supported_properties' );
+    if ( is_null( $SUPPORTED_PROPERTIES ) ) {
+      $SUPPORTED_PROPERTIES = array_merge(
         DAV::$WEBDAV_PROPERTIES,
         DAV::$PRINCIPAL_PROPERTIES,
         DAV::$ACL_PROPERTIES
       );
+      $cache->set( 'supported_properties', $SUPPORTED_PROPERTIES );
     }
-    return DAV::$SUPPORTED_PROPERTIES;
+    return $SUPPORTED_PROPERTIES;
   }
-
-
-  /**
-   * @var  string  The path of the current request
-   */
-  private static $PATH = null;
 
 
   /**
@@ -934,10 +925,13 @@ const CLIENT_WINDOWS_WEBFOLDER = 0x200; // 0b0010 0000 0000;
    * @return  string  The path
    */
   public static function getPath() {
-    if ( is_null( DAV::$PATH ) ) {
-      DAV::$PATH = DAV::parseURI($_SERVER['REQUEST_URI'], true);
+    $cache = DAV_Cache::inst( 'DAV' );
+    $PATH = $cache->get( 'path' );
+    if ( is_null( $PATH ) ) {
+      $PATH = DAV::parseURI( $_SERVER['REQUEST_URI'], true );
+      $cache->set( 'path', $PATH );
     }
-    return DAV::$PATH;
+    return $PATH;
   }
 
 
@@ -947,7 +941,8 @@ const CLIENT_WINDOWS_WEBFOLDER = 0x200; // 0b0010 0000 0000;
    * @return  void
    */
   public static function setPath( $path ) {
-    DAV::$PATH = DAV::parseURI($path, true);
+    $cache = DAV_Cache::inst( 'DAV' );
+    $cache->set( 'path', DAV::parseURI( $path, true ) );
   }
 
   /**
@@ -959,13 +954,16 @@ const CLIENT_WINDOWS_WEBFOLDER = 0x200; // 0b0010 0000 0000;
 
   /**
    * Returns the configuration (= parsed configuration file)
-   * @return  array  The configuration
+   * @return  array  The configuration: <code>array( <section> => array( <key> => <value,... ) )</code>
    */
   public static function getConfig() {
-    if ( is_null( DAV::$CONFIG ) ) {
-      DAV::$CONFIG = parse_ini_file(dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'config.ini', true);
+    $cache = DAV_Cache::inst( 'DAV' );
+    $CONFIG = $cache->get( 'config' );
+    if ( is_null( $CONFIG ) ) {
+      $CONFIG = parse_ini_file( dirname( dirname( __FILE__ ) ) . DIRECTORY_SEPARATOR . 'config.ini', true );
+      $cache->set( 'config', $CONFIG );
     }
-    return DAV::$CONFIG;
+    return $CONFIG;
   }
 
 } // namespace DAV
