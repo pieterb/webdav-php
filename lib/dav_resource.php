@@ -210,8 +210,8 @@ public function method_POST( &$headers ) {
 /**
  * Handle a PUT request.
  * This method SHOULD be implemented by non-collections.
- * @param resource $stream
- * @return void
+ * @param   resource  $stream  The input stream from which to read the data
+ * @return  void
  */
 public function method_PUT($stream) {
   throw new DAV_Status( DAV::HTTP_NOT_IMPLEMENTED );
@@ -221,11 +221,11 @@ public function method_PUT($stream) {
 /**
  * Handle a PUT request.
  * This method SHOULD be implemented by non-collections.
- * @param resource $stream
- * @param int $start
- * @param int $end
- * @param int $total
- * @return void
+ * @param   resource $stream  The input stream from which to read the data
+ * @param   int      $start
+ * @param   int      $end
+ * @param   int      $total
+ * @return  void
  */
 public function method_PUT_range( $stream, $start, $end, $total ) {
   throw new DAV_Status( DAV::HTTP_NOT_IMPLEMENTED );
