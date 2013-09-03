@@ -358,8 +358,9 @@ public function handleRequest()
          ( $resource &&
            $resource instanceof DAV_Collection ||
            'MKCOL' === $_SERVER['REQUEST_METHOD'] ) ) {
-      DAV::setPath( DAV::getPath() . '/' );
-      header('Content-Location: ' . DAV::path2uri( DAV::getPath() ) );
+      $newPath = DAV::getPath() . '/';
+      DAV::setPath( $newPath );
+      DAV::header( array( 'Content-Location' => DAV::path2uri( $newPath ) ) );
     }
 
     $this->handle( $resource );

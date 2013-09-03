@@ -70,14 +70,14 @@ class DAV_RequestTest extends PHPUnit_Framework_TestCase {
   }
 
 
-  /**
-   * @backupStaticAttributes enabled
-   * @todo This doesn't work yet. So let's read more on testing static stuff.
-   */
   public function testHandleRequest() {
     DAV::$REGISTRY = new DAV_Test_Registry();
     $obj = DAV_Test_Request::inst();
-    $this->expectOutputString( "DAV_Request::handle() called for path: /path/to/resource.txt\n" );
+    $this->expectOutputString( "DAV_Request::handle() called for path: /path/to/resource.txt\nContent-Location: http://example.org/new_folder_without_trailing_slash/\nDAV_Request::handle() called for path: /new_folder_without_trailing_slash\n" );
+    $obj->handleRequest();
+    
+    $_SERVER['REQUEST_METHOD'] = 'MKCOL';
+    $_SERVER['REQUEST_URI'] = '/new_folder_without_trailing_slash';
     $obj->handleRequest();
   }
   
