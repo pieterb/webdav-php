@@ -22,7 +22,6 @@
  * Contains tests for the DAV_Resource class
  * @package DAV
  * @subpackage tests
- * @todo er zitten veel matige tests in deze klasse. Even nakijken of ik mbv stubs toch iets meer kan testen
  */
 class DAV_ResourceTest extends PHPUnit_Framework_TestCase {
   
@@ -34,41 +33,52 @@ class DAV_ResourceTest extends PHPUnit_Framework_TestCase {
   }
   
 
-  public function assertLock() {
-    if ( !DAV::$LOCKPROVIDER ) return null;
-    if ( ( $lock = DAV::$LOCKPROVIDER->getlock($this->path) ) &&
-         !isset( DAV::$SUBMITTEDTOKENS[$lock->locktoken] ) )
-      throw new DAV_Status(
-        DAV::HTTP_LOCKED, array(
-          DAV::COND_LOCK_TOKEN_SUBMITTED =>
-            new DAV_Element_href( $lock->lockroot )
-        )
-      );
+  public function testAssertLock() {
+    $lock = new DAV_Element_activelock( array (
+        'lockroot' => '/collection',
+        'locktoken' => 'thelocktoken',
+        'owner' => '/path/to/user',
+        'timeout' => time() + 3600
+    ) );
+    
+    $lockProviderStub = $this->getMock( 'DAV_Lock_Provider' );
+    $lockProviderStub->expects( $this->atLeastOnce() )
+                     ->method( 'getlock' )
+                     ->with( $this->equalTo( '/collection/child' ) )
+                     ->will( $this->returnValue( $lock ) );
+    DAV::$LOCKPROVIDER = $lockProviderStub;
+    
+    DAV::$SUBMITTEDTOKENS[ 'thelocktoken' ] = 'thelocktoken';
+    $this->obj->assertLock(); // No need to assert anything; if the resource is locked (which it should not be), an exception will be thrown
+    
+    unset( DAV::$SUBMITTEDTOKENS[ 'thelocktoken' ] );
+    $this->setExpectedException( 'DAV_Status', '', 423 );
+    $this->obj->assertLock();
   }
 
 
-  /**
-   * @param string $path
-   * @return mixed one of the following:
-   * - DAV_Element_href of the lockroot of the missing token
-   * - null if no lock was found.
-   */
-  public function assertMemberLocks() {
-    if ( !DAV::$LOCKPROVIDER ) return;
-    if ( ! $this instanceof DAV_Collection ) return;
-    $locks = DAV::$LOCKPROVIDER->memberLocks( $this->path );
-    $unsubmitted = array();
-    foreach ($locks as $token => $lock)
-      if ( !isset( DAV::$SUBMITTEDTOKENS[$token] ) )
-        $unsubmitted[] =
-          DAV::$REGISTRY->resource($lock->lockroot)->isVisible() ?
-          $lock->lockroot : '/';
-    if ( !empty( $unsubmitted ) )
-      throw new DAV_Status(
-        DAV::HTTP_LOCKED, array(
-          DAV::COND_LOCK_TOKEN_SUBMITTED => new DAV_Element_href($unsubmitted)
-        )
-      );
+  public function testAssertMemberLocks() {
+    $lock = new DAV_Element_activelock( array (
+        'lockroot' => '/collection/child/subresource',
+        'locktoken' => 'thelocktoken',
+        'owner' => '/path/to/user',
+        'timeout' => time() + 3600
+    ) );
+    
+    $lockProviderStub = $this->getMock( 'DAV_Lock_Provider' );
+    $lockProviderStub->expects( $this->atLeastOnce() )
+                     ->method( 'memberLocks' )
+                     ->with( $this->equalTo( '/collection/child' ) )
+                     ->will( $this->returnValue( array( 'thelocktoken' => $lock ) ) );
+    DAV::$LOCKPROVIDER = $lockProviderStub;
+    
+    DAV::$SUBMITTEDTOKENS[ 'thelocktoken' ] = 'thelocktoken';
+    $obj = new DAV_Resource_DAV_Collection_TestImplementation( '/collection/child' );
+    $obj->assertMemberLocks(); // No need to assert anything; if the resource is locked (which it should not be), an exception will be thrown
+    
+    unset( DAV::$SUBMITTEDTOKENS[ 'thelocktoken' ] );
+    $this->setExpectedException( 'DAV_Status', '', 423 );
+    $obj->assertMemberLocks();
   }
 
 
@@ -196,7 +206,16 @@ class DAV_ResourceTest extends PHPUnit_Framework_TestCase {
 
 
   public function testPropname() {
-    $this->assertSame( array( 'DAV: supported-report-set' => true ), $this->obj->propname(), 'The default implementation of DAV_Resource::propname() should only return DAV: supported-report-set' );
+    DAV::$LOCKPROVIDER = $this->getMock( 'DAV_Lock_Provider' );
+    $expectedBasic = array(
+        'DAV: supported-report-set' => true,
+        'DAV: lockdiscovery' => true,
+        'DAV: supportedlock' => true
+    );
+    ksort( $expectedBasic );
+    $returnedBasic = $this->obj->propname();
+    ksort( $returnedBasic );
+    $this->assertSame( $expectedBasic, $returnedBasic, 'The default implementation of DAV_Resource::propname() should only return DAV: supported-report-set' );
     
     // Mock it, so we can test some more
     $userProps = array(
@@ -218,9 +237,14 @@ class DAV_ResourceTest extends PHPUnit_Framework_TestCase {
         'NS prop2' => false,
         'NS prop3' => true,
         'DAV: displayname' => true,
-        'DAV: supported-report-set' => true
+        'DAV: supported-report-set' => true,
+        'DAV: lockdiscovery' => true,
+        'DAV: supportedlock' => true
     );
-    $this->assertEquals( $expected, $stub->propname(), 'DAV_Resource::propname should return the correct values' );
+    ksort( $expected );
+    $returned = $stub->propname();
+    ksort( $returned );
+    $this->assertEquals( $expected, $returned, 'DAV_Resource::propname should return the correct values' );
   }
 
 
@@ -386,7 +410,21 @@ class DAV_ResourceTest extends PHPUnit_Framework_TestCase {
 
 
   public function testProp_lockdiscovery() {
-    $this->assertNull( $this->obj->prop_lockdiscovery(), 'DAV_Resource::prop_lockdiscovery() should return the correct value' );
+    $lock = new DAV_Element_activelock( array (
+        'lockroot' => '/collection',
+        'locktoken' => 'thelocktoken',
+        'owner' => '/path/to/user',
+        'timeout' => time() + 3600
+    ) );
+    
+    $lockProviderStub = $this->getMock( 'DAV_Lock_Provider' );
+    $lockProviderStub->expects( $this->atLeastOnce() )
+                     ->method( 'getlock' )
+                     ->with( $this->equalTo( '/collection/child' ) )
+                     ->will( $this->returnValue( $lock ) );
+    DAV::$LOCKPROVIDER = $lockProviderStub;
+    
+    $this->assertsame( $lock->toXML(), $this->obj->prop_lockdiscovery(), 'DAV_Resource::prop_lockdiscovery() should return the correct value' );
   }
 
 
@@ -418,7 +456,7 @@ class DAV_ResourceTest extends PHPUnit_Framework_TestCase {
     DAV::$LOCKPROVIDER = null;
     $this->assertNull( $this->obj->prop_supportedlock(), 'DAV_Resource::prop_supportedlock() should return the correct value' );
     
-    DAV::$LOCKPROVIDER = new DAV_Lock_Provider_TestImplementation();
+    DAV::$LOCKPROVIDER = $this->getMock( 'DAV_Lock_Provider' );
     $this->assertEquals( "<D:lockentry>\n  <D:lockscope><D:exclusive/></D:lockscope>\n  <D:locktype><D:write/></D:locktype>\n</D:lockentry>", $this->obj->prop_supportedlock(), 'DAV_Resource::prop_supportedlock() should return the correct value if DAV::$LOCKPROVIDER is set' );
   }
 
@@ -499,23 +537,5 @@ class DAV_Resource_DAVACL_Principal_Collection_TestImplementation extends DAV_Re
   public function report_principal_search_property_set() {}
 
 } // class DAV_Resource_DAVACL_Principal_Collection_TestImplementation
-
-
-/**
- * Nothing is implemented as this class is only needed to test DAV_Resource::prop_supportedlock()
- */
-class DAV_Lock_Provider_TestImplementation implements DAV_Lock_Provider {
-
-  public function getlock($path) {}
-
-  public function memberLocks($path) {}
-
-  public function refresh($path, $locktoken, $timeout) {}
-
-  public function setlock($lockroot, $depth, $owner, $timeout) {}
-
-  public function unlock($path) {}
-
-} // class DAV_Lock_Provider_TestImplementation
 
 // End of file

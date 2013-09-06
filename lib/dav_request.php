@@ -43,7 +43,7 @@ abstract class DAV_Request {
 
 
 /**
- * @var array
+ * @var array  All methods recognized by this server
  */
 static $ALLOWED_METHODS = array(
   'ACL', 'COPY', 'DELETE', 'GET', 'HEAD', 'LOCK', 'MKCOL', 'MOVE', 'OPTIONS',
@@ -81,10 +81,6 @@ public static function inst() {
 }
 
 
-/**
- * @var string
- */
-private $inputstring = null;
 /**
  * Returns the request body
  * @return string
@@ -141,6 +137,8 @@ public function depth() {
 
 
 /**
+ * Parse the HTTP If header
+ * 
  * @param  string  header string to parse
  * @param  int     current parsing position
  * @return array|null   next token (type and value)
@@ -381,6 +379,8 @@ public function handleRequest()
 
 
 /**
+ * Check any HTTP If-* header applicable with the current request method
+ * 
  * @return boolean TRUE if shallowLock() was called;
  */
 private function check_if_headers() {
@@ -528,6 +528,8 @@ private function check_if_modified_since_header() {
 
 
 /**
+ * Check the HTTP If-Match header
+ * 
  * @return void
  */
 private function check_if_match_header() {

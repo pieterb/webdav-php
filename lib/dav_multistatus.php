@@ -70,6 +70,9 @@
 class DAV_Multistatus {
 
 
+  /**
+   * @var  bool  Whether or not this multistatus has already sent the closing tag to the client
+   */
 private $closed = false;
 
 
@@ -88,7 +91,7 @@ public function close() {
 
 
 /**
- * @var DAV_Status
+ * @var DAV_Status  The current status, which isn't flushed with flushStatus() yet
  */
 private $currentStatus = null;
 /**
@@ -131,6 +134,11 @@ public function addResponse($response) {
 }
 
 
+/**
+ * Sents the current status in memory to the client
+ * 
+ * @return  void
+ */
 private function flushStatus() {
   echo "\n<D:response>";
 
@@ -182,6 +190,9 @@ private function __construct()
 }
 
 
+/**
+ * @var  DAV_Multistatus  The only instance of this class
+ */
 private static $inst = null;
 /**
  * Returns the only instance of this class

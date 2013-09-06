@@ -31,6 +31,8 @@ class DAV_Resource {
 
 
 /**
+ * Asserts whether this resource is locked
+ * 
  * @param string $path
  */
 public function assertLock() {
@@ -47,6 +49,8 @@ public function assertLock() {
 
 
 /**
+ * Asserts whether members of this resource are locked
+ * 
  * @param string $path
  * @return mixed one of the following:
  * - DAV_Element_href of the lockroot of the missing token
@@ -73,7 +77,9 @@ public function assertMemberLocks() {
 
 
 /**
- * @return DAV_Resource
+ * Gets the parent collection of this resource
+ * 
+ * @return  DAV_Resource  The collection containing this resource or null if this resource is the root collection
  */
 public function collection() {
   return ('/' === $this->path ) ?
@@ -82,20 +88,23 @@ public function collection() {
 
 
 /**
- * @return bool
+ * Determines whether this resource is visible to the current user
+ * 
+ * @return  bool  True if visible, false if invisible
  */
 public function isVisible() { return true; }
 
 
 /**
- * @var string a properly slashified path.
+ * @var  string  A properly slashified path
  */
 public $path;
 
 
 /**
  * Constructor
- * @param string $path a properly slashified path.
+ * 
+ * @param  string  $path  A properly slashified path.
  */
 public function __construct($path) {
   $this->path = $path;
@@ -185,6 +194,8 @@ public function method_HEAD() {
 
 
 /**
+ * Handle an OPTIONS request
+ * 
  * @param array $headers By default, DAV_Server returns same standard response
  * to an OPTIONS request. This method allows you to filter this response.
  * Especially, you may want to override the default Allow: and DAV: headers.
@@ -233,60 +244,72 @@ public function method_PUT_range( $stream, $start, $end, $total ) {
 
 
 /**
+ * Gets the creationdate property in a PHP native format (instead of XML for webDAV)
+ * 
  * @return int UNIX timestamp
  */
 public function user_prop_creationdate()       { return null; }
 
 
 /**
+ * Gets the displayname property in a PHP native format (instead of XML for webDAV)
+ * 
  * @return string not XML, just UTF-8 text
  */
 public function user_prop_displayname()        { return null; }
 
 
 /**
+ * Gets the executable property in a PHP native format (instead of XML for webDAV)
+ * 
  * @return bool true if executable
  */
 public function user_prop_executable()         { return null; }
 
 
 /**
+ * Gets the getcontentlanguage property in a PHP native format (instead of XML for webDAV)
+ * 
  * @return string not XML, just UTF-8 text
  */
 public function user_prop_getcontentlanguage() { return null; }
 
 
 /**
+ * Gets the getcontentlength property in a PHP native format (instead of XML for webDAV)
+ * 
  * @return string not XML, just UTF-8 text
  */
 public function user_prop_getcontentlength()   { return null; }
 
 
 /**
+ * Gets the getcontenttype property in a PHP native format (instead of XML for webDAV)
+ * 
  * @return string not XML, just UTF-8 text
  */
 public function user_prop_getcontenttype()     { return null; }
 
 
 /**
+ * Gets the getetag property in a PHP native format (instead of XML for webDAV)
+ * 
  * @return string (W/)?"<etag>" not XML, just UTF-8 text
  */
 public function user_prop_getetag()            { return null; }
 
 
 /**
+ * Gets the getlastmodified property in a PHP native format (instead of XML for webDAV)
+ * 
  * @return int UNIX timestamp
  */
 public function user_prop_getlastmodified()    { return null; }
 
 
 /*
- * @return bool true if hidden
- */
-//public function user_prop_ishidden()           { return null; }
-
-
-/*
+ * Gets the lastaccessed property in a PHP native format (instead of XML for webDAV)
+ * 
  * @return int UNIX timestamp
  */
 //public function user_prop_lastaccessed()       { return null; }
@@ -361,6 +384,8 @@ protected function user_propname() {
 
 
 /**
+ * Gets dead property, but in XML/webDAV ready format
+ * 
  * @param string $propname the name of the property to be returned,
  *        eg. "mynamespace: myprop"
  * @return string XML element
@@ -372,6 +397,8 @@ protected function user_prop($propname) {
 
 
 /**
+ * Sets dead property, but value should be in XML/webDAV ready format
+ * 
  * @param string $propname the name of the property to be set.
  * @param string $value an XML fragment, or null to unset the property.
  * @return void
@@ -400,6 +427,8 @@ protected function user_set($propname, $value = null) {
 // DAV properties:
 
 /**
+ * Gets the creationdate property in an XML ready format for webDAV
+ * 
  * @return string XML
  */
 final public function prop_creationdate() {
@@ -409,6 +438,8 @@ final public function prop_creationdate() {
 
 
 /**
+ * Gets the displayname property in an XML ready format for webDAV
+ * 
  * @return string XML
  */
 final public function prop_displayname() {
@@ -418,6 +449,8 @@ final public function prop_displayname() {
 
 
 /**
+ * Sets the displayname property, but the value should be in an XML ready format for webDAV
+ * 
  * @return string XML
  */
 final public function set_displayname($value) {
@@ -434,6 +467,8 @@ final public function set_displayname($value) {
 
 
 /**
+ * Sets the displayname property with a PHP native value
+ * 
  * @return void
  * @throws DAV_Status
  */
@@ -443,6 +478,8 @@ protected function user_set_displayname($value) {
 
 
 /**
+ * Gets the executable property in an XML ready format for webDAV
+ * 
  * @return string XML
  */
 final public function prop_executable() {
@@ -452,6 +489,8 @@ final public function prop_executable() {
 
 
 /**
+ * Sets the executable property, but the value should be in an XML ready format for webDAV
+ * 
  * @return void
  * @throws DAV_Status
  */
@@ -462,6 +501,8 @@ final public function set_executable($value) {
 
 
 /**
+ * Sets the executable property with a PHP native value
+ * 
  * @return void
  * @throws DAV_Status
  */
@@ -471,6 +512,8 @@ protected function user_set_executable($value) {
 
 
 /**
+ * Gets the getcontentlanguage property in an XML ready format for webDAV
+ * 
  * @return string XML
  */
 final public function prop_getcontentlanguage() {
@@ -480,6 +523,8 @@ final public function prop_getcontentlanguage() {
 
 
 /**
+ * Sets the getcontentlanguage property, but the value should be in an XML ready format for webDAV
+ * 
  * @return void
  * @throws DAV_Status
  */
@@ -499,6 +544,8 @@ final public function set_getcontentlanguage($value) {
 
 
 /**
+ * Sets the getcontentlanguage property with a PHP native value
+ * 
  * @return void
  * @throws DAV_Status
  */
@@ -508,6 +555,8 @@ protected function user_set_getcontentlanguage($value) {
 
 
 /**
+ * Gets the getcontentlength property in an XML ready format for webDAV
+ * 
  * @return string XML
  */
 final public function prop_getcontentlength() {
@@ -517,6 +566,8 @@ final public function prop_getcontentlength() {
 
 
 /**
+ * Gets the getcontenttype property in an XML ready format for webDAV
+ * 
  * @return string XML
  */
 final public function prop_getcontenttype() {
@@ -526,6 +577,8 @@ final public function prop_getcontenttype() {
 
 
 /**
+ * Sets the getcontenttype property, but the value should be in an XML ready format for webDAV
+ * 
  * @return void
  * @throws DAV_Status
  */
@@ -554,6 +607,8 @@ final public function set_getcontenttype($value) {
 
 
 /**
+ * Sets the getcontenttype property with a PHP native value
+ * 
  * @return void
  * @throws DAV_Status
  */
@@ -563,6 +618,8 @@ protected function user_set_getcontenttype($value) {
 
 
 /**
+ * Gets the getetag property in an XML ready format for webDAV
+ * 
  * @return string XML
  */
 final public function prop_getetag() {
@@ -572,6 +629,8 @@ final public function prop_getetag() {
 
 
 /**
+ * Gets the getlastmodified property in an XML ready format for webDAV
+ * 
  * @return string XML
  */
 final public function prop_getlastmodified() {
@@ -591,6 +650,8 @@ final public function prop_getlastmodified() {
 
 
 /**
+ * Gets the lockdiscovery property in an XML ready format for webDAV
+ * 
  * @return string XML
  */
 final public function prop_lockdiscovery() {
@@ -602,6 +663,8 @@ final public function prop_lockdiscovery() {
 
 
 /**
+ * Gets the resourcetype property in an XML ready format for webDAV
+ * 
  * @return string XML
  */
 final public function prop_resourcetype() {
@@ -616,6 +679,8 @@ final public function prop_resourcetype() {
 
 
 /**
+ * Gets the supported_report_set property in an XML ready format for webDAV
+ * 
  * @return string XML
  */
 final public function prop_supported_report_set() {
@@ -629,6 +694,8 @@ final public function prop_supported_report_set() {
 
 
 /**
+ * Gets the supportedlock property in an XML ready format for webDAV
+ * 
  * @return string XML
  */
 final public function prop_supportedlock() {
@@ -643,6 +710,8 @@ EOS;
 
 
 /**
+ * Gets the lockdiscovery property in an XML ready format for webDAV
+ * 
  * @param string $propname the name of the property to be returned,
  *        eg. "mynamespace: myprop"
  * @return string XML or NULL if the property is not defined.
@@ -665,6 +734,8 @@ public function storeProperties() {
 
 
 /**
+ * Handle a PROPPATCH request.
+ * 
  * @param string $propname the name of the property to be set.
  * @param string $value an XML fragment, or null to unset the property.
  * @return void

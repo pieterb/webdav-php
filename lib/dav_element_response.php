@@ -51,7 +51,7 @@ class DAV_Element_response {
   
   
 /**
- * @var uri
+ * @var uri  The path this response applies to
  */
 private $path;
 
@@ -64,6 +64,8 @@ private $properties = array();
 
 
 /**
+ * Constructor
+ * 
  * @param string $path uri
  */
 public function __construct($path) {

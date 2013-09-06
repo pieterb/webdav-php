@@ -50,6 +50,9 @@ const PRINCIPAL_AUTHENTICATED   = 'DAV: authenticated';
 const PRINCIPAL_UNAUTHENTICATED = 'DAV: unauthenticated';
 const PRINCIPAL_SELF            = 'DAV: self';
 
+/**
+ * @var  array  All possible principals, except for paths to a specific principal
+ */
 public static $PRINCIPALS = array(
   self::PRINCIPAL_ALL              => '<D:all/>',
   self::PRINCIPAL_AUTHENTICATED    => '<D:authenticated/>',
@@ -68,6 +71,8 @@ const RESTRICTION_REQUIRED_PRINCIPAL = 'DAV: required-principal';
 
 
 /**
+ * Parses a piece of XML with <D:href> pieces
+ * 
  * @param string $hrefs
  * @return DAV_Element_href
  * @throws DAV_Status

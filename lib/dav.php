@@ -93,6 +93,9 @@ const PROP_SUPPORTED_REPORT_SET       = 'DAV: supported-report-set';
 const PROP_CURRENT_USER_PRINCIPAL     = 'DAV: current-user-principal';
 
 
+/**
+ * @var  array  WebDAV properties in the DAV: namespace
+ */
 public static $WEBDAV_PROPERTIES = array(
   self::PROP_CREATIONDATE         => 'creationdate',
   self::PROP_DISPLAYNAME          => 'displayname',
@@ -110,6 +113,9 @@ public static $WEBDAV_PROPERTIES = array(
 );
 
 
+/**
+ * @var  array  Properties that can be used with principals
+ */
 public static $PRINCIPAL_PROPERTIES = array(
   self::PROP_ALTERNATE_URI_SET => 'alternate_URI_set',
   self::PROP_PRINCIPAL_URL     => 'principal_URL',
@@ -118,6 +124,9 @@ public static $PRINCIPAL_PROPERTIES = array(
 );
 
 
+/**
+ * @var  array  Properties defined for ACL support
+ */
 public static $ACL_PROPERTIES = array(
   self::PROP_OWNER                      => 'owner',
   self::PROP_GROUP                      => 'group',
@@ -132,6 +141,9 @@ public static $ACL_PROPERTIES = array(
 );
 
 
+/**
+ * @var  array  Protected properties
+ */
 public static $PROTECTED_PROPERTIES = array(
   // RFC4918:
   self::PROP_CREATIONDATE               => true,
@@ -222,6 +234,9 @@ const REPORT_PRINCIPAL_PROPERTY_SEARCH     = 'principal-property-search';
 const REPORT_PRINCIPAL_SEARCH_PROPERTY_SET = 'principal-search-property-set';
 
 
+/**
+ * @var  array  Available reports
+ */
 public static $REPORTS = array(
   self::REPORT_EXPAND_PROPERTY               => 'expand_property',
   self::REPORT_ACL_PRINCIPAL_PROP_SET        => 'acl_principal_prop_set',
@@ -231,6 +246,9 @@ public static $REPORTS = array(
 );
 
 
+/**
+ * @var  int  The size (in bytes) of down- and uploaded chunks
+ */
 public static $CHUNK_SIZE = 67108864; // 64MiB
 
 
@@ -242,31 +260,33 @@ public static $HIDELOCKTOKENS = true;
 
 
 /**
- * @var DAV_Registry
+ * @var DAV_Registry The registry to be used
  */
 public static $REGISTRY = null;
 
 
 /**
- * @var DAV_Lock_Provider
+ * @var DAV_Lock_Provider The lock provider to be used
  */
 public static $LOCKPROVIDER = null;
 
 
 /**
- * @var DAVACL_ACL_Provider
+ * @var DAVACL_ACL_Provider The ACL provider to be used
  */
 public static $ACLPROVIDER = null;
 
 
 /**
- * @var callable
+ * This function should set the correct status code and show a nice page explaining web browser users what went wrong
+ * @var callable  Function to be called when a user is not authenticated (yes, the strange name is because somebody thought '401 Unauthorized' to be a good HTTP status code to indicate a user should authenticate)
  */
 public static $UNAUTHORIZED = null;
 
 
 /**
- * @var callable
+ * This function should set the correct status code and show a nice page explaining web browser users what went wrong
+ * @var callable  Function to be called when a user is forbidden to access a resource
  */
 public static $FORBIDDEN = null;
 

@@ -23,6 +23,7 @@
  */
 
 /**
+ * Represents an active lock
  * @package DAV
  */
 class DAV_Element_activelock {
@@ -73,6 +74,8 @@ public $timeout;
 
 
 /**
+ * Constructor
+ * 
  * @param string $lockroot a path (not a URI!)
  * @param string $depth DAV::DEPTH_0 or DAV::DEPTH_INF
  * @param string $locktoken the locktoken URI
