@@ -1,25 +1,11 @@
 #!/bin/bash
 
+set -e
+
 cd "$( dirname "$0" )/../"
-DIRNAME="$PWD"
-mkdir docs 2>/dev/null
-rm -rf docs/* 2>/dev/null
+rm -rf docs 2>/dev/null || true
+mkdir docs
 
-phpdoc \
-  --filename 'lib/**/*.php' \
-  --target "${DIRNAME}/docs" \
-  --output HTML:frames:default \
-  --parseprivate on \
-  --sourcecode on \
-  --defaultpackagename DAV_Server \
-  --title "DAV_Server Documentation"
+vendor/bin/phpdoc.php
 
-mkdir docs/user
-phpdoc \
-  --filename 'dav/*.php' \
-  --target "${DIRNAME}/docs/user" \
-  --output HTML:frames:default \
-  --parseprivate off \
-  --sourcecode on \
-  --defaultpackagename DAV_Server \
-  --title "DAV_Server Documentation"
+exit 0

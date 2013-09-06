@@ -1,0 +1,17 @@
+{
+    "name": "pieterb/webdav-php",
+    "description": "A library to create a webDAV server",
+    "require-dev": {
+        "phpunit/phpunit": "3.7.*",
+        "phpdocumentor/phpdocumentor": "2.0.*"
+    },
+    "authors": [
+        {
+            "name": "Pieter van Beek"
+        },
+        {
+            "name": "Niek Bosch",
+            "email": "niek.bosch@surfsara.nl"
+        }
+    ]
+}
