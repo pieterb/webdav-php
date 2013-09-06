@@ -197,7 +197,30 @@ class DAV_ResourceTest extends PHPUnit_Framework_TestCase {
 
   public function testPropname() {
     $this->assertSame( array( 'DAV: supported-report-set' => true ), $this->obj->propname(), 'The default implementation of DAV_Resource::propname() should only return DAV: supported-report-set' );
-    $this->assertTrue( false, 'Uitbreiden' );
+    
+    // Mock it, so we can test some more
+    $userProps = array(
+        'NS prop1' => true,
+        'NS prop2' => false,
+        'NS prop3' => true
+    );
+    $stub = $this->getMock( 'DAV_Resource', array( 'user_propname', 'user_prop_displayname' ), array( '/path' ) );
+    $stub->expects( $this->once() )
+         ->method( 'user_propname' )
+         ->will( $this->returnValue( $userProps ) );
+    $stub->expects( $this->once() )
+         ->method( 'user_prop_displayname' )
+         ->will( $this->returnValue( 'Some displayname' ) );
+    
+    // And check whether we get back what we expect
+    $expected = array(
+        'NS prop1' => true,
+        'NS prop2' => false,
+        'NS prop3' => true,
+        'DAV: displayname' => true,
+        'DAV: supported-report-set' => true
+    );
+    $this->assertEquals( $expected, $stub->propname(), 'DAV_Resource::propname should return the correct values' );
   }
 
 
@@ -213,76 +236,152 @@ class DAV_ResourceTest extends PHPUnit_Framework_TestCase {
 
   public function testProp_creationdate() {
     $this->assertNull( $this->obj->prop_creationdate(), 'DAV_Resource::prop_creationdate() should return the correct value' );
+
+    $time = gmmktime( 4, 5, 6, 2, 1, 2013 );
+    $stub = $this->getMock( 'DAV_Resource', array( 'user_prop_creationdate' ), array( '/path' ) );
+    $stub->expects( $this->once() )
+         ->method( 'user_prop_creationdate' )
+         ->will( $this->returnValue( $time ) );
+    $this->assertEquals( '2013-02-01T04:05:06Z', $stub->prop_creationdate(), 'DAV_Resource::prop_creationdate() should convert the timestamp to a correct string' );
   }
 
 
   public function testProp_displayname() {
-    $this->assertNull( $this->obj->prop_creationdate(), 'DAV_Resource::prop_displayname() should return the correct value' );
+    $this->assertNull( $this->obj->prop_displayname(), 'DAV_Resource::prop_displayname() should return the correct value' );
+
+    $stub = $this->getMock( 'DAV_Resource', array( 'user_prop_displayname' ), array( '/path' ) );
+    $stub->expects( $this->once() )
+         ->method( 'user_prop_displayname' )
+         ->will( $this->returnValue( 'Some & displayname' ) );
+    $this->assertEquals( 'Some &amp; displayname', $stub->prop_displayname(), 'DAV_Resource::prop_displayname() should XML escape the displayname' );
   }
 
 
   public function testSet_displayname() {
-    // In the default implementation it is forbidden to set any property
-    $this->setExpectedException( 'DAV_Status', '', 403 );
-    $this->obj->set_displayname( 'a new displayname' );
+    $stub = $this->getMock( 'DAV_Resource', array( 'user_set_displayname' ), array( '/path' ) );
+    $stub->expects( $this->once() )
+         ->method( 'user_set_displayname' )
+         ->with( $this->equalTo( 'some & value' ) );
+    $stub->set_displayname( 'some &amp; value' );
+    
+    // XML is not allowed in the displayname (so you should have escaped < )
+    $this->setExpectedException( 'DAV_Status', '', 400 );
+    $this->obj->set_displayname( 'no <xml> allowed' );
   }
 
 
   public function testProp_executable() {
     $this->assertNull( $this->obj->prop_executable(), 'DAV_Resource::prop_executable() should return the correct value' );
+    
+    $stubTrue = $this->getMock( 'DAV_Resource', array( 'user_prop_executable' ), array( '/path' ) );
+    $stubTrue->expects( $this->once() )
+             ->method( 'user_prop_executable' )
+             ->will( $this->returnValue( true ) );
+    $stubFalse = $this->getMock( 'DAV_Resource', array( 'user_prop_executable' ), array( '/path' ) );
+    $stubFalse->expects( $this->once() )
+              ->method( 'user_prop_executable' )
+              ->will( $this->returnValue( false ) );
+    
+    $this->assertEquals( 'T', $stubTrue->prop_executable(), 'DAV_Resource::prop_executable() should convert true to T' );
+    $this->assertEquals( 'F', $stubFalse->prop_executable(), 'DAV_Resource::prop_executable() should convert false to F' );
   }
 
 
   public function testSet_executable() {
-    // In the default implementation it is forbidden to set any property
-    $this->setExpectedException( 'DAV_Status', '', 403 );
-    $this->obj->set_executable( true );
+    $stubTrue = $this->getMock( 'DAV_Resource', array( 'user_set_executable' ), array( '/path' ) );
+    $stubTrue->expects( $this->once() )
+             ->method( 'user_set_executable' )
+             ->with( $this->equalTo( true ) );
+    $stubFalse = $this->getMock( 'DAV_Resource', array( 'user_set_executable' ), array( '/path' ) );
+    $stubFalse->expects( $this->once() )
+              ->method( 'user_set_executable' )
+              ->with( $this->equalTo( false ) );
+
+    $stubTrue->set_executable( 'T' );
+    $stubFalse->set_executable( 'F' );
   }
 
 
   public function testProp_getcontentlanguage() {
     $this->assertNull( $this->obj->prop_getcontentlanguage(), 'DAV_Resource::prop_getcontentlanguage() should return the correct value' );
+
+    $stub = $this->getMock( 'DAV_Resource', array( 'user_prop_getcontentlanguage' ), array( '/path' ) );
+    $stub->expects( $this->once() )
+         ->method( 'user_prop_getcontentlanguage' )
+         ->will( $this->returnValue( 'nl<xml>' ) );
+    $this->assertEquals( 'nl&lt;xml&gt;', $stub->prop_getcontentlanguage(), 'DAV_Resource::prop_getcontentlanguage() should XML escape the language' );
+    
   }
 
 
-  public function testSet_getcontentlanguageWrong() {
+  public function testSet_getcontentlanguage() {
+    $stub = $this->getMock( 'DAV_Resource', array( 'user_set_getcontentlanguage' ), array( '/path' ) );
+    $stub->expects( $this->once() )
+         ->method( 'user_set_getcontentlanguage' )
+         ->with( $this->equalTo( 'nl, en, es' ) );
+    $stub->set_getcontentlanguage( 'nl, en, es' );
+    
     // In the default implementation only accepts valid languages
     $this->setExpectedException( 'DAV_Status', '', 400 );
     $this->obj->set_getcontentlanguage( 'no real language' );
-  }
-  
-  
-  public function testSet_getcontentlanguageCorrect() {
-    // In the default implementation it is forbidden to set any property
-    $this->setExpectedException( 'DAV_Status', '', 403 );
-    $this->obj->set_getcontentlanguage( 'nl' );
   }
 
 
   public function testProp_getcontentlength() {
     $this->assertNull( $this->obj->prop_getcontentlength(), 'DAV_Resource::prop_getcontentlength() should return the correct value' );
+
+    $stub = $this->getMock( 'DAV_Resource', array( 'user_prop_getcontentlength' ), array( '/path' ) );
+    $stub->expects( $this->once() )
+         ->method( 'user_prop_getcontentlength' )
+         ->will( $this->returnValue( '500<xml>' ) );
+    $this->assertEquals( '500&lt;xml&gt;', $stub->prop_getcontentlength(), 'DAV_Resource::prop_getcontentlength() should XML escape the language' );
   }
 
 
   public function testProp_getcontenttype() {
     $this->assertNull( $this->obj->prop_getcontenttype(), 'DAV_Resource::prop_getcontenttype() should return the correct value' );
+
+    $stub = $this->getMock( 'DAV_Resource', array( 'user_prop_getcontenttype' ), array( '/path' ) );
+    $stub->expects( $this->once() )
+         ->method( 'user_prop_getcontenttype' )
+         ->will( $this->returnValue( 'text/<xml>' ) );
+    $this->assertEquals( 'text/&lt;xml&gt;', $stub->prop_getcontenttype(), 'DAV_Resource::prop_getcontenttype() should XML escape the language' );
   }
 
 
   public function testSet_getcontenttype() {
-    // In the default implementation it is forbidden to set any property
-    $this->setExpectedException( 'DAV_Status', '', 403 );
-    $this->obj->set_getcontentlanguage( 'nl' );
+    $stub = $this->getMock( 'DAV_Resource', array( 'user_set_getcontenttype' ), array( '/path' ) );
+    $stub->expects( $this->once() )
+         ->method( 'user_set_getcontenttype' )
+         ->with( $this->equalTo( 'text/plain' ) );
+    $stub->set_getcontenttype( 'text/plain' );
+    
+    // In the default implementation it is forbidden to set an invalid content type
+    $this->setExpectedException( 'DAV_Status', '', 400 );
+    $this->obj->set_getcontenttype( 'this is a text document' );
   }
 
 
   public function testProp_getetag() {
     $this->assertNull( $this->obj->prop_getetag(), 'DAV_Resource::prop_getetag() should return the correct value' );
+
+    $stub = $this->getMock( 'DAV_Resource', array( 'user_prop_getetag' ), array( '/path' ) );
+    $stub->expects( $this->once() )
+         ->method( 'user_prop_getetag' )
+         ->will( $this->returnValue( 'ETag with <xml>' ) );
+    $this->assertEquals( 'ETag with &lt;xml&gt;', $stub->prop_getetag(), 'DAV_Resource::prop_getetag() should XML escape the language' );
   }
 
 
   public function testProp_getlastmodified() {
     $this->assertNull( $this->obj->prop_getlastmodified(), 'DAV_Resource::prop_getlastmodified() should return the correct value' );
+
+    $time = gmmktime( 4, 5, 6, 2, 1, 2013 );
+    $stub = $this->getMock( 'DAV_Resource', array( 'user_prop_getlastmodified' ), array( '/path' ) );
+    $stub->expects( $this->once() )
+         ->method( 'user_prop_getlastmodified' )
+         ->will( $this->returnValue( $time ) );
+    $this->assertEquals( 'Fri, 01 Feb 2013 04:05:06 GMT', $stub->prop_getlastmodified(), 'DAV_Resource::prop_getlastmodified() should return a correctly formated date' );
   }
 
 
@@ -293,21 +392,45 @@ class DAV_ResourceTest extends PHPUnit_Framework_TestCase {
 
   public function testProp_resourcetype() {
     $this->assertNull( $this->obj->prop_resourcetype(), 'DAV_Resource::prop_resourcetype() should return the correct value' );
+
+    $stub = $this->getMock( 'DAV_Resource', array( 'user_prop_resourcetype' ), array( '/path' ) );
+    $stub->expects( $this->once() )
+         ->method( 'user_prop_resourcetype' )
+         ->will( $this->returnValue( '<D:unexisting_type/>' ) );
+    $this->assertEquals( '<D:unexisting_type/>', $stub->prop_resourcetype(), 'DAV_Resource::prop_resourcetype() should return the value returned by DAV_Resource::user_prop_resourcetype()' );
+    
+    $collection = new DAV_Resource_DAV_Collection_TestImplementation( '/path' );
+    $principal = new DAV_Resource_DAVACL_Principal_TestImplementation( '/path' );
+    $this->assertEquals( DAV_Collection::RESOURCETYPE, $collection->prop_resourcetype(), 'DAV_Resource::prop_resourcetype should indicate being a collection if DAV_Collection is implemented' );
+    $this->assertEquals( DAVACL_Principal::RESOURCETYPE, $principal->prop_resourcetype(), 'DAV_Resource::prop_resourcetype should indicate being a collection if DAVACL_Principal is implemented' );
   }
 
 
   public function testProp_supported_report_set() {
     $this->assertEquals( '<D:supported-report><D:expand-property/></D:supported-report>', $this->obj->prop_supported_report_set(), 'DAV_Resource::prop_supported_report_set() should return the correct value' );
+    
+    $principalCollection = new DAV_Resource_DAVACL_Principal_Collection_TestImplementation( '/path' );
+    $this->assertEquals( "<D:supported-report><D:expand_property/></D:supported-report>\n<D:supported-report><D:acl_principal_prop_set/></D:supported-report>\n<D:supported-report><D:principal_match/></D:supported-report>\n<D:supported-report><D:principal_property_search/></D:supported-report>\n<D:supported-report><D:principal_search_property_set/></D:supported-report>", $principalCollection->prop_supported_report_set(), 'DAV_Resource::prop_supported_report_set() should return the correct value when the resource is a principal collection' );
   }
 
 
   public function testProp_supportedlock() {
+    DAV::$LOCKPROVIDER = null;
     $this->assertNull( $this->obj->prop_supportedlock(), 'DAV_Resource::prop_supportedlock() should return the correct value' );
+    
+    DAV::$LOCKPROVIDER = new DAV_Lock_Provider_TestImplementation();
+    $this->assertEquals( "<D:lockentry>\n  <D:lockscope><D:exclusive/></D:lockscope>\n  <D:locktype><D:write/></D:locktype>\n</D:lockentry>", $this->obj->prop_supportedlock(), 'DAV_Resource::prop_supportedlock() should return the correct value if DAV::$LOCKPROVIDER is set' );
   }
 
 
   public function testProp() {
-    $this->assertEquals( '<D:supported-report><D:expand-property/></D:supported-report>', $this->obj->prop( 'DAV: supported-report-set' ), 'DAV_Resource::prop() should return the correct value' );
+    $stub = $this->getMock( 'DAV_Resource', array( 'user_prop', 'prop_displayname' ), array( '/path' ) );
+    $stub->expects( $this->once() )
+         ->method( 'user_prop' )
+         ->with( $this->equalTo( 'NS: testproperty' ) )
+         ->will( $this->returnValue( 'Some &amp; value' ) );
+    
+    $this->assertEquals( 'Some &amp; value', $stub->prop( 'NS: testproperty' ), 'DAV_Resource::prop() should return an unchanged version of what DAV_Resource::user_prop() returns' );
   }
 
 
@@ -316,12 +439,83 @@ class DAV_ResourceTest extends PHPUnit_Framework_TestCase {
     $this->setExpectedException( 'DAV_Status', '', 403 );
     $this->obj->storeProperties();
   }
-  
-  
-  public function testNogVeelTeDoen() {
-    $this->assertTrue( false, 'Look at the @TODO tag at the beginning of this file' );
-  }
 
 } // class DAV_ResourceTest
+
+
+/**
+ * Nothing is implemented as this class is only needed to test DAV_Resource::prop_resourcetype()
+ */
+class DAV_Resource_DAV_Collection_TestImplementation extends DAV_Resource implements DAV_Collection {
+  
+  public function create_member($name) {}
+
+  public function current() {}
+
+  public function key() {}
+
+  public function method_DELETE($name) {}
+
+  public function method_MKCOL($name) {}
+
+  public function method_MOVE($member, $destination) {}
+
+  public function next() {}
+
+  public function rewind() {}
+
+  public function valid() {}
+  
+} // class DAV_Resource_DAV_Collection_TestImplementation
+
+
+/**
+ * Nothing is implemented as this class is only needed to test DAV_Resource::prop_resourcetype()
+ */
+class DAV_Resource_DAVACL_Principal_TestImplementation extends DAV_Resource implements DAVACL_Principal {
+  
+  public function user_prop_alternate_uri_set() {}
+
+  public function user_prop_group_member_set() {}
+
+  public function user_prop_group_membership() {}
+
+  public function user_prop_principal_url() {}
+
+  public function user_set_group_member_set($set) {}
+  
+} // class DAV_Resource_DAV_Collection_TestImplementation
+
+
+/**
+ * Nothing is implemented as this class is only needed to test DAV_Resource::prop_resourcetype()
+ */
+class DAV_Resource_DAVACL_Principal_Collection_TestImplementation extends DAV_Resource implements DAVACL_Principal_Collection {
+
+  public function report_principal_match($input) {}
+
+  public function report_principal_property_search($input) {}
+
+  public function report_principal_search_property_set() {}
+
+} // class DAV_Resource_DAVACL_Principal_Collection_TestImplementation
+
+
+/**
+ * Nothing is implemented as this class is only needed to test DAV_Resource::prop_supportedlock()
+ */
+class DAV_Lock_Provider_TestImplementation implements DAV_Lock_Provider {
+
+  public function getlock($path) {}
+
+  public function memberLocks($path) {}
+
+  public function refresh($path, $locktoken, $timeout) {}
+
+  public function setlock($lockroot, $depth, $owner, $timeout) {}
+
+  public function unlock($path) {}
+
+} // class DAV_Lock_Provider_TestImplementation
 
 // End of file
