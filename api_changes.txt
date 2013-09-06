@@ -5,3 +5,4 @@ API changes made while creating unit tests
 * DAV::$SUPPORTED_PROPERTIES is now private and can be retrieved by calling DAV::getSupported_Properties()
 * DAV::$PATH is now private and can be retrieved by calling DAV::getPath()
 * DAV::$CONFIG is now private and can be retrieved by calling DAV::getConfig()
+* DAV_Resource::set_ishidden() and DAV_Resource::prop_ishidden() are removed, effectively no longer supporting the DAV: ishidden property

@@ -197,6 +197,7 @@ class DAV_ResourceTest extends PHPUnit_Framework_TestCase {
 
   public function testPropname() {
     $this->assertSame( array( 'DAV: supported-report-set' => true ), $this->obj->propname(), 'The default implementation of DAV_Resource::propname() should only return DAV: supported-report-set' );
+    $this->assertTrue( false, 'Uitbreiden' );
   }
 
 
@@ -269,167 +270,56 @@ class DAV_ResourceTest extends PHPUnit_Framework_TestCase {
 
 
   public function testSet_getcontenttype() {
-    $this->assertTrue( false, 'Continue with implementing tests from here' );
-    if ( !is_null( $value ) ) {
-      // RFC2616 §2.2
-      // token          = 1*<any CHAR except CTLs or separators>
-      // separators     = "(" | ")" | "<" | ">" | "@"
-      //                | "," | ";" | ":" | "\" | <">
-      //                | "/" | "[" | "]" | "?" | "="
-      //                | "{" | "}" | SP | HT
-
-      // A token. Note that it's escaped for use between @@ delimiters.
-      $token = "[^\\x00-\\x20\\x7f-\\xff\\(\\)<>\\@,;:\\\\\"/\\[\\]?={}]+";
-      //                                   escaped^         ^unescaped
-      $quoted = "\"(?:\"\"|[\\x20-\\x7e]|\\r\\n[\\t ]+)*\"";
-      if ( !preg_match( "@^{$token}/{$token}\\s*(.*)\$@s", $value, $matches ) ||
-           !preg_match( "@^(?:;\\s*{$token}=(?:{$quoted}|{$token})\\s*)*\$@s", $matches[1] ) )
-        throw new DAV_Status(
-          DAV::HTTP_BAD_REQUEST,
-          "'$value' is not a valid media type."
-        );
-    }
-    return $this->user_set_getcontenttype($value);
+    // In the default implementation it is forbidden to set any property
+    $this->setExpectedException( 'DAV_Status', '', 403 );
+    $this->obj->set_getcontentlanguage( 'nl' );
   }
 
 
-  /**
-   * @return void
-   * @throws DAV_Status
-   */
-  protected function user_set_getcontenttype($value) {
-    throw new DAV_Status( DAV::HTTP_FORBIDDEN );
+  public function testProp_getetag() {
+    $this->assertNull( $this->obj->prop_getetag(), 'DAV_Resource::prop_getetag() should return the correct value' );
   }
 
 
-  /**
-   * @return string XML
-   */
-  final public function prop_getetag() {
-    if (is_null($tmp = $this->user_prop_getetag())) return null;
-    return DAV::xmlescape( $tmp );
+  public function testProp_getlastmodified() {
+    $this->assertNull( $this->obj->prop_getlastmodified(), 'DAV_Resource::prop_getlastmodified() should return the correct value' );
   }
 
 
-  /**
-   * @return string XML
-   */
-  final public function prop_getlastmodified() {
-    if (is_null($tmp = $this->user_prop_getlastmodified())) return null;
-    return DAV::xmlescape( DAV::httpDate( $tmp ) );
+  public function testProp_lockdiscovery() {
+    $this->assertNull( $this->obj->prop_lockdiscovery(), 'DAV_Resource::prop_lockdiscovery() should return the correct value' );
   }
 
 
-  /**
-   * @return string XML
-   */
-  final public function prop_ishidden() {
-    if (is_null($tmp = $this->user_prop_ishidden())) return null;
-    return $tmp ? 'true' : 'false';
+  public function testProp_resourcetype() {
+    $this->assertNull( $this->obj->prop_resourcetype(), 'DAV_Resource::prop_resourcetype() should return the correct value' );
   }
 
 
-  /**
-   * @param string $value null, 'true' or 'false'
-   * @return void
-   * @throws DAV_Status
-   */
-  final public function set_ishidden($value) {
-    if (!is_null($value)) $value = ($value === 'true');
-    return $this->user_set_ishidden($value);
+  public function testProp_supported_report_set() {
+    $this->assertEquals( '<D:supported-report><D:expand-property/></D:supported-report>', $this->obj->prop_supported_report_set(), 'DAV_Resource::prop_supported_report_set() should return the correct value' );
   }
 
 
-  /*
-   * @return void
-   * @throws DAV_Status
-   */
-  //protected function user_set_ishidden($value) {
-  //  throw new DAV_Status( DAV::HTTP_FORBIDDEN );
-  //}
-
-
-  /*
-   * @return string XML
-   */
-  //final public function prop_lastaccessed() {
-  //  if (is_null($tmp = $this->user_prop_lastaccessed())) return null;
-  //  return gmdate( 'Y-m-d\\TH:i:s\\Z', $tmp );
-  //  //return DAV::xmlescape( DAV::httpDate($tmp) );
-  //}
-
-
-  /**
-   * @return string XML
-   */
-  final public function prop_lockdiscovery() {
-    if ( ! DAV::$LOCKPROVIDER ) return null;
-    $retval = ( $lock = DAV::$LOCKPROVIDER->getlock($this->path) ) ?
-      $lock->toXML() : '';
-    return $retval;
+  public function testProp_supportedlock() {
+    $this->assertNull( $this->obj->prop_supportedlock(), 'DAV_Resource::prop_supportedlock() should return the correct value' );
   }
 
 
-  /**
-   * @return string XML
-   */
-  final public function prop_resourcetype() {
-    $retval = $this->user_prop_resourcetype();
-    if (!is_null($retval)) return $retval;
-    if ($this instanceof DAV_Collection)
-      $retval .= DAV_Collection::RESOURCETYPE;
-    if ($this instanceof DAVACL_Principal)
-      $retval .= DAVACL_Principal::RESOURCETYPE;
-    return $retval;
+  public function testProp() {
+    $this->assertEquals( '<D:supported-report><D:expand-property/></D:supported-report>', $this->obj->prop( 'DAV: supported-report-set' ), 'DAV_Resource::prop() should return the correct value' );
   }
 
 
-  /**
-   * @return string XML
-   */
-  final public function prop_supported_report_set() {
-    $retval = ($this instanceof DAVACL_Principal_Collection) ?
-      DAV::$REPORTS :
-      array(DAV::REPORT_EXPAND_PROPERTY);
-    return '<D:supported-report><D:' .
-      implode("/></D:supported-report>\n<D:supported-report><D:", $retval) .
-      '/></D:supported-report>';
+  public function testStoreProperties() {
+    // In the default implementation it is forbidden to set any property
+    $this->setExpectedException( 'DAV_Status', '', 403 );
+    $this->obj->storeProperties();
   }
-
-
-  /**
-   * @return string XML
-   */
-  final public function prop_supportedlock() {
-    if ( ! DAV::$LOCKPROVIDER ) return null;
-    return <<<EOS
-<D:lockentry>
-  <D:lockscope><D:exclusive/></D:lockscope>
-  <D:locktype><D:write/></D:locktype>
-</D:lockentry>
-EOS;
-  }
-
-
-  /**
-   * @param string $propname the name of the property to be returned,
-   *        eg. "mynamespace: myprop"
-   * @return string XML or NULL if the property is not defined.
-   */
-  public function prop($propname) {
-    if ($method = @DAV::$WEBDAV_PROPERTIES[$propname])
-      return call_user_func(array($this, "prop_$method"));
-    return $this->user_prop($propname);
-  }
-
-
-  /**
-   * Stores properties set earlier by set().
-   * @return void
-   * @throws DAV_Status in particular 507 (Insufficient Storage)
-   */
-  public function storeProperties() {
-    throw new DAV_Status( DAV::HTTP_FORBIDDEN );
+  
+  
+  public function testNogVeelTeDoen() {
+    $this->assertTrue( false, 'Look at the @TODO tag at the beginning of this file' );
   }
 
 } // class DAV_ResourceTest

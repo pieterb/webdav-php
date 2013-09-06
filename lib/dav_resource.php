@@ -580,35 +580,6 @@ final public function prop_getlastmodified() {
 }
 
 
-/**
- * @return string XML
- */
-final public function prop_ishidden() {
-  if (is_null($tmp = $this->user_prop_ishidden())) return null;
-  return $tmp ? 'true' : 'false';
-}
-
-
-/**
- * @param string $value null, 'true' or 'false'
- * @return void
- * @throws DAV_Status
- */
-final public function set_ishidden($value) {
-  if (!is_null($value)) $value = ($value === 'true');
-  return $this->user_set_ishidden($value);
-}
-
-
-/*
- * @return void
- * @throws DAV_Status
- */
-//protected function user_set_ishidden($value) {
-//  throw new DAV_Status( DAV::HTTP_FORBIDDEN );
-//}
-
-
 /*
  * @return string XML
  */
