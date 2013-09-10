@@ -57,6 +57,8 @@ private $supported_privileges = array();
 
 
 /**
+ * Add a supported privilege to this element
+ * 
  * @param DAVACL_Element_supported_privilege $supported_privilege
  * @return DAVACL_Element_supported_privilege $this
  */
@@ -81,6 +83,11 @@ private function namespaces(&$namespaces) {
 }
 
 
+/**
+ * Create propper XML to send to the client
+ * @param DAV_Namespaces $namespaces  A DAV_Namespaces object with namespace aliases if they are already created
+ * @return string
+ */
 public function toXML($namespaces = false) {
   if (! $namespaces) {
     $namespaces = new DAV_Namespaces();
@@ -105,8 +112,9 @@ EOS;
 
 
 /**
+ * Flattens an array of DAVACL_Element_supported_privilege to a format which is more handy to process (apparently)
  * @param array $sps array of DAVACL_Element_supported_privilege
- * @return an array of privilege => object with members:
+ * @return an array of privilege => array with keys:
  * - 'children' => an array of self + all children, subchildren etc.
  * - 'abstract' => boolean
  */
