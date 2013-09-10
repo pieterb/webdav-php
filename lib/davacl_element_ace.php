@@ -146,6 +146,7 @@ public function toXML() {
 
 
 /**
+ * Convert aces to json format
  * @param array $aces
  * @return string json
  */
@@ -160,6 +161,7 @@ public static function aces2json($aces) {
 
 
 /**
+ * Convert json back to DAVACL_Element_ace objects
  * @param string $json
  * @return array
  */
@@ -175,5 +177,5 @@ public static function json2aces($json) {
 }
 
 
-} // class DAV_Element_href
+} // class DAVACL_Element_ace
 
