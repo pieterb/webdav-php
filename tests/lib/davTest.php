@@ -173,6 +173,18 @@ class DAVTest extends PHPUnit_Framework_TestCase {
     // Because recursiveSerialize is not forced to use ns1 and ns2 as namespace prefixes, this test is a bit awkward. But it works for now, so let's just ignore it :)
     $this->assertSame( '<ns1:root xmlns:ns1="tests://test/" xmlns:ns2="tests://test_more/"><ns1:sub1><ns1:sub1_1>test text</ns1:sub1_1></ns1:sub1><ns2:sub2><ns1:sub2_1><!--test comment--></ns1:sub2_1></ns2:sub2></ns1:root>', DAV::recursiveSerialize( $root ), 'DAV::recursiveSerialize() should return correct XML' );
   }
+  
+  
+  public function testRedirect() {
+    $this->expectOutputString(<<<EOS
+Content-Type: text/plain; charset=US-ASCII
+Location: http://example.org/some/new/path
+HTTP/1.1 301 Moved Permanently
+http://example.org/some/new/path
+EOS
+    );
+    DAV::redirect( 301, 'http://example.org/some/new/path' );
+  }
 
 
   public function testSlashify() {

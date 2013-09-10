@@ -654,8 +654,9 @@ public static function header($properties) {
   if ( self::HTTP_REQUESTED_RANGE_NOT_SATISFIABLE === (int)$status &&
        !isset( $properties['Content-Range'] ) )
     $properties['Content-Range'] = 'bytes */*';
-  if (isset($properties['Location']))
-    $properties['Location'] = self::path2uri($properties['Location']);
+  if ( ( isset( $properties['Location'] ) ) && ( strpos( $properties['Location'], ':' ) === false ) ) {
+    $properties['Location'] = self::path2uri( $properties['Location'] );
+  }
   foreach($properties as $key => $value) {
     if ( self::$testMode ) {
       print( $key . ': ' . $value . "\n" );
@@ -682,7 +683,7 @@ public static function redirect($status, $uri) {
   self::header( array(
     'status' => $status,
     'Content-Type' => 'text/plain; charset=US-ASCII',
-    'Location' => self::path2uri($uri)
+    'Location' => $uri
   ));
   echo $uri;
 }
