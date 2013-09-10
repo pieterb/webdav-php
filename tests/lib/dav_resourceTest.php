@@ -244,7 +244,7 @@ class DAV_ResourceTest extends PHPUnit_Framework_TestCase {
     ksort( $expected );
     $returned = $stub->propname();
     ksort( $returned );
-    $this->assertEquals( $expected, $returned, 'DAV_Resource::propname should return the correct values' );
+    $this->assertSame( $expected, $returned, 'DAV_Resource::propname should return the correct values' );
   }
 
 
@@ -266,7 +266,7 @@ class DAV_ResourceTest extends PHPUnit_Framework_TestCase {
     $stub->expects( $this->once() )
          ->method( 'user_prop_creationdate' )
          ->will( $this->returnValue( $time ) );
-    $this->assertEquals( '2013-02-01T04:05:06Z', $stub->prop_creationdate(), 'DAV_Resource::prop_creationdate() should convert the timestamp to a correct string' );
+    $this->assertSame( '2013-02-01T04:05:06Z', $stub->prop_creationdate(), 'DAV_Resource::prop_creationdate() should convert the timestamp to a correct string' );
   }
 
 
@@ -277,7 +277,7 @@ class DAV_ResourceTest extends PHPUnit_Framework_TestCase {
     $stub->expects( $this->once() )
          ->method( 'user_prop_displayname' )
          ->will( $this->returnValue( 'Some & displayname' ) );
-    $this->assertEquals( 'Some &amp; displayname', $stub->prop_displayname(), 'DAV_Resource::prop_displayname() should XML escape the displayname' );
+    $this->assertSame( 'Some &amp; displayname', $stub->prop_displayname(), 'DAV_Resource::prop_displayname() should XML escape the displayname' );
   }
 
 
@@ -306,8 +306,8 @@ class DAV_ResourceTest extends PHPUnit_Framework_TestCase {
               ->method( 'user_prop_executable' )
               ->will( $this->returnValue( false ) );
     
-    $this->assertEquals( 'T', $stubTrue->prop_executable(), 'DAV_Resource::prop_executable() should convert true to T' );
-    $this->assertEquals( 'F', $stubFalse->prop_executable(), 'DAV_Resource::prop_executable() should convert false to F' );
+    $this->assertSame( 'T', $stubTrue->prop_executable(), 'DAV_Resource::prop_executable() should convert true to T' );
+    $this->assertSame( 'F', $stubFalse->prop_executable(), 'DAV_Resource::prop_executable() should convert false to F' );
   }
 
 
@@ -333,7 +333,7 @@ class DAV_ResourceTest extends PHPUnit_Framework_TestCase {
     $stub->expects( $this->once() )
          ->method( 'user_prop_getcontentlanguage' )
          ->will( $this->returnValue( 'nl<xml>' ) );
-    $this->assertEquals( 'nl&lt;xml&gt;', $stub->prop_getcontentlanguage(), 'DAV_Resource::prop_getcontentlanguage() should XML escape the language' );
+    $this->assertSame( 'nl&lt;xml&gt;', $stub->prop_getcontentlanguage(), 'DAV_Resource::prop_getcontentlanguage() should XML escape the language' );
     
   }
 
@@ -358,7 +358,7 @@ class DAV_ResourceTest extends PHPUnit_Framework_TestCase {
     $stub->expects( $this->once() )
          ->method( 'user_prop_getcontentlength' )
          ->will( $this->returnValue( '500<xml>' ) );
-    $this->assertEquals( '500&lt;xml&gt;', $stub->prop_getcontentlength(), 'DAV_Resource::prop_getcontentlength() should XML escape the language' );
+    $this->assertSame( '500&lt;xml&gt;', $stub->prop_getcontentlength(), 'DAV_Resource::prop_getcontentlength() should XML escape the language' );
   }
 
 
@@ -369,7 +369,7 @@ class DAV_ResourceTest extends PHPUnit_Framework_TestCase {
     $stub->expects( $this->once() )
          ->method( 'user_prop_getcontenttype' )
          ->will( $this->returnValue( 'text/<xml>' ) );
-    $this->assertEquals( 'text/&lt;xml&gt;', $stub->prop_getcontenttype(), 'DAV_Resource::prop_getcontenttype() should XML escape the language' );
+    $this->assertSame( 'text/&lt;xml&gt;', $stub->prop_getcontenttype(), 'DAV_Resource::prop_getcontenttype() should XML escape the language' );
   }
 
 
@@ -393,7 +393,7 @@ class DAV_ResourceTest extends PHPUnit_Framework_TestCase {
     $stub->expects( $this->once() )
          ->method( 'user_prop_getetag' )
          ->will( $this->returnValue( 'ETag with <xml>' ) );
-    $this->assertEquals( 'ETag with &lt;xml&gt;', $stub->prop_getetag(), 'DAV_Resource::prop_getetag() should XML escape the language' );
+    $this->assertSame( 'ETag with &lt;xml&gt;', $stub->prop_getetag(), 'DAV_Resource::prop_getetag() should XML escape the language' );
   }
 
 
@@ -405,7 +405,7 @@ class DAV_ResourceTest extends PHPUnit_Framework_TestCase {
     $stub->expects( $this->once() )
          ->method( 'user_prop_getlastmodified' )
          ->will( $this->returnValue( $time ) );
-    $this->assertEquals( 'Fri, 01 Feb 2013 04:05:06 GMT', $stub->prop_getlastmodified(), 'DAV_Resource::prop_getlastmodified() should return a correctly formated date' );
+    $this->assertSame( 'Fri, 01 Feb 2013 04:05:06 GMT', $stub->prop_getlastmodified(), 'DAV_Resource::prop_getlastmodified() should return a correctly formated date' );
   }
 
 
@@ -435,20 +435,20 @@ class DAV_ResourceTest extends PHPUnit_Framework_TestCase {
     $stub->expects( $this->once() )
          ->method( 'user_prop_resourcetype' )
          ->will( $this->returnValue( '<D:unexisting_type/>' ) );
-    $this->assertEquals( '<D:unexisting_type/>', $stub->prop_resourcetype(), 'DAV_Resource::prop_resourcetype() should return the value returned by DAV_Resource::user_prop_resourcetype()' );
+    $this->assertSame( '<D:unexisting_type/>', $stub->prop_resourcetype(), 'DAV_Resource::prop_resourcetype() should return the value returned by DAV_Resource::user_prop_resourcetype()' );
     
     $collection = new DAV_Resource_DAV_Collection_TestImplementation( '/path' );
     $principal = new DAV_Resource_DAVACL_Principal_TestImplementation( '/path' );
-    $this->assertEquals( DAV_Collection::RESOURCETYPE, $collection->prop_resourcetype(), 'DAV_Resource::prop_resourcetype should indicate being a collection if DAV_Collection is implemented' );
-    $this->assertEquals( DAVACL_Principal::RESOURCETYPE, $principal->prop_resourcetype(), 'DAV_Resource::prop_resourcetype should indicate being a collection if DAVACL_Principal is implemented' );
+    $this->assertSame( DAV_Collection::RESOURCETYPE, $collection->prop_resourcetype(), 'DAV_Resource::prop_resourcetype should indicate being a collection if DAV_Collection is implemented' );
+    $this->assertSame( DAVACL_Principal::RESOURCETYPE, $principal->prop_resourcetype(), 'DAV_Resource::prop_resourcetype should indicate being a collection if DAVACL_Principal is implemented' );
   }
 
 
   public function testProp_supported_report_set() {
-    $this->assertEquals( '<D:supported-report><D:expand-property/></D:supported-report>', $this->obj->prop_supported_report_set(), 'DAV_Resource::prop_supported_report_set() should return the correct value' );
+    $this->assertSame( '<D:supported-report><D:expand-property/></D:supported-report>', $this->obj->prop_supported_report_set(), 'DAV_Resource::prop_supported_report_set() should return the correct value' );
     
     $principalCollection = new DAV_Resource_DAVACL_Principal_Collection_TestImplementation( '/path' );
-    $this->assertEquals( "<D:supported-report><D:expand_property/></D:supported-report>\n<D:supported-report><D:acl_principal_prop_set/></D:supported-report>\n<D:supported-report><D:principal_match/></D:supported-report>\n<D:supported-report><D:principal_property_search/></D:supported-report>\n<D:supported-report><D:principal_search_property_set/></D:supported-report>", $principalCollection->prop_supported_report_set(), 'DAV_Resource::prop_supported_report_set() should return the correct value when the resource is a principal collection' );
+    $this->assertSame( "<D:supported-report><D:expand_property/></D:supported-report>\n<D:supported-report><D:acl_principal_prop_set/></D:supported-report>\n<D:supported-report><D:principal_match/></D:supported-report>\n<D:supported-report><D:principal_property_search/></D:supported-report>\n<D:supported-report><D:principal_search_property_set/></D:supported-report>", $principalCollection->prop_supported_report_set(), 'DAV_Resource::prop_supported_report_set() should return the correct value when the resource is a principal collection' );
   }
 
 
@@ -457,7 +457,7 @@ class DAV_ResourceTest extends PHPUnit_Framework_TestCase {
     $this->assertNull( $this->obj->prop_supportedlock(), 'DAV_Resource::prop_supportedlock() should return the correct value' );
     
     DAV::$LOCKPROVIDER = $this->getMock( 'DAV_Lock_Provider' );
-    $this->assertEquals( "<D:lockentry>\n  <D:lockscope><D:exclusive/></D:lockscope>\n  <D:locktype><D:write/></D:locktype>\n</D:lockentry>", $this->obj->prop_supportedlock(), 'DAV_Resource::prop_supportedlock() should return the correct value if DAV::$LOCKPROVIDER is set' );
+    $this->assertSame( "<D:lockentry>\n  <D:lockscope><D:exclusive/></D:lockscope>\n  <D:locktype><D:write/></D:locktype>\n</D:lockentry>", $this->obj->prop_supportedlock(), 'DAV_Resource::prop_supportedlock() should return the correct value if DAV::$LOCKPROVIDER is set' );
   }
 
 
@@ -468,7 +468,7 @@ class DAV_ResourceTest extends PHPUnit_Framework_TestCase {
          ->with( $this->equalTo( 'NS: testproperty' ) )
          ->will( $this->returnValue( 'Some &amp; value' ) );
     
-    $this->assertEquals( 'Some &amp; value', $stub->prop( 'NS: testproperty' ), 'DAV_Resource::prop() should return an unchanged version of what DAV_Resource::user_prop() returns' );
+    $this->assertSame( 'Some &amp; value', $stub->prop( 'NS: testproperty' ), 'DAV_Resource::prop() should return an unchanged version of what DAV_Resource::user_prop() returns' );
   }
 
 
