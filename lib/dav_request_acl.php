@@ -37,9 +37,7 @@ public $aces = array();
 
 
 /**
- * Enter description here...
- *
- * @param string $path
+ * Parses the XML in the request body
  */
 protected function __construct() {
   parent::__construct();
@@ -131,6 +129,8 @@ protected function __construct() {
 
 
 /**
+ * Checks the validity of the ACL and sets it on the resource
+ * 
  * @param DAVACL_Resource $resource
  * @return void
  * @throws DAV_Status

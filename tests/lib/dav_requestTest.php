@@ -71,7 +71,7 @@ class DAV_RequestTest extends PHPUnit_Framework_TestCase {
 
 
   public function testHandleRequest() {
-    DAV::$REGISTRY = new DAV_Test_Registry();
+    DAV::$REGISTRY->setResourceClass( 'DAV_Resource' );
     $obj = DAV_Test_Request::inst();
     $this->expectOutputString( "DAV_Request::handle() called for path: /path/to/resource.txt\nContent-Location: http://example.org/new_folder_without_trailing_slash/\nDAV_Request::handle() called for path: /new_folder_without_trailing_slash\n" );
     $obj->handleRequest();
@@ -117,25 +117,5 @@ class DAV_Test_Request extends DAV_Request {
   }
 
 } // class DAV_Test_Request
-
-class DAV_Test_Registry implements DAV_Registry {
-
-  public function resource( $path ) {
-    return new DAV_Resource( $path );
-  }
-
-
-  public function forget( $path ) {
-  }
-
-
-  public function shallowLock( $write_paths, $read_paths ) {
-  }
-
-
-  public function shallowUnlock() {
-  }
-  
-}
 
 // End of file

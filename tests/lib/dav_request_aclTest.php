@@ -24,19 +24,83 @@
  * @subpackage tests
  */
 class DAV_Request_ACLTest extends PHPUnit_Framework_TestCase {
+  
+  /**
+   * @var  DAV_TEST_Request_ACL  The object we will test
+   */
+  private $obj;
+  
+  
+  public function setUp() {
+    $_SERVER['REQUEST_URI'] = '/path';
+    $_SERVER['REQUEST_METHOD'] = 'ACL';
+    $_SERVER['SERVER_NAME'] = 'example.org';
+    $_SERVER['SERVER_PORT'] = 80;
+    $this->obj = DAV_Test_Request_ACL::inst();
+  }
+  
 
   public function testConstructor() {
-    $_SERVER['REQUEST_URI'] = '/path';
-    $obj = DAV_Test_Request_ACL::inst();
-    
     $ace1 = new DAVACL_Element_ace( DAVACL::PRINCIPAL_ALL, false, array( DAVACL::PRIV_READ ), false );
     $ace2 = new DAVACL_Element_ace( '/path/to/user', false, array( DAVACL::PRIV_ALL ), false );
-    $this->assertEquals( array( $ace1, $ace2 ), $obj->aces, 'DAV_Request_ACL::__construct() should parse input XML correctly' );
+    $this->assertEquals( array( $ace1, $ace2 ), $this->obj->aces, 'DAV_Request_ACL::__construct() should parse input XML correctly' );
   }
 
 
   public function testHandle() {
-    $this->assertTrue( false, 'continue with this test' );
+    DAV::$REGISTRY->setResourceClass( 'DAVACL_Test_Resource' );
+    $readPriv = new DAVACL_Element_supported_privilege( 'DAV: read', false, 'Read permissions' );
+    $allPriv = new DAVACL_Element_supported_privilege( 'DAV: all', false, 'Read permissions' );
+    $allPriv->add_supported_privilege( $readPriv );
+    DAV::$ACLPROVIDER->setSupportedPrivilegeSet( array( $allPriv ) );
+    
+    // First we expect the output of a succesful call to DAVACL_Test_Resource::set_acl() and the an error that not all privileges are supported
+    $this->expectOutputString( <<<EOS
+Array
+(
+    [0] => DAVACL_Element_ace Object
+        (
+            [principal] => DAV: all
+            [invert] => 
+            [deny] => 
+            [privileges] => Array
+                (
+                    [0] => DAV: read
+                )
+
+            [protected] => 
+            [inherited] => 
+        )
+
+    [1] => DAVACL_Element_ace Object
+        (
+            [principal] => /path/to/user
+            [invert] => 
+            [deny] => 
+            [privileges] => Array
+                (
+                    [0] => DAV: all
+                )
+
+            [protected] => 
+            [inherited] => 
+        )
+
+)
+Content-Type: application/xml; charset="UTF-8"
+HTTP/1.1 403 Forbidden
+<?xml version="1.0" encoding="utf-8"?>
+<D:error xmlns:D="DAV:">
+<D:not-supported-privilege/>
+</D:error>
+EOS
+    );
+
+    $this->obj->handleRequest();
+    
+    // Not supported privileges should trigger an error
+    DAV::$ACLPROVIDER->setSupportedPrivilegeSet( array() );
+    $this->obj->handleRequest();
   }
 
 } // class DAV_Request_ACLTest
@@ -80,5 +144,29 @@ EOS
   }
 
 } // Class DAV_Test_Request_ACL
+
+
+class DAVACL_Test_Resource extends DAVACL_Resource {
+
+  public function assert( $privileges ) {
+    if ( ! is_array( $privileges ) ) {
+      $privileges = array((string)$privileges);
+    }
+    if ( count( $privileges ) != 1 || $privileges[0] !== DAVACL::PRIV_WRITE_ACL ) {
+      throw new Exception( "DAVACL_Test_Resource::assert() called with wrong parameters!\n\n" . print_r( $privileges, true ) );
+    }
+    return true;
+  }
+
+
+  public function set_acl( $acl ) {
+    print_r( $acl );
+  }
+
+
+  public function user_prop_acl() {
+  }
+
+} // Class DAVACL_Test_Resource
 
 // End of file

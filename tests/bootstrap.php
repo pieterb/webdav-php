@@ -18,6 +18,13 @@
  * @subpackage tests
  */
 
+require_once( dirname( dirname( __FILE__ ) ) . '/lib/bootstrap.php' );
+DAV::$testMode = true; // Turn on test mode, so headers won't be sent, because sending headers won't work as all tests are run from the commandline
+
+$_SERVER = array();
+$_SERVER['SERVER_PROTOCOL'] = 'HTTP/1.1';
+$_SERVER['SCRIPT_NAME'] = 'bootstrap.php'; // Strange enough, PHPunit seems to use this, so let's set it to some value
+
 
 /**
  * A copy of the key-value cache so the real DAV_Cache won't be loaded
@@ -81,11 +88,64 @@ class DAV_Cache {
 } // DAV_Cache
 
 
-require_once( dirname( dirname( __FILE__ ) ) . '/lib/bootstrap.php' );
-DAV::$testMode = true; // Turn on test mode, so headers won't be sent, because sending headers won't work as all tests are run from the commandline
+class DAV_Test_Registry implements DAV_Registry {
+  
+  private $resourceClass = 'DAV_Resource';
+  
+  
+  public function setResourceClass( $resource ) {
+    $this->resourceClass = $resource;
+  }
+  
 
-$_SERVER = array();
-$_SERVER['SERVER_PROTOCOL'] = 'HTTP/1.1';
-$_SERVER['SCRIPT_NAME'] = 'bootstrap.php'; // Strange enough, PHPunit seems to use this, so let's set it to some value
+  public function resource( $path ) {
+    return new $this->resourceClass( $path );
+  }
+
+
+  public function forget( $path ) {
+  }
+
+
+  public function shallowLock( $write_paths, $read_paths ) {
+  }
+
+
+  public function shallowUnlock() {
+  }
+  
+} // DAV_Test_Registry
+DAV::$REGISTRY = new DAV_Test_Registry();
+
+
+class DAVACL_Test_ACL_Provider implements DAVACL_ACL_Provider {
+  
+  public function user_prop_acl_restrictions() {
+    return array();
+  }
+
+  public function user_prop_current_user_principal() {
+    return '/path/to/current/user';
+  }
+
+  public function user_prop_principal_collection_set() {
+    return array( '/path/to/current/user' );
+  }
+  
+  
+  private $supportedPrivilegeSet = array();
+  
+  
+  public function setSupportedPrivilegeSet( $supportedPrivilegeSet ) {
+    $this->supportedPrivilegeSet = $supportedPrivilegeSet;
+  }
+  
+
+  public function user_prop_supported_privilege_set() {
+    return $this->supportedPrivilegeSet;
+  }
+  
+} // DAVACL_Test_ACL_Provider
+DAV::$ACLPROVIDER = new DAVACL_Test_ACL_Provider();
 
 // End of file
