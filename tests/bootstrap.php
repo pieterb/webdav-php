@@ -154,14 +154,57 @@ DAV::$ACLPROVIDER = new DAVACL_Test_ACL_Provider();
 
 
 class DAVACL_Test_Resource extends DAVACL_Resource {
-  
+
   private $expectedPrivileges = null;
-  
-  
+
+
+  public function collection() {
+    return new DAVACL_Test_Collection( dirname( $this->path ) );
+  }
+
+
   public function setExpectedPrivileges( $privileges ) {
     $this->expectedPrivileges = $privileges;
   }
-  
+
+
+  public function assert( $privileges ) {
+    if ( ! is_array( $privileges ) ) {
+      $privileges = array((string)$privileges);
+    }
+    if ( ! is_null( $this->expectedPrivileges ) && $this->expectedPrivileges != $privileges ) {
+//    if ( count( $privileges ) != 1 || $privileges[0] !== DAVACL::PRIV_WRITE_ACL ) {
+      throw new Exception( "DAVACL_Test_Resource::assert() called with wrong parameters!" );
+    }
+    return true;
+  }
+
+
+  public function method_COPY_external($destination, $overwrite) {
+    print( "DAVACL_Test_Resource::method_COPY_external() called\n" );
+  }
+
+
+  public function set_acl( $acl ) {
+    print_r( $acl );
+  }
+
+
+  public function user_prop_acl() {
+  }
+
+} // Class DAVACL_Test_Resource
+
+
+class DAVACL_Test_Collection extends DAVACL_Test_Resource implements DAV_Collection {
+
+  private $expectedPrivileges = null;
+
+
+  public function setExpectedPrivileges( $privileges ) {
+    $this->expectedPrivileges = $privileges;
+  }
+
 
   public function assert( $privileges ) {
     if ( ! is_array( $privileges ) ) {
@@ -181,6 +224,42 @@ class DAVACL_Test_Resource extends DAVACL_Resource {
 
 
   public function user_prop_acl() {
+  }
+
+  public function create_member($name) {
+
+  }
+
+  public function current() {
+
+  }
+
+  public function key() {
+
+  }
+
+  public function method_DELETE($name) {
+    print( "DAVACL_Test_Collection::method_DELETE() called\n" );
+  }
+
+  public function method_MKCOL($name) {
+    print( "DAVACL_Test_Collection::method_MKCOL() called\n" );
+  }
+
+  public function method_MOVE($member, $destination) {
+    print( "DAVACL_Test_Collection::method_MOVE() called\n" );
+  }
+
+  public function next() {
+
+  }
+
+  public function rewind() {
+
+  }
+
+  public function valid() {
+
   }
 
 } // Class DAVACL_Test_Resource

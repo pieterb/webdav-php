@@ -50,12 +50,32 @@ class DAV_Request_COPYTest extends PHPUnit_Framework_TestCase {
 
   public function testHandle() {
     // Assert proper Depth: header value
-    $_SERVER['HTTP_DEPTH'] = 1;
+    $_SERVER['HTTP_DEPTH'] = '1';
+    ob_start();
     $this->obj->handleRequest();
-    
-    // Check: Can't move a collection to one of its members.
+    $outputWrongDepth = ob_get_clean();
+    $this->assertSame( <<<EOS
+Content-Type: text/plain; charset="UTF-8"
+HTTP/1.1 400 Bad Request
+HTTP/1.1 400 Bad Request
+Illegal value for Depth: header.
+EOS
+            , $outputWrongDepth, 'DAV_Request_COPY::handle() should return a 400 error when using Depth: 1 header' );
+    $_SERVER['HTTP_DEPTH'] = 0;
+
     // Copy to an external URI?
+//    $_SERVER['HTTP_DESTINATION'] = 'http://other_host.org/some/location';
+//    $this->obj->handleRequest();
+
     // Check: Won't move a resource to one of its parents.
+    $_SERVER['HTTP_DESTINATION'] = dirname( $_SERVER['REQUEST_URI'] );
+    try {
+      $this->obj->handleRequest();
+      $this->assertTrue( false, 'DAV_Request_COPY::handle() should throw a DAV_Status exception with code 512 when trying to copy a resource to one of its parents' );
+    }catch ( PHPUnit_Framework_Error_Warning $exception ) {
+      die('Check if this is the correct error!');
+    }
+
     // Unable to COPY to unexisting destination collection
     //  if ($this->overwrite()) {
     //    DAV_Request_DELETE::delete($destinationResource);

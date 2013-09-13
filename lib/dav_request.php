@@ -100,11 +100,14 @@ protected static function inputstring() {
  * @return string either an (internal) path or an external URI.
  */
 public static function destination() {
-  static $destinationCache = false;
-  if (false === $destinationCache)
+  $cache = DAV_Cache::inst( 'DAV_Request' );
+  $destinationCache = $cache->get( 'destinationCache' );
+  if ( is_null( $destinationCache ) ) {
     $destinationCache = @$_SERVER['HTTP_DESTINATION'] ?
-      DAV::parseURI($_SERVER['HTTP_DESTINATION'], false) : null;
-  return $destinationCache;
+      DAV::parseURI($_SERVER['HTTP_DESTINATION'], false) : false;
+    $cache->get( 'destinationCache', $destinationCache );
+  }
+  return ( $destinationCache === false ? null : $destinationCache );
 }
 
 
