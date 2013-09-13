@@ -48,7 +48,6 @@ class DAV_StatusTest extends PHPUnit_Framework_TestCase {
   public function testOutput() {
     $_SERVER['SERVER_NAME'] = 'example.org';
     $_SERVER['SERVER_PORT'] = 80;
-    $_SERVER['REQUEST_URI'] = '/resource.txt';
 
     $status300 = new DAV_Status( 300, 'http://example.org/some/new/path' );
     ob_start();

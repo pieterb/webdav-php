@@ -24,6 +24,10 @@ DAV::$testMode = true; // Turn on test mode, so headers won't be sent, because s
 $_SERVER = array();
 $_SERVER['SERVER_PROTOCOL'] = 'HTTP/1.1';
 $_SERVER['SCRIPT_NAME'] = 'bootstrap.php'; // Strange enough, PHPunit seems to use this, so let's set it to some value
+$_SERVER['SERVER_NAME'] = 'example.org';
+$_SERVER['SERVER_PORT'] = 80;
+$_SERVER['REQUEST_URI'] = '/path';
+$_SERVER['REQUEST_METHOD'] = 'GET';
 
 
 /**
@@ -147,5 +151,38 @@ class DAVACL_Test_ACL_Provider implements DAVACL_ACL_Provider {
   
 } // DAVACL_Test_ACL_Provider
 DAV::$ACLPROVIDER = new DAVACL_Test_ACL_Provider();
+
+
+class DAVACL_Test_Resource extends DAVACL_Resource {
+  
+  private $expectedPrivileges = null;
+  
+  
+  public function setExpectedPrivileges( $privileges ) {
+    $this->expectedPrivileges = $privileges;
+  }
+  
+
+  public function assert( $privileges ) {
+    if ( ! is_array( $privileges ) ) {
+      $privileges = array((string)$privileges);
+    }
+    if ( ! is_null( $this->expectedPrivileges ) && $this->expectedPrivileges != $privileges ) {
+//    if ( count( $privileges ) != 1 || $privileges[0] !== DAVACL::PRIV_WRITE_ACL ) {
+      throw new Exception( "DAVACL_Test_Resource::assert() called with wrong parameters!" );
+    }
+    return true;
+  }
+
+
+  public function set_acl( $acl ) {
+    print_r( $acl );
+  }
+
+
+  public function user_prop_acl() {
+  }
+
+} // Class DAVACL_Test_Resource
 
 // End of file

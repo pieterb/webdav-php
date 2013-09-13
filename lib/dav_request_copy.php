@@ -29,7 +29,13 @@
  */
 class DAV_Request_COPY extends DAV_Request {
 
-
+  /**
+   * Return the depth for the COPY request
+   * 
+   * If no Depth header is set, then DAV::DEPTH_INF will be returned
+   *
+   * @return  mixed  The depth
+   */
 public function depth() {
   $retval = parent::depth();
   return is_null($retval) ? DAV::DEPTH_INF : $retval;
@@ -37,6 +43,8 @@ public function depth() {
 
 
 /**
+ * Determines whether the copy request is valid and if so, copies the resources
+ * 
  * @param DAV_Resource $resource
  * @return void
  * @throws DAV_Status
@@ -174,6 +182,8 @@ protected function handle( $resource ) {
 
 
 /**
+ * Copy the resource and all its children
+ * 
  * @param DAV_Collection $resource
  * @param string $destination
  * @param string $dr destinationRoot

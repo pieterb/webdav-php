@@ -29,8 +29,6 @@ class DAV_RequestTest extends PHPUnit_Framework_TestCase {
     $_SERVER['REQUEST_METHOD'] = 'PROPFIND';
     $_SERVER['REQUEST_URI'] = '/path/to/resource.txt';
     $_SERVER['HTTP_DESTINATION'] = 'http://example.org/destination/path';
-    $_SERVER['SERVER_NAME'] = 'example.org';
-    $_SERVER['SERVER_PORT'] = 80;
     $_SERVER['HTTP_OVERWRITE'] = 'F';
     $_SERVER['HTTP_DEPTH'] = 0;
   }

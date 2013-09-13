@@ -35,8 +35,7 @@ class DAV_Request_COPYTest extends PHPUnit_Framework_TestCase {
     $_SERVER['REQUEST_METHOD'] = 'COPY';
     $_SERVER['HTTP_DEPTH'] = 'infinity';
     $_SERVER['HTTP_DESTINATION'] = '/new/destination';
-    DAV::$REGISTRY->setResourceClass( 'DAVACL_Test_Resource' );
-    $this->obj = DAV_Request::inst();
+    $this->obj = DAV_Request::inst();;
   }
 
 
@@ -49,10 +48,11 @@ class DAV_Request_COPYTest extends PHPUnit_Framework_TestCase {
 
 
   public function testHandle() {
-    // Assert proper Depth: header value
-    $_SERVER['HTTP_DEPTH'] = 1;
+    // Can't move the root collection
+    $_SERVER['REQUEST_URI'] = '/';
     $this->obj->handleRequest();
-    
+
+    // Assert proper Depth: header value
     // Check: Can't move a collection to one of its members.
     // Copy to an external URI?
     // Check: Won't move a resource to one of its parents.

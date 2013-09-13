@@ -32,10 +32,7 @@ class DAV_Request_ACLTest extends PHPUnit_Framework_TestCase {
   
   
   public function setUp() {
-    $_SERVER['REQUEST_URI'] = '/path';
     $_SERVER['REQUEST_METHOD'] = 'ACL';
-    $_SERVER['SERVER_NAME'] = 'example.org';
-    $_SERVER['SERVER_PORT'] = 80;
     $this->obj = DAV_Test_Request_ACL::inst();
   }
   
@@ -144,29 +141,5 @@ EOS
   }
 
 } // Class DAV_Test_Request_ACL
-
-
-class DAVACL_Test_Resource extends DAVACL_Resource {
-
-  public function assert( $privileges ) {
-    if ( ! is_array( $privileges ) ) {
-      $privileges = array((string)$privileges);
-    }
-    if ( count( $privileges ) != 1 || $privileges[0] !== DAVACL::PRIV_WRITE_ACL ) {
-      throw new Exception( "DAVACL_Test_Resource::assert() called with wrong parameters!\n\n" . print_r( $privileges, true ) );
-    }
-    return true;
-  }
-
-
-  public function set_acl( $acl ) {
-    print_r( $acl );
-  }
-
-
-  public function user_prop_acl() {
-  }
-
-} // Class DAVACL_Test_Resource
 
 // End of file

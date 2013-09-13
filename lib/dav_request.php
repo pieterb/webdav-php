@@ -57,7 +57,8 @@ static $ALLOWED_METHODS = array(
  * @throws void
  */
 public static function inst() {
-  static $inst = null;
+  $cache = DAV_Cache::inst( 'DAV_Request' );
+  $inst = $cache->get( 'inst' );
   if ( is_null( $inst ) ) {
     try {
       $REQUEST_METHOD = strtoupper($_SERVER['REQUEST_METHOD']);
@@ -76,6 +77,7 @@ public static function inst() {
         );
       $e->output();
     }
+    $cache->set( 'inst', $inst );
   }
   return $inst;
 }
