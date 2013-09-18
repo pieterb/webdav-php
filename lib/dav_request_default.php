@@ -30,13 +30,18 @@ class DAV_Request_DEFAULT extends DAV_Request {
 
  
 /**
+ * Returns the HTTP 405 Method Not Allowed status code
+ * 
+ * This will only be called when an unknown/unsupported HTTP method is used. So
+ * We'll return the correct status code and explain which methods are allowed.
+ * 
  * @param DAV_Resource $resource
  * @return void
  * @throws DAV_Status
  */
 public function handle($resource) {
   $allow = implode(', ', self::$ALLOWED_METHODS);
-  header("Allow: $allow");
+  DAV::header("Allow: $allow");
   $status = new DAV_Status(
     DAV::HTTP_METHOD_NOT_ALLOWED,
     "Allowed methods: $allow"

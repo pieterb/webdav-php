@@ -391,12 +391,6 @@ public function handleRequest()
 private function check_if_headers() {
   $write_locks = $read_locks = array();
   switch($_SERVER['REQUEST_METHOD']) {
-    case 'OPTIONS':
-    case 'GET':
-    case 'HEAD':
-    case 'PROPFIND':
-    case 'REPORT':
-      break;
     case 'ACL':
     case 'DELETE':
     case 'LOCK':
@@ -421,8 +415,6 @@ private function check_if_headers() {
       else
         $write_locks[DAV::unslashify(DAV::getPath())] = 1;
       break;
-    default:
-      throw new DAV_Status( DAV::HTTP_METHOD_NOT_ALLOWED );
   }
   if ( !empty($write_locks) )
     foreach (array_keys($write_locks) as $p) {
