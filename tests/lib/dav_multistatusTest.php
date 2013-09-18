@@ -32,14 +32,14 @@ class DAV_MultistatusTest extends PHPUnit_Framework_TestCase {
 
   public function testInstAndActive() {
     // We can only check if it returns true after calling DAV_Multistatus::inst(), because testing for false would require us to be sure it has not been instantiated yet. Not possible in unit tests
-    if ( ! DAV_Multistatus::active() ) {
+    if ( ! DAV_Test_Multistatus::active() ) {
       ob_start();
-      DAV_Multistatus::inst();
+      DAV_Test_Multistatus::inst();
       $startString = ob_get_contents();
       ob_end_clean();
       $this->assertSame( 'Content-Type: application/xml; charset="utf-8"HTTP/1.1 207 Multi-Status<?xml version="1.0" encoding="utf-8"?><D:multistatus xmlns:D="DAV:">', str_replace( "\n", '', $startString ), 'DAV_Multistatus::inst() should call the constructor and start the correct output' );
     }
-    $this->assertTrue( DAV_Multistatus::active(), 'DAV_Multistatus::active() should return true after instantiation' );
+    $this->assertTrue( DAV_Test_Multistatus::active(), 'DAV_Multistatus::active() should return true after instantiation' );
   }
 
 
@@ -54,7 +54,7 @@ class DAV_MultistatusTest extends PHPUnit_Framework_TestCase {
 EOS
     );
     $response = new DAV_Element_response( '/path' );
-    DAV_Multistatus::inst()->addResponse( $response );
+    DAV_Test_Multistatus::inst()->addResponse( $response );
   }
 
 
@@ -63,7 +63,7 @@ EOS
    */
   public function testAddStatus() {
     $this->expectOutputString( '' );
-    DAV_Multistatus::inst()->addStatus( '/path', DAV::HTTP_FORBIDDEN );
+    DAV_Test_Multistatus::inst()->addStatus( '/path', DAV::HTTP_FORBIDDEN );
   }
 
 
@@ -80,7 +80,7 @@ EOS
 </D:multistatus>
 EOS
     );
-    DAV_Multistatus::inst()->close();
+    DAV_Test_Multistatus::inst()->close();
   }
   
   
@@ -90,9 +90,38 @@ EOS
   public function testSecondClose() {
     // A second DAV_Multistatus::close() shouldn't do anything!
     $this->expectOutputString( '' );
-    DAV_Multistatus::inst()->close();
+    DAV_Test_Multistatus::inst()->close();
   }
 
 } // class DAV_MultistatusTest
+
+
+class DAV_Test_Multistatus extends DAV_Multistatus {
+  /**
+   * This should be a identical copy of DAV_Multistatus::__construct()
+   */
+  private function __construct()
+  {
+    DAV::header( array(
+      'Content-Type' => 'application/xml; charset="utf-8"',
+      'status' => DAV::HTTP_MULTI_STATUS
+    ) );
+    echo DAV::xml_header() .
+      '<D:multistatus xmlns:D="DAV:">';
+  }
+  /**
+   * @var  DAV_Multistatus  The only instance of this class
+   */
+  protected static $inst = null;
+  /**
+   * Returns the only instance of this class
+   * @return DAV_Multistatus
+   */
+  public static function inst() {
+    if (null === self::$inst)
+      self::$inst = new DAV_Test_Multistatus();
+    return self::$inst;
+  }
+}
 
 // End of file

@@ -211,7 +211,7 @@ public static function inst() {
  *         false.
  */
 public static function active() {
-  return !is_null(self::$inst);
+  return !is_null(static::$inst);
 }
 
 

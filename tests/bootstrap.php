@@ -103,7 +103,28 @@ class DAV_Test_Registry implements DAV_Registry {
   
 
   public function resource( $path ) {
-    return new $this->resourceClass( $path );
+    if ( is_array( $this->resourceClass ) ) {
+      switch ( count( $this->resourceClass ) ) {
+        case 0:
+          $resourceClass = null;
+          break;
+        case 1:
+          $this->resourceClass = $this->resourceClass[0];
+          $resourceClass = $this->resourceClass;
+          break;
+        default:
+          $resourceClass = array_shift( $this->resourceClass );
+        break;
+      }
+    }else{
+      $resourceClass = $this->resourceClass;
+    }
+    if ( is_null( $resourceClass ) ) {
+      return null;
+    }elseif ( $resourceClass instanceof DAV_Resource ) {
+      return $resourceClass;
+    }
+    return new $resourceClass( $path );
   }
 
 
@@ -180,8 +201,13 @@ class DAVACL_Test_Resource extends DAVACL_Resource {
   }
 
 
-  public function method_COPY_external($destination, $overwrite) {
-    print( "DAVACL_Test_Resource::method_COPY_external() called\n" );
+  public function method_COPY( $path ) {
+    print( "DAVACL_Test_Resource::method_COPY_external() called for " . $this->path . " and parameter " . $path . "\n" );
+  }
+
+
+  public function method_COPY_external( $destination, $overwrite ) {
+    print( "DAVACL_Test_Resource::method_COPY_external() called for " . $this->path . " and parameters " . $destination . " - " . $overwrite . "\n" );
   }
 
 
@@ -238,16 +264,16 @@ class DAVACL_Test_Collection extends DAVACL_Test_Resource implements DAV_Collect
 
   }
 
-  public function method_DELETE($name) {
-    print( "DAVACL_Test_Collection::method_DELETE() called\n" );
+  public function method_DELETE( $name ) {
+    print( "DAVACL_Test_Collection::method_DELETE() called for " . $this->path . " and parameter " . $name . "\n" );
   }
 
-  public function method_MKCOL($name) {
-    print( "DAVACL_Test_Collection::method_MKCOL() called\n" );
+  public function method_MKCOL( $name ) {
+    print( "DAVACL_Test_Collection::method_MKCOL() called for " . $this->path . " and parameter " . $name . "\n" );
   }
 
-  public function method_MOVE($member, $destination) {
-    print( "DAVACL_Test_Collection::method_MOVE() called\n" );
+  public function method_MOVE( $member, $destination ) {
+    print( "DAVACL_Test_Collection::method_MOVE() called for " . $this->path . " and parameters " . $member . " - " . $destination . "\n" );
   }
 
   public function next() {
