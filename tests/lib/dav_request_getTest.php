@@ -104,33 +104,6 @@ EOS
   }
 
 
-  /**
-   * This test is inspired by a bug report from a user
-   *
-   * Apparently fpassthru (originally used in DAV_Request_GET::handle() is buggy
-   * when a stream is set to the first byte. This is done when a range starting
-   * at 0 and without end byte (should default to last byte) is used
-   */
-  public function testHandleRangeStartAtZero() {
-    $resource = new DAVACL_Test_Get_Resource( $_SERVER['REQUEST_URI'] );
-    $resource->setOutputType( 'stream' );
-    $_SERVER['HTTP_RANGE'] = 'bytes=0-';
-
-    DAV::$REGISTRY->setResourceClass( $resource );
-    $this->expectOutputString( <<<EOS
-Content-Type: application/octet-stream
-Accept-Ranges: bytes
-Content-Length: 87
-Content-Range: bytes 0-86/87
-HTTP/1.1 206 Partial Content
-DAVACL_Test_Get_Resource::method_GET() called with output as stream for resource /path
-
-EOS
-    );
-    $this->obj->handleRequest();
-  }
-
-
   public function testHandleMultipleRanges() {
     $resource = new DAVACL_Test_Get_Resource( $_SERVER['REQUEST_URI'] );
     $resource->setOutputType( 'stream' );

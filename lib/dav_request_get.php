@@ -121,7 +121,7 @@ protected function handle( $resource )
       }
     }
 // fpassthru() seems to be buggy when the stream handle points to the start (byte 0) of a stream, so let's not use it (but do some testing some place else)
-// You can uncomment this if statement and test if it works by applying the Range header to a GET request: Range: bytes=0-
+// You can uncomment this if statement and test if it works by applying the Range header to a GET request for a file larger than 2 or 2.5 GB: Range: bytes=0-
 //    if ( $entity_length === $range['end'] + 1 ) {
 //      fpassthru($entity);
 //    }else{
