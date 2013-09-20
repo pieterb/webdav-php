@@ -31,6 +31,8 @@ class DAV_Request_GET extends DAV_Request_HEAD {
 
 
 /**
+ * Checks and handles the GET request
+ *
  * @param DAV_Resource $resource
  * @return void
  * @throws DAV_Status
@@ -98,7 +100,6 @@ protected function handle( $resource )
     return;
   }
 
-  //echo 'debugdebug'; exit;
   // One or more Ranges!
   $headers['status'] = DAV::HTTP_PARTIAL_CONTENT;
   if (1 === count($ranges)) {
@@ -216,6 +217,8 @@ protected function handle( $resource )
 
 
 /**
+ * Parses the 'Range' header
+ *
  * @param int $entity_length
  * @return array of arrays with entries 'start' and 'end'
  */

@@ -26,7 +26,7 @@
 class DAV_Request_DEFAULTTest extends PHPUnit_Framework_TestCase {
   
   /**
-   * @var  DAV_TEST_Request_ACL  The object we will test
+   * @var  DAV_Request_DEFAULT  The object we will test
    */
   private $obj;
   

@@ -30,6 +30,7 @@ class DAV_ResourceTest extends PHPUnit_Framework_TestCase {
   
   public function setUp() {
     $this->obj = new DAV_Resource( '/collection/child' );
+    DAV::$REGISTRY->setResourceClass( 'DAV_Resource' );
   }
   
 

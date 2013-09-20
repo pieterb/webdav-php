@@ -42,9 +42,9 @@ class DAV_Request_COPYTest extends PHPUnit_Framework_TestCase {
 
   public function testDepth() {
     $_SERVER['HTTP_DEPTH'] = '0';
-    $this->assertEquals( '0', $this->obj->depth(), 'DAV_Request_COPY::depth() should return the Depth header correctly' );
+    $this->assertSame( '0', $this->obj->depth(), 'DAV_Request_COPY::depth() should return the Depth header correctly' );
     unset( $_SERVER['HTTP_DEPTH'] );
-    $this->assertEquals( 'infinity', $this->obj->depth(), 'DAV_Request_COPY::depth() should return \'infinity\' if the Depth header is not set' );
+    $this->assertSame( DAV::DEPTH_INF, $this->obj->depth(), 'DAV_Request_COPY::depth() should return \'infinity\' if the Depth header is not set' );
   }
 
 

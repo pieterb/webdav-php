@@ -26,7 +26,7 @@
 class DAV_Request_DELETETest extends PHPUnit_Framework_TestCase {
 
   /**
-   * @var  DAV_Request_COPY  The object we will test
+   * @var  DAV_Request_DELETE  The object we will test
    */
   private $obj;
 
@@ -42,9 +42,9 @@ class DAV_Request_DELETETest extends PHPUnit_Framework_TestCase {
 
   public function testDepth() {
     $_SERVER['HTTP_DEPTH'] = '0';
-    $this->assertEquals( '0', $this->obj->depth(), 'DAV_Request_DELETE::depth() should return the Depth header correctly' );
+    $this->assertSame( '0', $this->obj->depth(), 'DAV_Request_DELETE::depth() should return the Depth header correctly' );
     unset( $_SERVER['HTTP_DEPTH'] );
-    $this->assertEquals( DAV::DEPTH_INF, $this->obj->depth(), 'DAV_Request_DELETE::depth() should return \'infinity\' if the Depth header is not set' );
+    $this->assertSame( DAV::DEPTH_INF, $this->obj->depth(), 'DAV_Request_DELETE::depth() should return \'infinity\' if the Depth header is not set' );
   }
 
 
