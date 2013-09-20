@@ -42,6 +42,7 @@ public function depth() {
 
 
 /**
+ * Checks that the Depth header is correct and then handles a DELETE request
  * @param DAV_Resource $resource
  * @return void
  * @throws DAV_Status

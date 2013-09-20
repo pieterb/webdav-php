@@ -180,6 +180,9 @@ class DAVACL_Test_Resource extends DAVACL_Resource {
 
 
   public function collection() {
+    if ( $this->path === '/' ) {
+      return null;
+    }
     return new DAVACL_Test_Collection( dirname( $this->path ) );
   }
 
@@ -194,7 +197,6 @@ class DAVACL_Test_Resource extends DAVACL_Resource {
       $privileges = array((string)$privileges);
     }
     if ( ! is_null( $this->expectedPrivileges ) && $this->expectedPrivileges != $privileges ) {
-//    if ( count( $privileges ) != 1 || $privileges[0] !== DAVACL::PRIV_WRITE_ACL ) {
       throw new Exception( "DAVACL_Test_Resource::assert() called with wrong parameters!" );
     }
     return true;
