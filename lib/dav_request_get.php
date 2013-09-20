@@ -120,9 +120,12 @@ protected function handle( $resource )
         $size -= strlen($buffer);
       }
     }
-    if ( $entity_length === $range['end'] + 1 )
-      fpassthru($entity);
-    else {
+// fpassthru() seems to be buggy when the stream handle points to the start (byte 0) of a stream, so let's not use it (but do some testing some place else)
+// You can uncomment this if statement and test if it works by applying the Range header to a GET request: Range: bytes=0-
+//    if ( $entity_length === $range['end'] + 1 ) {
+//      fpassthru($entity);
+//    }else{
+      $time = time() + 60;
       $size = $content_length;
       while ($size && !feof($entity)) {
         $buffer = fread(
@@ -131,13 +134,17 @@ protected function handle( $resource )
         );
         $size -= strlen($buffer);
         echo $buffer;
+        if ( time() > $time ) {
+          set_time_limit(120);
+          $time = time() + 60;
+        }
       }
       if ($size)
         trigger_error(
           var_export( debug_backtrace(), true ),
           E_USER_WARNING
         );
-    }
+//    }
     fclose($entity);
     return;
   }
@@ -259,8 +266,6 @@ public static function range_header( $entity_length ) {
       $end = $entity_length - 1;
     }
     else $end = (int)$end;
-    if ( $end > $entity_length )
-      $end = $entity_length - 1;
     if ( '' === $start ) {
       if ( $end > $entity_length )
         throw new DAV_Status( DAV::HTTP_REQUESTED_RANGE_NOT_SATISFIABLE );
@@ -268,6 +273,8 @@ public static function range_header( $entity_length ) {
       $end = $entity_length - 1;
     }
     else $start = (int)$start;
+    if ( $end >= $entity_length )
+      $end = $entity_length - 1;
     if ($end < $start)
       throw new DAV_Status(
         DAV::HTTP_BAD_REQUEST,
