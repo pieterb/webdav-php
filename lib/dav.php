@@ -634,10 +634,18 @@ private static $statusHeader = null;
  * Content-Type, e.g.<code>$rest->header('text/plain')</code> is exactly
  * equivalent to
  * <code>$rest->header( array( 'Content-Type' => 'text/plain' ) );</code>
+ * @param  bool  $replace  Will be passed to the PHP internal function header().
+ *                         PHP documentation says this: "The optional replace
+ *                         parameter indicates whether the header should replace
+ *                         a previous similar header, or add a second header of
+ *                         the same type. By default it will replace, but if you
+ *                         pass in FALSE as the second argument you can force
+ *                         multiple headers of the same type." Although the
+ *                         status header will always be send just once.
  * @return void
  * @see status_code()
  */
-public static function header($properties) {
+public static function header($properties, $replace = true) {
   if (is_string($properties))
     $properties = array( 'Content-Type' => $properties );
   if (isset($_SERVER['HTTP_ORIGIN']))
@@ -661,7 +669,7 @@ public static function header($properties) {
     if ( self::$testMode ) {
       print( $key . ': ' . $value . "\n" );
     }else{
-      header("$key: $value");
+      header("$key: $value", $replace);
     }
   }
   if ($status !== null) {

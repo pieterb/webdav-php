@@ -29,14 +29,15 @@ class DAV_Request_OPTIONS extends DAV_Request {
 
 
 /**
+ * Handles the OPTIONS request
  * @param DAV_Resource $resource
  * @return void
  * @throws DAV_Status
  */
 protected function handle( $resource ) {
-  header('DAV: 1' . (DAV::$LOCKPROVIDER ? ', 2' : '') . ', 3');
-  header('DAV: access-control', false);
-  header('DAV: <http://apache.org/dav/propset/fs/1>', false);
+  DAV::header( array( 'DAV' => '1' . (DAV::$LOCKPROVIDER ? ', 2' : '') . ', 3' ) );
+  DAV::header( array( 'DAV' => 'access-control' ), false );
+  DAV::header( array( 'DAV' => '<http://apache.org/dav/propset/fs/1>' ), false );
   $headers = array(
     'MS-Author-Via' => 'DAV',
     'Allow' => implode(', ', self::$ALLOWED_METHODS),
