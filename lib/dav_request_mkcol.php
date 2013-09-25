@@ -31,6 +31,7 @@ class DAV_Request_MKCOL extends DAV_Request {
 
 
 /**
+ * Checks and handles MKCOL request
  * @param DAV_Resource $resource
  * @return void
  * @throws DAV_Status
