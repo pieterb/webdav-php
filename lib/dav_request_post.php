@@ -23,7 +23,7 @@
  */
 
 /**
- * GET.
+ * POST
  * @internal
  * @package DAV
  */
@@ -31,6 +31,7 @@ class DAV_Request_POST extends DAV_Request {
 
 
 /**
+ * Handles a POST request
  * @param DAV_Resource $resource
  * @return void
  * @throws DAV_Status
