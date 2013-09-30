@@ -35,6 +35,7 @@ class DAV_Request_COPYTest extends PHPUnit_Framework_TestCase {
     $_SERVER['REQUEST_METHOD'] = 'COPY';
     $_SERVER['HTTP_DEPTH'] = 'infinity';
     $_SERVER['HTTP_DESTINATION'] = '/new/destination';
+    DAV::$REGISTRY = new DAV_Test_Registry();
     DAV::$REGISTRY->setResourceClass( 'DAVACL_Test_Resource' );
     $this->obj = DAV_Request::inst();
   }

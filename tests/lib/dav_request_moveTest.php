@@ -36,6 +36,7 @@ class DAV_Request_MOVETest extends PHPUnit_Framework_TestCase {
     $_SERVER['HTTP_DEPTH'] = 'infinity';
     $_SERVER['HTTP_DESTINATION'] = '/new/destination';
     $_SERVER['REQUEST_URI'] = '/path';
+    DAV::$REGISTRY = new DAV_Test_Registry();
     DAV::$REGISTRY->setResourceClass( 'DAVACL_Test_Resource' );
     $this->obj = DAV_Request::inst();
   }

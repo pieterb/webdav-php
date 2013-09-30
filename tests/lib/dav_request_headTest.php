@@ -44,6 +44,7 @@ class DAV_Request_HEADTest extends PHPUnit_Framework_TestCase {
     $resource->expects( $this->once() )
              ->method( 'method_HEAD' )
              ->will( $this->returnValue( $headers ) );
+    DAV::$REGISTRY = new DAV_Test_Registry();
     DAV::$REGISTRY->setResourceClass( $resource );
     $this->obj = DAV_Request::inst();
   }

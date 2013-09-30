@@ -35,6 +35,7 @@ class DAV_Request_DELETETest extends PHPUnit_Framework_TestCase {
     $_SERVER['REQUEST_METHOD'] = 'DELETE';
     $_SERVER['HTTP_DEPTH'] = 'infinity';
     $_SERVER['REQUEST_URI'] = '/path/to/resource';
+    DAV::$REGISTRY = new DAV_Test_Registry();
     DAV::$REGISTRY->setResourceClass( 'DAVACL_Test_Resource' );
     $this->obj = DAV_Request::inst();
   }

@@ -35,6 +35,8 @@ class DAV_Request_UNLOCKTest extends PHPUnit_Framework_TestCase {
     DAV::$LOCKPROVIDER = new DAV_Test_Lock_Provider();
     $_SERVER['REQUEST_METHOD'] = 'UNLOCK';
     $_SERVER['HTTP_LOCK_TOKEN'] = '<' . DAV::$LOCKPROVIDER->setlock( null, null, null, null ) . '>';
+    DAV::$REGISTRY = new DAV_Test_Registry();
+    DAV::$REGISTRY->setResourceClass( 'DAVACL_Test_Resource' );
     $this->obj = DAV_Request::inst();
   }
 

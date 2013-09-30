@@ -34,6 +34,8 @@ class DAV_Request_ACLTest extends PHPUnit_Framework_TestCase {
   public function setUp() {
     $_SERVER['REQUEST_METHOD'] = 'ACL';
     $this->obj = DAV_Test_Request_ACL::inst();
+    DAV::$REGISTRY = new DAV_Test_Registry();
+    DAV::$REGISTRY->setResourceClass( 'DAVACL_Test_Resource' );
   }
   
 

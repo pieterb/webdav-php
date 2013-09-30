@@ -34,6 +34,8 @@ class DAV_Request_DEFAULTTest extends PHPUnit_Framework_TestCase {
   public function setUp() {
     $_SERVER['REQUEST_METHOD'] = 'UNKNOWN';
     $this->obj = DAV_Request::inst();
+    DAV::$REGISTRY = new DAV_Test_Registry();
+    DAV::$REGISTRY->setResourceClass( 'DAVACL_Test_Resource' );
   }
   
 

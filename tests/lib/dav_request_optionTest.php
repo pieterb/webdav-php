@@ -25,6 +25,12 @@
  */
 class DAV_Request_OPTIONSTest extends PHPUnit_Framework_TestCase {
 
+  public function setUp() {
+    DAV::$REGISTRY = new DAV_Test_Registry();
+    DAV::$REGISTRY->setResourceClass( 'DAVACL_Test_Resource' );
+  }
+
+  
   public function testHandle() {
     $_SERVER['REQUEST_METHOD'] = 'OPTIONS';
     $_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD'] = 'LOCK';

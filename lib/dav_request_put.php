@@ -34,6 +34,8 @@ public $range_total = null;
 
 
 /**
+ * Parse the Content-Range (request) header
+ *
  * @return array a struct with fields 'start', 'end' and 'total'.
  * 'start' and 'end' are always integers, 'total' is either an integer or null.
  */
@@ -59,7 +61,7 @@ private function init_range() {
 
 
 /**
- * Enter description here...
+ * Makes sure the Content-Range header is parsed
  *
  * @param string $path
  * @throws DAV_Status
@@ -72,6 +74,11 @@ protected function __construct()
 
 
 /**
+ * Handles the PUT request
+ *
+ * This method checks whether the PUT request is valid and, if so, writes the
+ * request body to the resource.
+ *
  * @param DAV_Resource $resource
  */
 protected function handle( $resource ) {

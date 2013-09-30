@@ -34,6 +34,7 @@ class DAV_Request_MKCOLTest extends PHPUnit_Framework_TestCase {
   public function setUp() {
     $_SERVER['REQUEST_METHOD'] = 'MKCOL';
     $this->obj = DAV_Request::inst();
+    DAV::$REGISTRY = new DAV_Test_Registry();
     DAV::$REGISTRY->setResourceClass( 'DAV_Resource' );
   }
 

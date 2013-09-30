@@ -213,8 +213,23 @@ class DAVACL_Test_Resource extends DAVACL_Resource {
   }
 
 
+  public function method_PUT( $stream ){
+    print( "DAVACL_Test_Resource::method_PUT() called for " . $this->path . "\n" );
+  }
+
+
+  public function method_PUT_range( $stream ){
+    print( "DAVACL_Test_Resource::method_PUT_range() called for " . $this->path . "\n" );
+  }
+
+
   public function set_acl( $acl ) {
     print_r( $acl );
+  }
+
+
+  public function storeProperties() {
+    print( "DAVACL_Test_Resource::storeProperties() called for " . $this->path . "\n" );
   }
 
 
