@@ -292,4 +292,34 @@ class DAVACL_Test_Collection extends DAVACL_Test_Resource implements DAV_Collect
 
 } // Class DAVACL_Test_Resource
 
+
+class DAV_Test_Lock_Provider implements DAV_Lock_Provider {
+
+  public function getlock($path) {
+    return new DAV_Element_activelock(
+            array(
+                'locktoken' => $this->setlock( null, null, null, null ),
+                'lockroot' => $_SERVER['REQUEST_URI']
+            )
+    );
+  }
+
+  public function memberLocks($path) {
+    return array( $this->getlock( $path ) );
+  }
+
+  public function refresh($path, $locktoken, $timeout) {
+    return true;
+  }
+
+  public function setlock($lockroot, $depth, $owner, $timeout) {
+    return 'urn:uuid:e71d4fae-5dec-22d6-fea5-00a0c91e6be4';
+  }
+
+  public function unlock($path) {
+    return true;
+  }
+
+} // Class DAV_Test_Lock_Provider
+
 // End of file

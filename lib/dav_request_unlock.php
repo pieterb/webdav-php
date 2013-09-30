@@ -59,6 +59,8 @@ protected function __construct()
 
 
 /**
+ * Handles the UNLOCK request
+ * 
  * @param DAV_Resource $resource
  * @return void
  * @throws DAV_Status
