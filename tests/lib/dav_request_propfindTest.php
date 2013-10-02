@@ -43,7 +43,7 @@ class DAV_Request_PROPFINDTest extends PHPUnit_Framework_TestCase {
   public function testConstructorWrongXML() {
     $this->setExpectedException( 'DAV_Status', null, 400 );
     DAV_Test_Request_PROPFIND::setInputstring( 'something that is not XML' );
-    $obj = DAV_Test_Request_PROPFIND::inst();
+    DAV_Test_Request_PROPFIND::inst();
   }
 
 
@@ -311,6 +311,6 @@ class DAV_Test_Request_PROPFIND extends DAV_Request_PROPFIND {
     return self::$inputstring;
   }
 
-} // Class DAV_Test_Request_ACL
+} // Class DAV_Test_Request_PROPFIND
 
 // End of file

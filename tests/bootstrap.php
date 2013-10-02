@@ -213,6 +213,11 @@ class DAVACL_Test_Resource extends DAVACL_Resource {
   }
 
 
+  public function method_PROPPATCH( $propname, $value = null ) {
+    print( "DAVACL_Test_Resource::method_PROPPATCH() called for " . $this->path . " and parameters " . $propname . " - " . ( is_null( $value ) ? 'NULL' : "'" . $value . "'" ) . "\n" );
+  }
+
+
   public function method_PUT( $stream ){
     print( "DAVACL_Test_Resource::method_PUT() called for " . $this->path . "\n" );
   }
@@ -220,6 +225,15 @@ class DAVACL_Test_Resource extends DAVACL_Resource {
 
   public function method_PUT_range( $stream ){
     print( "DAVACL_Test_Resource::method_PUT_range() called for " . $this->path . "\n" );
+  }
+
+
+  public function property_priv_write($properties) {
+    $retval = parent::property_priv_write($properties);
+    if ( isset( $retval['test: forbidden_to_write'] ) ) {
+      $retval['test: forbidden_to_write'] = false;
+    }
+    return $retval;
   }
 
 

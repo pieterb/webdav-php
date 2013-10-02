@@ -31,32 +31,23 @@ class DAV_Request_PROPPATCH extends DAV_Request {
 
 
 /**
- * @var array( array( 'type'  => 'set|remove',
- *                    'name'  => '<namespaceURI> <localName>',
- *                    'value' => '<xml_fragment>' ),
- *             ... )
+ * @var  array( 'name' => '<xml_fragment>', ... )  If the property should be deleted, it will have NULL instead of <xml_fragment>
  */
 public $props = array();
 
 
 /**
- * Enter description here...
+ * Parse the request body
  *
  * @param string $path
  */
 protected function __construct() {
   parent::__construct();
-//  if ( !isset($_SERVER['CONTENT_LENGTH']) ||
-//       !$_SERVER['CONTENT_LENGTH'] )
-//    throw new DAV_Status(
-//      DAV::HTTP_BAD_REQUEST,
-//      'Couldn\'t find a proppatch request body.'
-//    );
 
   $document = new DOMDocument();
-  if ( ! $document->loadXML(
+  if ( ! @$document->loadXML(
            $this->inputstring(),
-           LIBXML_NOCDATA | LIBXML_NOENT | LIBXML_NSCLEAN | LIBXML_NOWARNING
+           LIBXML_NOCDATA | LIBXML_NOENT | LIBXML_NSCLEAN | LIBXML_NOWARNING | LIBXML_NOERROR
          ) )
     throw new DAV_Status(
       DAV::HTTP_BAD_REQUEST, 'Request body is not well-formed XML.'
@@ -68,14 +59,6 @@ protected function __construct() {
   $nodelist = $xpath->query('/D:propertyupdate/*/D:prop/*');
   for ($i = 0; $i < $nodelist->length; $i++) {
     $element = $nodelist->item($i);
-    // PHP5 DOM cannot destinguish between empty namespaces (forbidden) and
-    // the default no-namespace. Therefor, this check has been commented out.
-//    if ( empty($element->namespaceURI) &&
-//        !$element->isDefaultNamespace($element-namespaceURI) )
-//      throw new DAV_Status(
-//        DAV::HTTP_BAD_REQUEST,
-//        'Empty namespace URIs are not allowed.'
-//      );
     if ('DAV:' !== $element->parentNode->parentNode->namespaceURI)
       continue;
     if ('remove' === $element->parentNode->parentNode->localName)
@@ -91,14 +74,6 @@ protected function __construct() {
 //  $nodelist = $xpath->query('/D:propertyupdate/D:remove/D:prop/*');
 //  for ($i = 0; $i < $nodelist->length; $i++) {
 //    $element = $nodelist->item($i);
-//    // PHP5 DOM cannot destinguish between empty namespaces (forbidden) and
-//    // the default no-namespace. Therefor, this check has been commented out.
-////    if ( empty($element->namespaceURI) &&
-////        !$element->isDefaultNamespace($element-namespaceURI) )
-////      throw new DAV_Status(
-////        DAV::HTTP_BAD_REQUEST,
-////        'Empty namespace URIs are not allowed.'
-////      );
 //        $xml = '';
 //    for ($j = 0; $child = $element->childNodes->item($j); $j++)
 //      $xml .= DAV::recursiveSerialize($child);
@@ -109,6 +84,8 @@ protected function __construct() {
 
 
 /**
+ * Handle the PROPPATCH request
+ *
  * @param DAV_Resource $resource
  * @return void
  * @throws DAV_Status
