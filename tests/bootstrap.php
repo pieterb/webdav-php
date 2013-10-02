@@ -270,15 +270,6 @@ class DAVACL_Test_Collection extends DAVACL_Test_Resource implements DAV_Collect
   }
 
   public function create_member($name) {
-
-  }
-
-  public function current() {
-
-  }
-
-  public function key() {
-
   }
 
   public function method_DELETE( $name ) {
@@ -293,16 +284,30 @@ class DAVACL_Test_Collection extends DAVACL_Test_Resource implements DAV_Collect
     print( "DAVACL_Test_Collection::method_MOVE() called for " . $this->path . " and parameters " . $member . " - " . $destination . "\n" );
   }
 
-  public function next() {
+  private $position = 0;
+  private $array = array(
+      "child1",
+      "child2"
+  );
 
+  function rewind() {
+    $this->position = 0;
   }
 
-  public function rewind() {
-
+  function current() {
+    return $this->array[$this->position];
   }
 
-  public function valid() {
+  function key() {
+    return $this->position;
+  }
 
+  function next() {
+    ++$this->position;
+  }
+
+  function valid() {
+    return isset($this->array[$this->position]);
   }
 
 } // Class DAVACL_Test_Resource

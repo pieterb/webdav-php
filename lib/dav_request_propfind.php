@@ -82,14 +82,6 @@ protected function __construct() {
     $nodelist = $xpath->query('/D:propfind/D:prop/*');
     for ($i = 0; $i < $nodelist->length; $i++) {
       $element = $nodelist->item($i);
-      // PHP5 DOM cannot destinguish between empty namespaces (forbidden) and
-      // the default no-namespace. Therefor, this check has been commented out.
-//      if ( empty($element->namespaceURI) &&
-//          !$element->isDefaultNamespace($element-namespaceURI) )
-//        throw new DAV_Status(
-//          DAV::HTTP_BAD_REQUEST,
-//          'Empty namespace URIs are not allowed.'
-//        );
       $this->props[] = "{$element->namespaceURI} {$element->localName}";
     }
   }
@@ -99,15 +91,7 @@ protected function __construct() {
     $nodelist = $xpath->query('/D:propfind/D:include/*');
     for ($i = 0; $i < $nodelist->length; $i++) {
       $element = $nodelist->item($i);
-      // PHP5 DOM cannot destinguish between empty namespaces (forbidden) and
-      // the default no-namespace. Therefor, this check has been commented out.
-//      if ( empty($element->namespaceURI) &&
-//          !$element->isDefaultNamespace($element-namespaceURI) )
-//        throw new DAV_Status(
-//          DAV::HTTP_BAD_REQUEST,
-//          'Empty namespace URIs are not allowed.'
-//        );
-            $this->props[] = "{$element->namespaceURI} {$element->localName}";
+      $this->props[] = "{$element->namespaceURI} {$element->localName}";
     }
   }
 
@@ -119,6 +103,13 @@ protected function __construct() {
 }
 
 
+/**
+ * Return the depth for the COPY request
+ *
+ * If no Depth header is set, then DAV::DEPTH_INF will be returned
+ *
+ * @return  mixed  The depth
+ */
 public function depth() {
   $retval = parent::depth();
   return is_null($retval) ? DAV::DEPTH_INF : $retval;
@@ -126,6 +117,8 @@ public function depth() {
 
 
 /**
+ * Checks and handles the PROPFIND request
+ *
  * @param DAV_Resource $resource
  * @return void
  * @throws DAV_Status
