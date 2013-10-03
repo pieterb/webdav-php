@@ -28,6 +28,7 @@ $_SERVER['SERVER_NAME'] = 'example.org';
 $_SERVER['SERVER_PORT'] = 80;
 $_SERVER['REQUEST_URI'] = '/path';
 $_SERVER['REQUEST_METHOD'] = 'GET';
+$_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:24.0) Gecko/20100101 Firefox/24.0';
 
 
 /**
@@ -328,8 +329,17 @@ class DAVACL_Test_Collection extends DAVACL_Test_Resource implements DAV_Collect
 
 
 class DAV_Test_Lock_Provider implements DAV_Lock_Provider {
+  
+  private $returnLock = false;
+
+  public function returnLock( $trueOrFalse ) {
+    $this->returnLock = (bool) $trueOrFalse;
+  }
 
   public function getlock($path) {
+    if ( !$this->returnLock ) {
+      return null;
+    }
     return new DAV_Element_activelock(
             array(
                 'locktoken' => $this->setlock( null, null, null, null ),
@@ -339,6 +349,9 @@ class DAV_Test_Lock_Provider implements DAV_Lock_Provider {
   }
 
   public function memberLocks($path) {
+    if ( !$this->returnLock ) {
+      return array();
+    }
     return array( $this->getlock( $path ) );
   }
 

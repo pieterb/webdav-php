@@ -29,6 +29,7 @@ class DAV_Request_PROPFINDTest extends PHPUnit_Framework_TestCase {
     $_SERVER['REQUEST_METHOD'] = 'PROPFIND';
     DAV::$REGISTRY = new DAV_Test_Registry();
     DAV::$REGISTRY->setResourceClass( 'DAVACL_Test_Resource' );
+    DAV::$LOCKPROVIDER = null;
     DAV_Test_Request_PROPFIND::setInputstring( '' );
   }
 

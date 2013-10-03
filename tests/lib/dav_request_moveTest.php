@@ -39,6 +39,7 @@ class DAV_Request_MOVETest extends PHPUnit_Framework_TestCase {
     DAV::$REGISTRY = new DAV_Test_Registry();
     DAV::$REGISTRY->setResourceClass( 'DAVACL_Test_Resource' );
     $this->obj = DAV_Request::inst();
+    DAV::$LOCKPROVIDER = null;
   }
 
 

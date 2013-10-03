@@ -28,6 +28,7 @@ class DAV_Request_OPTIONSTest extends PHPUnit_Framework_TestCase {
   public function setUp() {
     DAV::$REGISTRY = new DAV_Test_Registry();
     DAV::$REGISTRY->setResourceClass( 'DAVACL_Test_Resource' );
+    DAV::$LOCKPROVIDER = null;
   }
 
   

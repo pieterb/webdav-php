@@ -29,6 +29,7 @@ class DAV_Request_PROPPATCHTest extends PHPUnit_Framework_TestCase {
     $_SERVER['REQUEST_METHOD'] = 'PROPPATCH';
     DAV::$REGISTRY = new DAV_Test_Registry();
     DAV::$REGISTRY->setResourceClass( 'DAVACL_Test_Resource' );
+    DAV::$LOCKPROVIDER = null;
   }
 
 

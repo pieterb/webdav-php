@@ -33,6 +33,7 @@ class DAV_Request_UNLOCKTest extends PHPUnit_Framework_TestCase {
 
   public function setUp() {
     DAV::$LOCKPROVIDER = new DAV_Test_Lock_Provider();
+    DAV::$LOCKPROVIDER->returnLock( true );
     $_SERVER['REQUEST_METHOD'] = 'UNLOCK';
     $_SERVER['HTTP_LOCK_TOKEN'] = '<' . DAV::$LOCKPROVIDER->setlock( null, null, null, null ) . '>';
     DAV::$REGISTRY = new DAV_Test_Registry();
@@ -94,6 +95,7 @@ EOS
                       ->method( 'unlock' )
                       ->with( $this->equalTo( $_SERVER['REQUEST_URI'] ) )
                       ->will( $this->returnValue( true ) );
+    DAV::$LOCKPROVIDER->returnLock( true );
 
     $this->expectOutputString( <<<EOS
 HTTP/1.1 204 No Content

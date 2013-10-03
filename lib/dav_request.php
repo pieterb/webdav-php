@@ -399,23 +399,27 @@ private function check_if_headers() {
     case 'PROPPATCH':
     case 'PUT':
     case 'UNLOCK':
+      // For all actions above you need a write lock for the path/resource
       $write_locks[DAV::unslashify(DAV::getPath())] = 1;
       break;
     case 'COPY':
     case 'MOVE':
+      // Here, things get a bit more complicated
       if (!$this->destination())
         throw new DAV_Status(
           DAV::HTTP_BAD_REQUEST,
           'Missing required Destination: header'
         );
-      if ( '/' === substr( $this->destination(), 0, 1 ) )
+      if ( '/' === substr( $this->destination(), 0, 1 ) ) // For destinations as absolute paths, you'll need a write lock on the destination
         $write_locks[ DAV::unslashify( $this->destination() ) ] = 1;
-      if ('COPY' === $_SERVER['REQUEST_METHOD'])
+      if ('COPY' === $_SERVER['REQUEST_METHOD']) // If you want to copy, you'll just need a read lock on the source
         $read_locks[DAV::unslashify(DAV::getPath())] = 1;
-      else
+      else // But if you want to move, you'll need a write lock on the source (as it will be deleted)
         $write_locks[DAV::unslashify(DAV::getPath())] = 1;
       break;
   }
+
+  // If there are write locks, you'll also need read locks on all parents
   if ( !empty($write_locks) )
     foreach (array_keys($write_locks) as $p) {
       while ($p !== '/') {
@@ -433,12 +437,15 @@ private function check_if_headers() {
   foreach (array_keys($this->if_header) as $path)
     $read_locks[DAV::unslashify($path)] = 1;
 
+  // If we already want a write lock, we should not also want a read lock
   foreach (array_keys($write_locks) as $path)
     unset( $read_locks[$path] );
 
+  // No locks required? Than just return false so the caller knows that there are no (shallow) locks set
   if (empty($write_locks) && empty($read_locks))
     return false;
 
+  // Get the (shallow) locks
   DAV::$REGISTRY->shallowLock(
     array_keys( $write_locks ),
     array_keys( $read_locks )

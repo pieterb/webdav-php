@@ -36,6 +36,7 @@ class DAV_Request_MKCOLTest extends PHPUnit_Framework_TestCase {
     $this->obj = DAV_Request::inst();
     DAV::$REGISTRY = new DAV_Test_Registry();
     DAV::$REGISTRY->setResourceClass( 'DAV_Resource' );
+    DAV::$LOCKPROVIDER = null;
   }
 
 

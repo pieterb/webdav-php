@@ -40,58 +40,58 @@ class DAV_Request_PUTTest extends PHPUnit_Framework_TestCase {
   }
 
 
-//  public function testConstructor() {
-//    $this->assertNull( $this->obj->range_start, 'DAV_Request_PUT constructor should have NULL as start byte if no Content-Range header is present' );
-//    $this->assertNull( $this->obj->range_end  , 'DAV_Request_PUT constructor should have NULL as end byte if no Content-Range header is present' );
-//    $this->assertNull( $this->obj->range_total, 'DAV_Request_PUT constructor should have NULL as total number of bytes if no Content-Range header is present' );
-//
-//    $_SERVER['HTTP_CONTENT_RANGE'] = 'bytes 500-999/1234';
-//    $this->obj = DAV_Request::inst();
-//    $this->assertSame( 500,  $this->obj->range_start, 'DAV_Request_PUT constructor should parse start byte of Content-Range correctly' );
-//    $this->assertSame( 999,  $this->obj->range_end  , 'DAV_Request_PUT constructor should parse end byte of Content-Range correctly' );
-//    $this->assertSame( 1234, $this->obj->range_total, 'DAV_Request_PUT constructor should parse total number of bytes of Content-Range correctly' );
-//
-//    // Return a 400 status code if the Content-Range header is wrong
-//    $_SERVER['HTTP_CONTENT_RANGE'] = 'characters 1-2/3';
-//    $this->expectOutputString( <<<EOS
-//Content-Type: text/plain; charset="UTF-8"
-//HTTP/1.1 400 Bad Request
-//HTTP/1.1 400 Bad Request
-//Can't understand Content-Range: characters 1-2/3
-//EOS
-//    );
-//    DAV_Request::inst();
-//  }
-//
-//
-//  public function testHandleNonExisting() {
-//    // Unable to PUT file in non-existing collection
-//    DAV::$REGISTRY->setResourceClass( null );
-//
-//    $this->expectOutputString( <<<EOS
-//Content-Type: text/plain; charset="UTF-8"
-//HTTP/1.1 409 Conflict
-//HTTP/1.1 409 Conflict
-//Unable to PUT file in non-existing collection.
-//EOS
-//    );
-//    $this->obj->handleRequest();
-//  }
-//
-//
-//  public function testHandleCollection() {
-//    // Method PUT not supported on collections
-//    DAV::$REGISTRY->setResourceClass( new DAVACL_Test_Collection( $_SERVER['REQUEST_URI'] ) );
-//    $this->expectOutputString( <<<EOS
-//Content-Location: http://example.org/collection/new_resource/
-//Content-Type: text/plain; charset="UTF-8"
-//HTTP/1.1 405 Method Not Allowed
-//HTTP/1.1 405 Method Not Allowed
-//Method PUT not supported on collections.
-//EOS
-//    );
-//    $this->obj->handleRequest();
-//  }
+  public function testConstructor() {
+    $this->assertNull( $this->obj->range_start, 'DAV_Request_PUT constructor should have NULL as start byte if no Content-Range header is present' );
+    $this->assertNull( $this->obj->range_end  , 'DAV_Request_PUT constructor should have NULL as end byte if no Content-Range header is present' );
+    $this->assertNull( $this->obj->range_total, 'DAV_Request_PUT constructor should have NULL as total number of bytes if no Content-Range header is present' );
+
+    $_SERVER['HTTP_CONTENT_RANGE'] = 'bytes 500-999/1234';
+    $this->obj = DAV_Request::inst();
+    $this->assertSame( 500,  $this->obj->range_start, 'DAV_Request_PUT constructor should parse start byte of Content-Range correctly' );
+    $this->assertSame( 999,  $this->obj->range_end  , 'DAV_Request_PUT constructor should parse end byte of Content-Range correctly' );
+    $this->assertSame( 1234, $this->obj->range_total, 'DAV_Request_PUT constructor should parse total number of bytes of Content-Range correctly' );
+
+    // Return a 400 status code if the Content-Range header is wrong
+    $_SERVER['HTTP_CONTENT_RANGE'] = 'characters 1-2/3';
+    $this->expectOutputString( <<<EOS
+Content-Type: text/plain; charset="UTF-8"
+HTTP/1.1 400 Bad Request
+HTTP/1.1 400 Bad Request
+Can't understand Content-Range: characters 1-2/3
+EOS
+    );
+    DAV_Request::inst();
+  }
+
+
+  public function testHandleNonExisting() {
+    // Unable to PUT file in non-existing collection
+    DAV::$REGISTRY->setResourceClass( null );
+
+    $this->expectOutputString( <<<EOS
+Content-Type: text/plain; charset="UTF-8"
+HTTP/1.1 409 Conflict
+HTTP/1.1 409 Conflict
+Unable to PUT file in non-existing collection.
+EOS
+    );
+    $this->obj->handleRequest();
+  }
+
+
+  public function testHandleCollection() {
+    // Method PUT not supported on collections
+    DAV::$REGISTRY->setResourceClass( new DAVACL_Test_Collection( $_SERVER['REQUEST_URI'] ) );
+    $this->expectOutputString( <<<EOS
+Content-Location: http://example.org/collection/new_resource/
+Content-Type: text/plain; charset="UTF-8"
+HTTP/1.1 405 Method Not Allowed
+HTTP/1.1 405 Method Not Allowed
+Method PUT not supported on collections.
+EOS
+    );
+    $this->obj->handleRequest();
+  }
 
 
   public function testHandleWithoutRange() {

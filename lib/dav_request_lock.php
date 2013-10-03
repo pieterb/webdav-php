@@ -91,7 +91,7 @@ protected function __construct()
   $document = new DOMDocument();
   $result = $document->loadXML(
     $input,
-    LIBXML_NOCDATA | LIBXML_NOENT | LIBXML_NSCLEAN | LIBXML_NOWARNING
+    LIBXML_NOCDATA | LIBXML_NOENT | LIBXML_NSCLEAN | LIBXML_NOWARNING | LIBXML_NOERROR
   );
 
   if (!$result)
@@ -247,6 +247,11 @@ private function handleRefreshLock($resource) {
         DAV::COND_LOCK_TOKEN_SUBMITTED => new DAV_Element_href(DAV::getPath())
       )
     );
+  // I think this can never evaluate to true, because DAV_Request already checks
+  // whether the 'If' header matches the lock token of the resource. So if the
+  // resource doesn't have a lock, this is already detected before this method
+  // is called! (However, I don't dare to delete this yet and it doesn't hurt to
+  // keep it)
   if ( !( $lock = DAV::$LOCKPROVIDER->getlock(DAV::getPath()) ) )
     throw new DAV_Status(
       DAV::HTTP_PRECONDITION_FAILED,
