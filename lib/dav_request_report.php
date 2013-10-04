@@ -50,16 +50,12 @@ private static $SUPPORTED_REPORTS = array(
 
 
 /**
- * Constructor.
+ * Parses the request body
  */
 protected function __construct() {
   parent::__construct();
 
-  /*
-   * RFC4918 §9.1:
-   * A client may choose not to submit a request body.  An empty PROPFIND
-   * request body MUST be treated as if it were an 'allprop' request.
-   */
+  // Get and parse the input (= request body)
   $input = $this->inputstring();
   if (!strlen($input))
     throw new DAV_Status( DAV::HTTP_BAD_REQUEST, 'Missing required request entity.' );
@@ -67,13 +63,14 @@ protected function __construct() {
   $document = new DOMDocument();
   if ( ! $document->loadXML(
            $input,
-           LIBXML_NOCDATA | LIBXML_NOENT | LIBXML_NSCLEAN | LIBXML_NOWARNING
+           LIBXML_NOCDATA | LIBXML_NOENT | LIBXML_NSCLEAN | LIBXML_NOWARNING | LIBXML_NOERROR
          ) )
     throw new DAV_Status(
       DAV::HTTP_BAD_REQUEST,
       'Request body is not well-formed XML.'
     );
 
+  // Determine the type of REPORT request
   $documentElement = $document->documentElement;
   $reportType = $documentElement->namespaceURI . ' ' . $documentElement->localName;
   $this->type = @self::$SUPPORTED_REPORTS[$reportType];
@@ -86,12 +83,15 @@ protected function __construct() {
   $xpath = new DOMXPath($document);
   $xpath->registerNamespace('D', 'DAV:');
 
+  // Each REPORT type has its own method to parse the request
   $parse = 'parse_' . $this->type;
   $this->$parse($document, $xpath);
 }
 
 
 /**
+ * Parse the XML of a DAV:expand-property REPORT request
+ * 
  * @param DOMDocument $document
  * @param DOMXPath $xpath
  */
@@ -101,6 +101,8 @@ private function parse_expand_property($document, $xpath) {
 
 
 /**
+ * Parses all recursive DAV:expand-property elements
+ * 
  * @param DOMElement $element
  * @return array of ( property => array ) pairs, recursively.
  */
@@ -126,6 +128,8 @@ private function parse_expand_property_recursively($element) {
 
 
 /**
+ * Parse the XML of a DAV:acl-principal-prop-set REPORT request
+ * 
  * @param DOMDocument $document
  * @param DOMXPath $xpath
  */
@@ -137,6 +141,8 @@ private function parse_acl_principal_prop_set($document, $xpath) {
 
 
 /**
+ * Parse the XML of a DAV:principal-match REPORT request
+ * 
  * @param DOMDocument $document
  * @param DOMXPath $xpath
  */
@@ -146,6 +152,8 @@ private function parse_principal_match($document, $xpath) {
 
 
 /**
+ * Parse the XML of a DAV:principal-property-search REPORT request
+ * 
  * @param DOMDocument $document
  * @param DOMXPath $xpath
  */
@@ -162,6 +170,8 @@ private function parse_principal_property_search($document, $xpath) {
 
 
 /**
+ * Parse the XML of a DAV:principal-search-property-set REPORT request
+ * 
  * @param DOMDocument $document
  * @param DOMXPath $xpath
  */
@@ -170,6 +180,12 @@ private function parse_principal_search_property_set($document, $xpath) {
 }
 
 
+/**
+ * Handles the REPORT request
+ * 
+ * @param   DAV_Resource  $resource  The resource to perform the request on
+ * @return  void
+ */
 protected function handle( $resource ) {
   $handle = 'handle_' . $this->type;
   return $this->$handle($resource);
@@ -177,7 +193,10 @@ protected function handle( $resource ) {
 
 
 /**
- * @param DAV_Resource $resource
+ * Handles a DAV:expand-property REPORT request
+ * 
+ * @param   DAV_Resource  $resource  The resource to perform the request on
+ * @return  void
  */
 private function handle_expand_property($resource) {
   $response = $this->handle_expand_property_recursively( DAV::getPath(), $this->entity );
@@ -186,9 +205,11 @@ private function handle_expand_property($resource) {
 
 
 /**
- * @param DAV_Resource $resource
- * @param array $properties
- * @return DAV_Element_response
+ * Handles all recursive DAV:expand-property elements
+ * 
+ * @param   DAV_Resource          $resource  The resource to perform the request on
+ * @param   array                 $properties
+ * @return  DAV_Element_response
  */
 private function handle_expand_property_recursively($path, $properties) {
   if ( !( $resource = DAV::$REGISTRY->resource($path) ) )
@@ -214,6 +235,12 @@ private function handle_expand_property_recursively($path, $properties) {
 }
 
 
+/**
+ * Handles a DAV:acl-principal-prop-set REPORT request
+ * 
+ * @param   DAV_Resource  $resource  The resource to perform the request on
+ * @return  void
+ */
 private function handle_acl_principal_prop_set($resource) {
   $ppr = $resource->property_priv_read(array(DAV::PROP_ACL));
   if ( ! $ppr[DAV::PROP_ACL] )
@@ -246,12 +273,24 @@ private function handle_acl_principal_prop_set($resource) {
 }
 
 
+/**
+ * Handles a DAV:principal-match REPORT request
+ * 
+ * @param   DAV_Resource  $resource  The resource to perform the request on
+ * @return  void
+ */
 private function handle_principal_match($resource) {
   // TODO
   throw new DAV_Status(DAV::HTTP_NOT_IMPLEMENTED);
 }
 
 
+/**
+ * Handles a DAV:principal-property-search REPORT request
+ * 
+ * @param   DAVACL_Principal_Collection  $principal_collection  The resource to perform the request on
+ * @return  void
+ */
 private function handle_principal_property_search($principal_collection) {
   $principals = $principal_collection->report_principal_property_search($this->entity['match']);
   DAV_Multistatus::inst();
@@ -274,6 +313,12 @@ private function handle_principal_property_search($principal_collection) {
 }
 
 
+/**
+ * Handles a DAV:principal-search-property-set REPORT request
+ * 
+ * @param   DAVACL_Principal_Collection  $principal_collection  The resource to perform the request on
+ * @return  void
+ */
 private function handle_principal_search_property_set($principal_collection) {
   $properties = $principal_collection->report_principal_search_property_set();
   echo DAV::xml_header();
