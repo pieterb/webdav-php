@@ -31,6 +31,8 @@ abstract class DAVACL_Resource extends DAV_Resource {
 
 private $eaclCache = null;
 /**
+ * Gets an ACL with the ACE's which are effective for the current user
+ *
  * Called by self::assert() and self::prop_current_user_privilege_set()
  * @return array of arrays(bool $deny, array $privileges)
  */
@@ -83,6 +85,8 @@ public function effective_acl() {
 
 private $assertCache = array();
 /**
+ * Assert whether the current user has certain privileges for this resource
+ *
  * @param array $privileges
  * @throws DAV_Status FORBIDDEN
  */
@@ -181,6 +185,7 @@ public function propname() {
 
 
 /**
+ * @see DAV_Resource::prop()
  * @param string $propname the name of the property to be returned,
  *        eg. "mynamespace: myprop"
  * @return string XML or NULL if the property is not defined.
@@ -205,6 +210,9 @@ protected function user_set_acl($aces) {
 }
 
 
+/**
+ * @see DAV_Resource::method_PROPPATCH()
+ */
 public function method_PROPPATCH($propname, $value = null) {
   if ( ( $method = @DAV::$ACL_PROPERTIES[$propname] ) or
        $this instanceof DAVACL_Principal &&
@@ -214,6 +222,9 @@ public function method_PROPPATCH($propname, $value = null) {
 }
 
 
+/**
+ * @see DAV_Resource::method_HEAD()
+ */
 public function method_HEAD() {
   $this->assert(DAVACL::PRIV_READ);
   return parent::method_HEAD();
@@ -325,6 +336,8 @@ public function user_prop_current_user_privilege_set() {
 
 
 /**
+ * Returns the current user privilege set as XML
+ *
  * @return string XML
  */
 final public function prop_current_user_privilege_set() {
@@ -343,6 +356,8 @@ final public function prop_current_user_privilege_set() {
 
 
 /**
+ * Return the ACL in XML format
+ *
  * @return string XML
  */
 final public function prop_acl() {
@@ -361,6 +376,8 @@ abstract public function user_prop_acl();
 
 
 /**
+ * Returns the ACL restrictions in XML format
+ *
  * @return string XML
  */
 final public function prop_acl_restrictions() {
@@ -426,6 +443,8 @@ public function user_prop_principal_collection_set() {
 
 
 /**
+ * Return the alternate URI's as DAV_Element_href objects
+ *
  * @return DAV_Element_href
  * @see DAVACL_Principal
  */
@@ -441,7 +460,7 @@ final public function prop_alternate_URI_set() {
  */
 final public function prop_principal_URL() {
   $retval = $this->user_prop_principal_URL();
-  return DAV_Element_href( $retval ? $retval : $this->path );
+  return new DAV_Element_href( $retval ? $retval : $this->path );
 }
 
 
@@ -488,6 +507,8 @@ final public function prop_group_membership() {
 
 
 /**
+ * Returns the current user principal as DAV_Element_href object
+ *
  * @return DAV_Element_href
  */
 final public function prop_current_user_principal() {
@@ -513,6 +534,8 @@ final private static function current_user_principals_recursive($path) {
 
 
 /**
+ * Get all principals that apply to the current user
+ *
  * @return array of principals (either paths or properties),
  *         indexed by their own value.
  */

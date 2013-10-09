@@ -37,6 +37,10 @@ class DAVACL_ResourceTest extends PHPUnit_Framework_TestCase {
   }
 
 
+  public function testAssert() {
+    // TODO
+  }
+
   public function testCurrent_user_principals() {
     $expected = array(
       'DAV: all' => 'DAV: all',
@@ -45,6 +49,11 @@ class DAVACL_ResourceTest extends PHPUnit_Framework_TestCase {
       'DAV: authenticated' => 'DAV: authenticated'
     );
     $this->assertSame( $expected, $this->obj->current_user_principals(), 'DAVACL_Resource::current_user_principals() should return the complete list of principals the current user maps to' );
+  }
+
+
+  public function testEffective_acl() {
+    // TODO
   }
 
 
@@ -96,7 +105,121 @@ EOS
   
   
   public function testProp_acl_restrictions() {
-    $this->assertSame( 'a', $this->obj->prop_acl_restrictions(), 'DAVACL_Resource::prop_acl_restrictions() should return the correct value' );
+    // TODO
+//    $this->assertSame( 'a', $this->obj->prop_acl_restrictions(), 'DAVACL_Resource::prop_acl_restrictions() should return the correct value' );
+  }
+
+
+  public function testProp_alternate_URI_set() {
+    $obj = $this->getMock( 'DAVACL_Test_Principal', array('user_prop_alternate_URI_set' ), array( $_SERVER['REQUEST_URI']  ) );
+    $obj->expects( $this->once() )
+        ->method( 'user_prop_alternate_URI_set' )
+        ->will( $this->returnValue( '/some/other/path' ) );
+    $returned = $obj->prop_alternate_URI_set();
+
+    $this->assertInstanceof( 'DAV_Element_href', $returned );
+    $this->assertSame( array( '/some/other/path' ), $returned->URIs );
+  }
+
+
+  public function testProp_current_user_principal() {
+    $obj = $this->getMock( 'DAVACL_Test_Principal', array('user_prop_current_user_principal' ), array( $_SERVER['REQUEST_URI']  ) );
+    $obj->expects( $this->once() )
+        ->method( 'user_prop_current_user_principal' )
+        ->will( $this->returnValue( '/some/other/path' ) );
+    $returned = $obj->prop_current_user_principal();
+
+    $this->assertInstanceof( 'DAV_Element_href', $returned );
+    $this->assertSame( array( '/some/other/path' ), $returned->URIs );
+  }
+
+
+  public function testProp_current_user_privilege_set() {
+    // TODO
+  }
+
+
+  public function testProp_group() {
+    $obj = $this->getMock( 'DAVACL_Test_Principal', array('user_prop_group' ), array( $_SERVER['REQUEST_URI']  ) );
+    $obj->expects( $this->once() )
+        ->method( 'user_prop_group' )
+        ->will( $this->returnValue( '/some/other/path' ) );
+    $returned = $obj->prop_group();
+
+    $this->assertInstanceof( 'DAV_Element_href', $returned );
+    $this->assertSame( array( '/some/other/path' ), $returned->URIs );
+  }
+
+
+  public function testProp_group_member_set() {
+    $obj = $this->getMock( 'DAVACL_Test_Principal', array('user_prop_group_member_set' ), array( $_SERVER['REQUEST_URI']  ) );
+    $obj->expects( $this->once() )
+        ->method( 'user_prop_group_member_set' )
+        ->will( $this->returnValue( '/some/other/path' ) );
+    $returned = $obj->prop_group_member_set();
+
+    $this->assertInstanceof( 'DAV_Element_href', $returned );
+    $this->assertSame( array( '/some/other/path' ), $returned->URIs );
+  }
+
+
+  public function testProp_group_membership() {
+    $obj = $this->getMock( 'DAVACL_Test_Principal', array('user_prop_group_membership' ), array( $_SERVER['REQUEST_URI']  ) );
+    $obj->expects( $this->once() )
+        ->method( 'user_prop_group_membership' )
+        ->will( $this->returnValue( '/some/other/path' ) );
+    $returned = $obj->prop_group_membership();
+
+    $this->assertInstanceof( 'DAV_Element_href', $returned );
+    $this->assertSame( array( '/some/other/path' ), $returned->URIs );
+  }
+
+
+  public function testProp_inherited_acl_set() {
+    $obj = $this->getMock( 'DAVACL_Test_Principal', array('user_prop_inherited_acl_set' ), array( $_SERVER['REQUEST_URI']  ) );
+    $obj->expects( $this->once() )
+        ->method( 'user_prop_inherited_acl_set' )
+        ->will( $this->returnValue( '/some/other/path' ) );
+    $returned = $obj->prop_inherited_acl_set();
+
+    $this->assertInstanceof( 'DAV_Element_href', $returned );
+    $this->assertSame( array( '/some/other/path' ), $returned->URIs );
+  }
+
+
+  public function testProp_owner() {
+    $obj = $this->getMock( 'DAVACL_Test_Principal', array('user_prop_owner' ), array( $_SERVER['REQUEST_URI']  ) );
+    $obj->expects( $this->once() )
+        ->method( 'user_prop_owner' )
+        ->will( $this->returnValue( '/some/other/path' ) );
+    $returned = $obj->prop_owner();
+
+    $this->assertInstanceof( 'DAV_Element_href', $returned );
+    $this->assertSame( array( '/some/other/path' ), $returned->URIs );
+  }
+
+
+  public function testProp_principal_URL() {
+    $obj = $this->getMock( 'DAVACL_Test_Principal', array('user_prop_principal_URL' ), array( $_SERVER['REQUEST_URI']  ) );
+    $obj->expects( $this->once() )
+        ->method( 'user_prop_principal_URL' )
+        ->will( $this->returnValue( '/some/other/path' ) );
+    $returned = $obj->prop_principal_URL();
+
+    $this->assertInstanceof( 'DAV_Element_href', $returned );
+    $this->assertSame( array( '/some/other/path' ), $returned->URIs );
+  }
+
+
+  public function testProp_principal_collection_set() {
+    $obj = $this->getMock( 'DAVACL_Test_Principal', array('user_prop_principal_collection_set' ), array( $_SERVER['REQUEST_URI']  ) );
+    $obj->expects( $this->once() )
+        ->method( 'user_prop_principal_collection_set' )
+        ->will( $this->returnValue( '/some/other/path' ) );
+    $returned = $obj->prop_principal_collection_set();
+
+    $this->assertInstanceof( 'DAV_Element_href', $returned );
+    $this->assertSame( array( '/some/other/path' ), $returned->URIs );
   }
 
 } // class DAVACL_ResourceTest
