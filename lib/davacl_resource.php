@@ -128,7 +128,7 @@ public function assert($privileges) {
 
 
 /**
- * By default, properties are writeble if the current user has PRIV_WRITE_PROPERTIES.
+ * By default, properties are readable if the current user has PRIV_READ_PROPERTIES.
  * @param array $properties
  * @return array an array of (property => isWritable) pairs.
  */
@@ -199,12 +199,23 @@ public function prop($propname) {
 }
 
 
-
+/**
+ * Makes sure user_set_acl is called with the ACL provided
+ * 
+ * @param   array  $aces  The ACL in the form of an array of ACEs
+ * @return  mixed         No idea what this method returns
+ */
 public function set_acl($aces) {
   return $this->user_set_acl($aces);
 }
 
 
+/**
+ * Set the ACL for this resource
+ * 
+ * @param   array  $aces  The ACL in the form of an array of ACEs
+ * @return  mixed         No idea what this method returns
+ */
 protected function user_set_acl($aces) {
   throw new DAV_Status( DAV::HTTP_FORBIDDEN );
 }
@@ -282,6 +293,12 @@ final public function prop_group() {
 public function user_prop_group() { return null; }
 
 
+/**
+ * Sets the DAV: group property
+ * 
+ * @param   string      $group  The XML value of the group property
+ * @throws  DAV_Status          With DAV::HTTP_BAD_REQUEST code when there are no groups specified in the XML
+ */
 final public function set_group($group) {
   $group = DAVACL::parse_hrefs($group);
   if (1 !== count($group->URIs))
@@ -302,6 +319,7 @@ protected function user_set_group($group) {
 
 
 /**
+ * Return an XML part describing which privileges are supported
  * @return string XML
  */
 final public function prop_supported_privilege_set() {
@@ -314,6 +332,7 @@ final public function prop_supported_privilege_set() {
 
 
 /**
+ * Return all supported privileges
  * @return array of DAVACL_Element_supported_privilege objects.
  */
 public function user_prop_supported_privilege_set() {
