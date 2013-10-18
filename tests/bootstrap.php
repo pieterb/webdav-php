@@ -254,6 +254,35 @@ class DAVACL_Test_Resource extends DAVACL_Resource {
 } // Class DAVACL_Test_Resource
 
 
+class DAVACL_Test_Principal extends DAVACL_Test_Resource implements DAVACL_Principal {
+
+  public function user_prop_alternate_uri_set() {
+    return array();
+  }
+
+  public function user_prop_group_member_set() {
+    return array();
+  }
+
+  public function user_prop_group_membership() {
+    if ( $this->path !== '/path/to/group' ) {
+      return array( '/path/to/group' );
+    } else {
+      return array();
+    }
+  }
+
+  public function user_prop_principal_url() {
+    return $this->path;
+  }
+
+  public function user_set_group_member_set($set) {
+
+  }
+
+} // Class DAVACL_Test_Principal
+
+
 class DAVACL_Test_Collection extends DAVACL_Test_Resource implements DAV_Collection {
 
   private $expectedPrivileges = null;
