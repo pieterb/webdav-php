@@ -128,9 +128,9 @@ public function toXML() {
   foreach ($this->privileges as $privilege) {
     $privilege = explode(' ', $privilege);
     if ('DAV:' === $privilege[0])
-      $privileges .= "<D:{$privilege[1]}/>";
+      $privileges .= "<D:privilege><D:{$privilege[1]}/></D:privilege>";
     else
-      $privileges .= "<{$privilege[1]} xmlns=\"{$privilege[0]}\"/>";
+      $privileges .= "<D:privilege><{$privilege[1]} xmlns=\"{$privilege[0]}\"/></D:privilege>";
   }
   $retval .= $this->deny
     ? "\n<D:deny>{$privileges}</D:deny>"
