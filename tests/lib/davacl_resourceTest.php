@@ -88,15 +88,15 @@ class DAVACL_ResourceTest extends PHPUnit_Framework_TestCase {
     $expected = <<<EOS
 <D:ace>
 <D:principal><D:href>/path/to/user</D:href></D:principal>
-<D:grant><D:all/></D:grant>
+<D:grant><D:privilege><D:all/></D:privilege></D:grant>
 </D:ace>
 <D:ace>
 <D:principal><D:href>/path/to/other/user</D:href></D:principal>
-<D:grant><D:all/></D:grant>
+<D:grant><D:privilege><D:all/></D:privilege></D:grant>
 </D:ace>
 <D:ace>
 <D:principal><D:all/></D:principal>
-<D:grant><D:all/></D:grant>
+<D:grant><D:privilege><D:all/></D:privilege></D:grant>
 </D:ace>
 EOS
     ;

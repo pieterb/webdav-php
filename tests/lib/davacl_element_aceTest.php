@@ -47,7 +47,7 @@ class DAVACL_Element_aceTest extends PHPUnit_Framework_TestCase {
     $this->assertSame( <<<EOS
 <D:ace>
 <D:invert><D:principal><D:href>/path/to/principal</D:href></D:principal></D:invert>
-<D:deny><privilege1 xmlns="NS1"/><privilege xmlns="NS2"/></D:deny>
+<D:deny><D:privilege><privilege1 xmlns="NS1"/></D:privilege><D:privilege><privilege xmlns="NS2"/></D:privilege></D:deny>
 <D:inherited><D:href>/parent</D:href></D:inherited>
 </D:ace>
 EOS
