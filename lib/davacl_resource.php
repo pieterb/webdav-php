@@ -30,6 +30,17 @@ abstract class DAVACL_Resource extends DAV_Resource {
 
 
 private $eaclCache = null;
+
+
+/**
+ * Clears the effective ACL cache in case you need to make sure that the method effective_acl() does a new determination (instead of returning the cache)
+ * 
+ * @return  void
+ */
+public function clearEaclCache() {
+  $this->eaclCache = null;
+}
+
 /**
  * Gets an ACL with the ACE's which are effective for the current user
  *
@@ -340,6 +351,11 @@ public function user_prop_supported_privilege_set() {
 }
 
 
+/**
+ * Determine which privileges are (effectively) granted to the current user
+ * 
+ * @return  array  An array with all privileges which are granted
+ */
 public function user_prop_current_user_privilege_set() {
   $eacl = $this->effective_acl();
   $grant = $deny = array();

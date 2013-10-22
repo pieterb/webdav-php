@@ -53,7 +53,48 @@ class DAVACL_ResourceTest extends PHPUnit_Framework_TestCase {
 
 
   public function testEffective_acl() {
-    // TODO
+    $_SERVER['REQUEST_URI'] = '/path/to/principal';
+    $supportedPrivs = array(
+        new DAVACL_Element_supported_privilege( DAVACL::PRIV_ALL, false, ''),
+        new DAVACL_Element_supported_privilege( DAVACL::PRIV_BIND, false, ''),
+        new DAVACL_Element_supported_privilege( DAVACL::PRIV_READ, false, ''),
+        new DAVACL_Element_supported_privilege( DAVACL::PRIV_READ_ACL, false, ''),
+        new DAVACL_Element_supported_privilege( DAVACL::PRIV_READ_CURRENT_USER_PRIVILEGE_SET, false, ''),
+        new DAVACL_Element_supported_privilege( DAVACL::PRIV_UNBIND, false, ''),
+        new DAVACL_Element_supported_privilege( DAVACL::PRIV_UNLOCK, false, ''),
+        new DAVACL_Element_supported_privilege( DAVACL::PRIV_WRITE_CONTENT, false, '')
+    );
+    $acl = array(
+        new DAVACL_Element_ace( '/path/to/principal', false, array( DAVACL::PRIV_ALL ), false), // Effective
+        new DAVACL_Element_ace( '/path/to/principal', true, array( DAVACL::PRIV_BIND ), false), // Not effective
+        new DAVACL_Element_ace( '/path/to/other/principal', false, array( DAVACL::PRIV_READ ), false), // Not effective
+        new DAVACL_Element_ace( '/path/to/other/principal', true, array( DAVACL::PRIV_READ_ACL ), false), // Effective
+        new DAVACL_Element_ace( DAVACL::PRINCIPAL_ALL, false, array( DAVACL::PRIV_READ_CURRENT_USER_PRIVILEGE_SET ), true), // Effective
+        new DAVACL_Element_ace( DAVACL::PRINCIPAL_AUTHENTICATED, false, array( DAVACL::PRIV_UNBIND ), false), // Effective
+        new DAVACL_Element_ace( DAVACL::PRINCIPAL_UNAUTHENTICATED, false, array( DAVACL::PRIV_UNLOCK ), false), // Not effective
+        new DAVACL_Element_ace( DAVACL::PRINCIPAL_SELF, false, array( DAVACL::PRIV_WRITE_CONTENT ), false) // Effective
+    );
+    $obj = $this->getMock( 'DAVACL_Resource', array( 'user_prop_acl', 'user_prop_current_user_principal', 'user_prop_supported_privilege_set' ), array( $_SERVER['REQUEST_URI'] ) );
+    $obj->expects( $this->any() )
+        ->method( 'user_prop_acl' )
+        ->will( $this->returnValue( $acl ) );
+    $obj->expects( $this->any() )
+        ->method( 'user_prop_current_user_principal' )
+        ->will( $this->returnValue( '/path/to/principal' ) );
+    $obj->expects( $this->any() )
+        ->method( 'user_prop_supported_privilege_set' )
+        ->will( $this->returnValue( $supportedPrivs ) );
+    
+    $expected = array(
+        array( false, array( 'DAV: all' ) ),
+        array( false, array( 'DAV: read-acl' ) ),
+        array( true , array( 'DAV: read-current-user-privilege-set' ) ),
+        array( false, array( 'DAV: unbind' ) ),
+        array( false, array( 'DAV: write-content' ) )
+    );
+    
+    $obj->clearEaclCache();
+    $this->assertSame( $expected, $obj->effective_acl(), 'DAVACL_Resource::effective_acl() should return the right privileges' );
   }
 
 
@@ -135,7 +176,19 @@ EOS
 
 
   public function testProp_current_user_privilege_set() {
-    // TODO
+    $return = array(
+        'DAV: unbind',
+        'DAV: write-content'
+    );
+    $obj = $this->getMock( 'DAVACL_Resource', array( 'user_prop_acl', 'user_prop_current_user_privilege_set' ), array( $_SERVER['REQUEST_URI'] ) );
+    $obj->expects( $this->any() )
+        ->method( 'user_prop_acl' )
+        ->will( $this->returnValue( array() ) );
+    $obj->expects( $this->any() )
+        ->method( 'user_prop_current_user_privilege_set' )
+        ->will( $this->returnValue( $return ) );
+    
+    $this->assertSame( '<D:unbind/><D:write-content/>', $obj->prop_current_user_privilege_set(), 'DAVACL_Resource::prop_current_user_privilege_set() should the XML presentation of the current user\'s privilege set' );
   }
 
 
@@ -358,21 +411,43 @@ EOS
   
   
   public function testUser_prop_current_user_privilege_set() {
-    $this->assertSame( '', $this->obj->user_prop_current_user_privilege_set(), 'DAVAC_Resource::user_prop_current_user_privilege_set() should return the correct value' );
+    $eacl = array(
+        array( true , array( 'DAV: read-acl' ) ),
+        array( false, array( 'DAV: read-acl' ) ), // Is already denied by the previous row, so should not be granted now
+        array( true , array( 'DAV: read-current-user-privilege-set' ) ), // This is denied by this row, so should not show up
+        array( false, array( 'DAV: unbind' ) ), // Regular grant, so should show up
+        array( false, array( 'DAV: write-content' ) ),
+        array( true , array( 'DAV: write-content' ) ) // Is already granted by the previous row, so should not be denied by this row (and thus show up)
+    );
+    $obj = $this->getMock( 'DAVACL_Resource', array( 'user_prop_acl', 'effective_acl' ), array( $_SERVER['REQUEST_URI'] ) );
+    $obj->expects( $this->any() )
+        ->method( 'user_prop_acl' )
+        ->will( $this->returnValue( array() ) );
+    $obj->expects( $this->any() )
+        ->method( 'effective_acl' )
+        ->will( $this->returnValue( $eacl ) );
+    
+    $expected = array(
+        'DAV: unbind',
+        'DAV: write-content'
+    );
+    
+    $this->assertSame( $expected, $obj->user_prop_current_user_privilege_set(), 'DAVACL_Resource::user_prop_current_user_privilege_set() should return the correct value' );
   }
   
   
-  public function testUser_set_acl() {
-    $acl = array(
-        new DAVACL_Element_ace( DAVACL::PRINCIPAL_ALL, false, DAVACL::PRIV_WRITE, false ),
-        new DAVACL_Element_ace( DAVACL::PRINCIPAL_AUTHENTICATED, true, DAVACL::PRIV_READ, true )
-    );
-    $obj = $this->getMock( 'DAVACL_Resource', array( 'user_prop_acl' ), array( $_SERVER['REQUEST_URI']  ) );
-    $obj->expects( $this->any() )
-        ->method( 'user_prop_acl' );
-    
-    $this->setExpectedException( 'DAV_Status', 403 );
-    $obj->set_acl( $acl );
+  public function testUser_prop_group() {
+    $this->assertNull( $this->obj->user_prop_group(), 'DAVACL_Resource::user_prop_group() default implementation should return null ' );
+  }
+  
+  
+  public function testUser_prop_inherited_acl_set() {
+    $this->assertNull( $this->obj->user_prop_inherited_acl_set(), 'DAVACL_Resource::user_prop_inherited_acl_set() default implementation should return null ' );
+  }
+  
+  
+  public function testUser_prop_owner() {
+    $this->assertNull( $this->obj->user_prop_owner(), 'DAVACL_Resource::user_prop_owner() default implementation should return null ' );
   }
 
 } // class DAVACL_ResourceTest
