@@ -95,6 +95,18 @@ public function effective_acl() {
 
 
 private $assertCache = array();
+
+
+/**
+ * Clears the assert cache in case you need to make sure that the method assert() does a new determination (instead of returning the cache)
+ * 
+ * @return  void
+ */
+public function clearAssertCache() {
+  $this->assertCache = array();
+}
+
+
 /**
  * Assert whether the current user has certain privileges for this resource
  *
@@ -422,7 +434,7 @@ final public function prop_acl_restrictions() {
       // An array of required principals
       $retval .= "\n<D:required-principal>";
       foreach ($restriction as $principal)
-        if ($p = DAVACL::$PRINCIPALS[$principal])
+        if ($p = @DAVACL::$PRINCIPALS[$principal])
           $retval .= "\n$p";
         elseif ('/' === $principal[0] )
           $retval .= "\n<D:href>" . $principal . '</D:href>';

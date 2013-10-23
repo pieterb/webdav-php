@@ -35,24 +35,14 @@ class DAVACL_ResourceTest extends PHPUnit_Framework_TestCase {
     $this->obj = new DAVACL_Test_Principal( '/collection/child' );
     DAV::$REGISTRY->setResourceClass( 'DAVACL_Test_Principal' );
   }
-
-
-  public function testAssert() {
-    // TODO
-  }
-
-  public function testCurrent_user_principals() {
-    $expected = array(
-      'DAV: all' => 'DAV: all',
-      '/path/to/current/user' => '/path/to/current/user',
-      '/path/to/group' => '/path/to/group',
-      'DAV: authenticated' => 'DAV: authenticated'
-    );
-    $this->assertSame( $expected, $this->obj->current_user_principals(), 'DAVACL_Resource::current_user_principals() should return the complete list of principals the current user maps to' );
-  }
-
-
-  public function testEffective_acl() {
+  
+  
+  /**
+   * Prepares a mocked DAVACL_Resource object which is needed by multiple tests (but not all)
+   * 
+   * @return  DAVACL_Resource  The mocked object
+   */
+  private function prepareObjWithAcl() {
     $_SERVER['REQUEST_URI'] = '/path/to/principal';
     $supportedPrivs = array(
         new DAVACL_Element_supported_privilege( DAVACL::PRIV_ALL, false, ''),
@@ -84,6 +74,89 @@ class DAVACL_ResourceTest extends PHPUnit_Framework_TestCase {
     $obj->expects( $this->any() )
         ->method( 'user_prop_supported_privilege_set' )
         ->will( $this->returnValue( $supportedPrivs ) );
+    
+    return $obj;
+  }
+
+
+  public function testAssert() {
+    $obj = $this->prepareObjWithAcl();
+    $obj->clearAssertCache();
+    $this->assertTrue( $obj->assert( DAVACL::PRIV_ALL )          , 'DAVACL_Resource::assert() should assert that the user has PRIV_ALL privileges' );
+    $obj->clearAssertCache();
+    $this->assertTrue( $obj->assert( DAVACL::PRIV_READ_ACL )     , 'DAVACL_Resource::assert() should assert that the user has PRIV_READ_ACL privileges' );
+    $obj->clearAssertCache();
+    $this->assertTrue( $obj->assert( DAVACL::PRIV_UNBIND )       , 'DAVACL_Resource::assert() should assert that the user has PRIV_UNBIND privileges' );
+    $obj->clearAssertCache();
+    $this->assertTrue( $obj->assert( DAVACL::PRIV_WRITE_CONTENT ), 'DAVACL_Resource::assert() should assert that the user has PRIV_WRITE_CONTENT privileges' );
+  }
+  
+  
+  public function testAssertForReadCurrentUserPrivilegeSet() {
+    $obj = $this->prepareObjWithAcl();
+    $obj->clearAssertCache();
+    try{
+      $obj->assert( DAVACL::PRIV_READ_CURRENT_USER_PRIVILEGE_SET );
+      $this->assertFalse( true, 'DAVACL_Resource::assert() should throw an exception when asserting PRIV_READ_CURRENT_USER_PRIVILEGE_SET' );
+    }catch ( DAV_Status $exception ) {
+      $this->assertSame( 403, $exception->getCode(), 'DAVACL_Resource::assert() should throw a DAV_Status exception with code 403 when asserting PRIV_READ_CURRENT_USER_PRIVILEGE_SET' );
+      $this->assertSame( array( 'need-privileges' => '<D:read-current-user-privilege-set/>' ), $exception->conditions, 'DAVACL_Resource::assert() should throw a DAV_Status exception with the correct condition when asserting PRIV_READ_CURRENT_USER_PRIVILEGE_SET' );
+    }
+  }
+    
+  
+  public function testAssertForBind() {
+    $obj = $this->prepareObjWithAcl();
+    $obj->clearAssertCache();
+    try{
+      $obj->assert( DAVACL::PRIV_BIND );
+      $this->assertFalse( true, 'DAVACL_Resource::assert() should throw an exception when asserting PRIV_BIND' );
+    }catch ( DAV_Status $exception ) {
+      $this->assertSame( 403, $exception->getCode(), 'DAVACL_Resource::assert() should throw a DAV_Status exception with code 403 when asserting PRIV_BIND' );
+      $this->assertSame( array( 'need-privileges' => '<D:bind/>' ), $exception->conditions, 'DAVACL_Resource::assert() should throw a DAV_Status exception with the correct condition when asserting PRIV_BIND' );
+    }
+  }
+  
+  
+  public function testAssertForRead() {
+    $obj = $this->prepareObjWithAcl();
+    $obj->clearAssertCache();
+    try{
+      $obj->assert( DAVACL::PRIV_READ );
+      $this->assertFalse( true, 'DAVACL_Resource::assert() should throw an exception when asserting PRIV_READ' );
+    }catch ( DAV_Status $exception ) {
+      $this->assertSame( 403, $exception->getCode(), 'DAVACL_Resource::assert() should throw a DAV_Status exception with code 403 when asserting PRIV_READ' );
+      $this->assertSame( array( 'need-privileges' => '<D:read/>' ), $exception->conditions, 'DAVACL_Resource::assert() should throw a DAV_Status exception with the correct condition when asserting PRIV_READ' );
+    }
+  }
+  
+  
+  public function testAssertForUnlock() {
+    $obj = $this->prepareObjWithAcl();
+    $obj->clearAssertCache();
+    try{
+      $obj->assert( DAVACL::PRIV_UNLOCK );
+      $this->assertFalse( true, 'DAVACL_Resource::assert() should throw an exception when asserting PRIV_UNLOCK' );
+    }catch ( DAV_Status $exception ) {
+      $this->assertSame( 403, $exception->getCode(), 'DAVACL_Resource::assert() should throw a DAV_Status exception with code 403 when asserting PRIV_UNLOCK' );
+      $this->assertSame( array( 'need-privileges' => '<D:unlock/>' ), $exception->conditions, 'DAVACL_Resource::assert() should throw a DAV_Status exception with the correct condition when asserting PRIV_UNLOCK' );
+    }
+  }
+  
+
+  public function testCurrent_user_principals() {
+    $expected = array(
+      'DAV: all' => 'DAV: all',
+      '/path/to/current/user' => '/path/to/current/user',
+      '/path/to/group' => '/path/to/group',
+      'DAV: authenticated' => 'DAV: authenticated'
+    );
+    $this->assertSame( $expected, $this->obj->current_user_principals(), 'DAVACL_Resource::current_user_principals() should return the complete list of principals the current user maps to' );
+  }
+
+
+  public function testEffective_acl() {
+    $obj = $this->prepareObjWithAcl();
     
     $expected = array(
         array( false, array( 'DAV: all' ) ),
@@ -146,8 +219,37 @@ EOS
   
   
   public function testProp_acl_restrictions() {
-    // TODO
-//    $this->assertSame( 'a', $this->obj->prop_acl_restrictions(), 'DAVACL_Resource::prop_acl_restrictions() should return the correct value' );
+    $restrictions = array(
+        array( // An array of principals and properties pointing to principals (i.e. 'owner' and the fictional 'property-pointing-to-principal') combined
+            '/path/to/principal1',
+            '/path/to/principal2',
+            DAVACL::PRINCIPAL_UNAUTHENTICATED,
+            DAV::PROP_OWNER,
+            'http://test/ property-pointing-to-principal'
+        ), // And then some more restrictions as defined rfc3744 section 5.6
+        DAVACL::RESTRICTION_DENY_BEFORE_GRANT,
+        DAVACL::RESTRICTION_GRANT_ONLY
+    );
+    $obj = $this->getMock( 'DAVACL_Resource', array( 'user_prop_acl', 'user_prop_acl_restrictions' ), array( $_SERVER['REQUEST_URI'] ) );
+    $obj->expects( $this->any() )
+        ->method( 'user_prop_acl' );
+    $obj->expects( $this->once() )
+        ->method( 'user_prop_acl_restrictions' )
+        ->will( $this->returnValue( $restrictions ) );
+    
+    $expected = <<<EOS
+
+<D:required-principal>
+<D:href>/path/to/principal1</D:href>
+<D:href>/path/to/principal2</D:href>
+<D:unauthenticated/>
+<D:property><D:owner/></D:property>
+<D:property><property-pointing-to-principal xmlns="http://test/"/></D:property>
+</D:required-principal><D:deny-before-grant/><D:grant-only/>
+EOS
+    ;
+    
+    $this->assertSame( $expected, $obj->prop_acl_restrictions(), 'DAVACL_Resource::prop_acl_restrictions() should return the correct XML describing the ACL restrictions' );
   }
 
 
