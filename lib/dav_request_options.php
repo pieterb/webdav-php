@@ -23,6 +23,8 @@
  */
 
 /**
+ * Helper class for parsing OPTIONS requests
+ * 
  * @package DAV
  */
 class DAV_Request_OPTIONS extends DAV_Request {

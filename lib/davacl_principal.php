@@ -33,31 +33,41 @@ const RESOURCETYPE = '<D:principal/>';
 
 
 /**
+ * Returns alternative URIs for the principal
+ * 
  * @return array of URIs
  */
 public function user_prop_alternate_uri_set();
 
 
 /**
+ * Returns the (main) URI to/for this principal
+ * 
  * @return string path
  */
 public function user_prop_principal_url();
 
 
 /**
+ * Returns all members of this principal
+ * 
  * @return array of paths
  */
 public function user_prop_group_member_set();
 
 
 /**
- * @param array $set an array of paths
+ * Sets the members of this principal
+ * 
+ * @param  array  $set  an array of paths
  * @see DAVACL_Resource
  */
 public function user_set_group_member_set($set);
 
 
 /**
+ * Returns all the groups this principal is member of
+ * 
  * @return array of paths
  */
 public function user_prop_group_membership();

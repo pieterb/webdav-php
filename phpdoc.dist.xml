@@ -2,7 +2,7 @@
 <phpdoc>
   <title>DAV_Server Documentation</title>
   <parser>
-    <target>docs</target>
+    <target>docs-parser</target>
     <default-package-name>DAV_Server</default-package-name>
   </parser>
   <transformer>
@@ -12,14 +12,6 @@
     <level>quiet</level>
   </logging>
   <files>
-    <file>lib/dav.php</file>
-    <file>lib/dav_element_activelock.php</file>
-    <file>lib/dav_element_href.php</file>
-    <file>lib/dav_element_response.php</file>
-    <file>lib/dav_multistatus.php</file>
-    <file>lib/dav_namespaces.php</file>
-    <file>lib/dav_request.php</file>
-    <file>lib/dav_resource.php</file>
-    <file>lib/davacl.php</file>
+    <directory>lib</directory>
   </files>
 </phpdoc>

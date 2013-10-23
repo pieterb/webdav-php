@@ -30,6 +30,8 @@ interface DAVACL_ACL_Provider {
 
 
 /**
+ * Return all ACL restrictions
+ * 
  * @return array of predefined restrictions and (optionally) an array of
  *   required principals.
  */
@@ -37,18 +39,24 @@ public function user_prop_acl_restrictions();
 
 
 /**
+ * Return the principal of the currently logged in user
+ * 
  * @return string path
  */
 public function user_prop_current_user_principal();
 
 
 /**
+ * Return all principals the currently logged in user is/is member of
+ * 
  * @return array an array of paths
  */
 public function user_prop_principal_collection_set();
 
 
 /**
+ * Return all privileges supported by this server
+ * 
  * @return array of DAVACL_Element_supported_privilege objects.
  */
 public function user_prop_supported_privilege_set();

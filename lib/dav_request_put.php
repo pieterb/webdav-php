@@ -23,13 +23,28 @@
  */
 
 /**
+ * Helper class for parsing PUT requests
+ * 
  * @package DAV
  */
 class DAV_Request_PUT extends DAV_Request {
 
 
+  /**
+   * @var  int  The start of the range indicated by the content-range header, or null if there is no content-range header
+   */
 public $range_start = null;
+
+
+  /**
+   * @var  int  The end of the range indicated by the content-range header, or null if there is no content-range header
+   */
 public $range_end   = null;
+
+
+  /**
+   * @var  int  The total length of the resource as indicated by the content-range header, or null if there is no content-range header
+   */
 public $range_total = null;
 
 

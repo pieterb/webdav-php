@@ -37,9 +37,15 @@ class DAV_Request_REPORT extends DAV_Request {
 public $type;
 
 
+/**
+ * @var  array  Parsed entities in the request 
+ */
 public $entity;
 
 
+/**
+ * @var  array  All reports supported by this server 
+ */
 private static $SUPPORTED_REPORTS = array(
   'DAV: expand-property' => 'expand_property',
   'DAV: acl-principal-prop-set' => 'acl_principal_prop_set',

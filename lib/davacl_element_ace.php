@@ -60,7 +60,7 @@ public $principal;
 
 
 /**
- * @var bool
+ * @var bool  Whether the principal should be inverted
  */
 public $invert;
 
@@ -72,13 +72,13 @@ public $deny;
 
 
 /**
- * @var array
+ * @var array  All privileges in this ACE
  */
 public $privileges;
 
 
 /**
- * @var bool
+ * @var bool  Whether the ACE is protected or not
  */
 public $protected;
 

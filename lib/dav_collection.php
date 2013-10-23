@@ -82,6 +82,8 @@ public function method_MOVE( $member, $destination );
 
 
 /**
+ * Handle the MKCOL request for (now to be created) members of this collection
+ * 
  * @param string $name
  */
 public function method_MKCOL( $name );

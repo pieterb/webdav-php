@@ -23,6 +23,12 @@
  */
 
 /**
+ * The default request handler
+ * 
+ * If this request handler is used, it basicly means that we didn't recognize
+ * the request method (i.e. no GET, PUT, PROPFIND etc). So it should just
+ * response with a HTTP 405 Method Not Allowed status.
+ * 
  * @internal
  * @package DAV
  */

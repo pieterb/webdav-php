@@ -28,7 +28,9 @@
  */
 abstract class DAVACL_Resource extends DAV_Resource {
 
-
+/**
+ * @var  array  The cache with the effective ACL, if this is already determined
+ */
 private $eaclCache = null;
 
 
@@ -94,6 +96,9 @@ public function effective_acl() {
 }
 
 
+/**
+ * @var  array  A cache of all already asserted privilege combinations
+ */
 private $assertCache = array();
 
 
@@ -194,6 +199,11 @@ public function property_priv_write($properties) {
 }
 
 
+/**
+ * Overwrites DAV_Resource::propname()
+ * 
+ * @return array
+ */
 public function propname() {
   $retval = parent::propname();
   foreach ( array_keys( DAV::$ACL_PROPERTIES ) as $prop )
@@ -208,6 +218,7 @@ public function propname() {
 
 
 /**
+ * Get a property in XML format
  * @see DAV_Resource::prop()
  * @param string $propname the name of the property to be returned,
  *        eg. "mynamespace: myprop"
@@ -245,6 +256,7 @@ protected function user_set_acl($aces) {
 
 
 /**
+ * Set or delete a property when a PROPPATCH request was made
  * @see DAV_Resource::method_PROPPATCH()
  */
 public function method_PROPPATCH($propname, $value = null) {
@@ -257,6 +269,7 @@ public function method_PROPPATCH($propname, $value = null) {
 
 
 /**
+ * Return all the resource specific response headers for the HEAD request
  * @see DAV_Resource::method_HEAD()
  */
 public function method_HEAD() {
@@ -266,6 +279,8 @@ public function method_HEAD() {
 
 
 /**
+ * Get the value of DAV: owner as a DAV_Element_href
+ * 
  * @return DAV_Element_href
  */
 final public function prop_owner() {
@@ -275,6 +290,8 @@ final public function prop_owner() {
 
 
 /**
+ * Return the value of the DAV: owner property as a string
+ * 
  * @return string path
  */
 public function user_prop_owner() {
@@ -282,6 +299,12 @@ public function user_prop_owner() {
 }
 
 
+/**
+ * Sets the DAV: owner property
+ * 
+ * @param   type        $owner  A piece of XML with exactly one <D:href> piece
+ * @throws  DAV_Status          If there is not exactly 1 <D:href> piece
+ */
 final public function set_owner($owner) {
   $owner = DAVACL::parse_hrefs($owner);
   if (1 !== count($owner->URIs))
@@ -294,6 +317,8 @@ final public function set_owner($owner) {
 
 
 /**
+ * Sets the DAV: owner property
+ * 
  * @param string $owner path
  */
 protected function user_set_owner($owner) {
@@ -302,6 +327,8 @@ protected function user_set_owner($owner) {
 
 
 /**
+ * Returns the DAV: group property as a DAV_Element_href
+ * 
  * @return DAV_Element_href
  */
 final public function prop_group() {
@@ -311,6 +338,8 @@ final public function prop_group() {
 
 
 /**
+ * Returns the DAV: group property as a string
+ * 
  * @return string path
  */
 public function user_prop_group() { return null; }
@@ -334,6 +363,8 @@ final public function set_group($group) {
 
 
 /**
+ * Sets the DAV: group property
+ * 
  * @param string $group path
  */
 protected function user_set_group($group) {
@@ -417,6 +448,8 @@ final public function prop_acl() {
 
 
 /**
+ * Returns the DAV: acl property as an array of ACEs
+ * 
  * @return array an array of DAVACL_Element_ace objects
  */
 abstract public function user_prop_acl();
@@ -449,6 +482,8 @@ final public function prop_acl_restrictions() {
 
 
 /**
+ * Returns the ACL restrictions
+ * 
  * @return array of predefined restrictions and (optionally) an array of
  *   required principals.
  */
@@ -458,6 +493,8 @@ public function user_prop_acl_restrictions() {
 
 
 /**
+ * Returns the DAV: inherited-acl-set property as a DAV_Element_href instance
+ * 
  * @return DAV_Element_href
  */
 final public function prop_inherited_acl_set() {
@@ -467,12 +504,16 @@ final public function prop_inherited_acl_set() {
 
 
 /**
+ * Returns the DAV: inherited-acl-set property as an array of URIs
+ * 
  * @return array an array of URIs
  */
 public function user_prop_inherited_acl_set() { return null; }
 
 
 /**
+ * Returns the DAV: principal-collection-set property as a DAV_Element_href instance
+ * 
  * @return DAV_Element_href
  */
 final public function prop_principal_collection_set() {
@@ -482,6 +523,8 @@ final public function prop_principal_collection_set() {
 
 
 /**
+ * Returns the DAV: principal-collection-set property as an array of URIs
+ * 
  * @return array an array of paths
  */
 public function user_prop_principal_collection_set() {
@@ -502,6 +545,8 @@ final public function prop_alternate_URI_set() {
 
 
 /**
+ * Returns the DAV: principal-url property as a DAV_Element_href instance
+ * 
  * @return DAV_Element_href
  * @see DAVACL_Principal
  */
@@ -512,6 +557,8 @@ final public function prop_principal_URL() {
 
 
 /**
+ * Returns the DAV: group-member-set property as a DAV_Element_href instance
+ * 
  * @return DAV_Element_href
  * @see DAVACL_Principal
  */
@@ -522,6 +569,8 @@ final public function prop_group_member_set() {
 
 
 /**
+ * Sets the DAV: group-member-set property
+ * 
  * @param string $set an XML fragment
  * @see DAVACL_Principal
  */
@@ -534,6 +583,8 @@ final public function set_group_member_set($set) {
 
 
 /**
+ * Sets the DAV: group-member-set property
+ * 
  * @param array $set an array of paths
  * @see DAVACL_Principal
  * @internal must be public because of interface DAVACL_Principal.
@@ -544,6 +595,8 @@ protected function user_set_group_member_set($set) {
 
 
 /**
+ * Returns the DAV: group-membership property as a DAV_Element_href instance
+ * 
  * @return DAV_Element_href
  * @see DAVACL_Principal
  */
@@ -565,6 +618,8 @@ final public function prop_current_user_principal() {
 
 
 /**
+ * Returns the DAV: current-user-principal property as a string with the path
+ * 
  * @return string path
  */
 public function user_prop_current_user_principal() {
@@ -572,6 +627,12 @@ public function user_prop_current_user_principal() {
 }
 
 
+/**
+ * Gets all principals that apply to this user, including recursive group memberships
+ * 
+ * @param   string  $path  The path to the current user's principal
+ * @return  array          An array with all paths (both as key and as value) to principals that apply to this user
+ */
 final private static function current_user_principals_recursive($path) {
   $retval = array($path => $path);
   foreach (DAV::$REGISTRY->resource($path)->user_prop_group_membership() as $group)

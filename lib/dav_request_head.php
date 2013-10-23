@@ -43,6 +43,8 @@ protected function __construct()
 
 
 /**
+ * Handle the common (resource independent) headers
+ * 
  * @param DAV_Resource $resource
  * @return array HTTP headers
  */
@@ -72,6 +74,8 @@ protected static function common($resource) {
 
 
 /**
+ * Handle the HEAD request
+ * 
  * @param DAV_Resource $resource
  * @return void
  * @throws DAV_Status

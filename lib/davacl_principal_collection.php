@@ -28,16 +28,26 @@
  */
 interface DAVACL_Principal_Collection {
 
+/**
+ * Searches for principals within this collection which match the criteria given in a REPORT principal-match request
+ * 
+ * @param  unknown  $input  Not known; Probably match something within DAV_Request_REPORT::handle_principal_match (which isn't implemented yet)
+ */
 public function report_principal_match ($input);
 
+
 /**
- * @param array $input array of ( property => search string ) pairs.
- * @return array of principal urls.
+ * Searches for principals within this collection which match the criteria given in a REPORT principal-property-search request
+ * 
+ * @param   array  $input  array of ( property => search string ) pairs.
+ * @return  array          of principal urls.
  */
 public function report_principal_property_search ($input);
 
+
 /**
- * @return array property => description pairs.
+ * Searches for principals within this collection which match the criteria given in a REPORT principal-search-property-set request
+ * @return  array  property => description pairs.
  */
 public function report_principal_search_property_set();
 

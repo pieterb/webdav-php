@@ -48,6 +48,11 @@ public $timeout = array();
 public $newlock = false;
 
 
+/**
+ * Handles the timeout header
+ * @return  void
+ * @throws  DAV_Status  When a timeout has expired
+ */
 private function init_timeout() {
   // Parse the Timeout: request header:
   if ( !isset( $_SERVER['HTTP_TIMEOUT'] ) ) return;
@@ -124,6 +129,11 @@ protected function __construct()
 }
 
 
+/**
+ * Returns the depth header or the default of no depth header is supplied
+ * 
+ * @return  string  The value to be used as the value of the depth header
+ */
 public function depth() {
   $retval = parent::depth();
   return is_null($retval) ? DAV::DEPTH_INF : $retval;
@@ -131,6 +141,8 @@ public function depth() {
 
 
 /**
+ * Handles the LOCK request
+ * 
  * @param DAV_Resource $resource
  * @return void
  * @throws DAV_Status
@@ -156,6 +168,8 @@ protected function handle( $resource ) {
 
 
 /**
+ * Handles the creation of a lock
+ * 
  * @param DAV_Resource $resource
  * @return void
  * @throws DAV_Status
@@ -234,6 +248,8 @@ private function handleCreateLock($resource) {
 
 
 /**
+ * Refreshes an already existing lock
+ * 
  * @param DAV_Resource $resource
  * @return void
  * @throws DAV_Statuss

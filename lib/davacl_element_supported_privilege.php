@@ -35,17 +35,20 @@
 class DAVACL_Element_supported_privilege {
 
 
+  /**
+   * @var  string  The name of the privilege 
+   */
 private $privilege;
 
 
 /**
- * @var bool
+ * @var bool  Whether the privilege is abstract or not
  */
 private $abstract;
 
 
 /**
- * @var string
+ * @var string  Description of the privilege
  */
 private $description;
 
@@ -68,6 +71,13 @@ public function add_supported_privilege($supported_privilege) {
 }
 
 
+/**
+ * Constructor
+ * 
+ * @param  string   $privilege    The name of the privilege: 'namespace privilegename'
+ * @param  boolean  $abstract     Whether the privilege is abstract or not
+ * @param  string   $description  Description of the privilege
+ */
 public function __construct($privilege, $abstract, $description) {
   $this->privilege = "$privilege";
   $this->abstract = (bool)$abstract;
@@ -75,6 +85,12 @@ public function __construct($privilege, $abstract, $description) {
 }
 
 
+/**
+ * Registers the namespace of this privilege and all its 'child' privileges
+ * 
+ * @param   DAV_Namespaces  $namespaces  The DAV_Namespaces instance to register the namespace to
+ * @return  void
+ */
 private function namespaces(&$namespaces) {
   $privilege = explode(' ', $this->privilege);
   $namespaces->prefix($privilege[0]);

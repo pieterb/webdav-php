@@ -28,12 +28,34 @@
  */
 class DAV_Status extends Exception {
 
+/**
+ * @var  string  Value to be used for the location (return) header
+ */
 public $location = null;
+
+
+/**
+ * @var  array  All conditions which should be (but are not) met for the request
+ */
 public $conditions = array();
 
+
 // The following two pseudo-constants are initialized at the bottom of this file:
+/**
+ * @var  DAV_Status  A default 200 OK response
+ */
 public static $OK = null;
+
+
+/**
+ * @var  DAV_Status  A default 404 Not Found response 
+ */
 public static $NOT_FOUND = null;
+
+
+/**
+ * @var  function  A function to be used to create the output 
+ */
 public static $RESPONSE_GENERATOR = null;
 
 /**
