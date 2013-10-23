@@ -451,6 +451,7 @@ final public function prop_displayname() {
 /**
  * Sets the displayname property, but the value should be in an XML ready format for webDAV
  * 
+ * @param  string  $value  The new value
  * @return string XML
  */
 final public function set_displayname($value) {
@@ -469,6 +470,7 @@ final public function set_displayname($value) {
 /**
  * Sets the displayname property with a PHP native value
  * 
+ * @param  string  $value  The new value
  * @return void
  * @throws DAV_Status
  */
@@ -491,6 +493,7 @@ final public function prop_executable() {
 /**
  * Sets the executable property, but the value should be in an XML ready format for webDAV
  * 
+ * @param  string  $value  The new value
  * @return void
  * @throws DAV_Status
  */
@@ -503,6 +506,7 @@ final public function set_executable($value) {
 /**
  * Sets the executable property with a PHP native value
  * 
+ * @param  string  $value  The new value
  * @return void
  * @throws DAV_Status
  */
@@ -525,6 +529,7 @@ final public function prop_getcontentlanguage() {
 /**
  * Sets the getcontentlanguage property, but the value should be in an XML ready format for webDAV
  * 
+ * @param  string  $value  The new value
  * @return void
  * @throws DAV_Status
  */
@@ -546,6 +551,7 @@ final public function set_getcontentlanguage($value) {
 /**
  * Sets the getcontentlanguage property with a PHP native value
  * 
+ * @param  string  $value  The new value
  * @return void
  * @throws DAV_Status
  */
@@ -579,6 +585,7 @@ final public function prop_getcontenttype() {
 /**
  * Sets the getcontenttype property, but the value should be in an XML ready format for webDAV
  * 
+ * @param  string  $value  The new value
  * @return void
  * @throws DAV_Status
  */
@@ -609,6 +616,7 @@ final public function set_getcontenttype($value) {
 /**
  * Sets the getcontenttype property with a PHP native value
  * 
+ * @param  string  $value  The new value
  * @return void
  * @throws DAV_Status
  */

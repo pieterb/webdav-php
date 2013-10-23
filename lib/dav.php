@@ -685,7 +685,7 @@ public static function header($properties, $replace = true) {
 /**
  * Redirects to a URL.
  * @param int $status
- * @param string $url
+ * @param string $uri
  */
 public static function redirect($status, $uri) {
   self::header( array(

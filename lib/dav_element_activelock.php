@@ -76,11 +76,12 @@ public $timeout;
 /**
  * Constructor
  * 
- * @param string $lockroot a path (not a URI!)
- * @param string $depth DAV::DEPTH_0 or DAV::DEPTH_INF
- * @param string $locktoken the locktoken URI
- * @param string $owner XML fragment
- * @param int $timeout as absolute unixtime (not seconds remaining!) or 0
+ * @param  array  $arg  The different properties of this lock as key:
+ *                      'lockroot'  => a path (not a URI!)
+ *                      'depth'     => DAV::DEPTH_0 or DAV::DEPTH_INF
+ *                      'locktoken' => the locktoken URI
+ *                      'owner'     => XML fragment
+ *                      'timeout'   => as absolute unixtime (not seconds remaining!) or 0
  */
 public function __construct($arg = array()) {
   $this->lockroot =  @$arg['lockroot'];

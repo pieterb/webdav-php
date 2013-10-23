@@ -2,10 +2,11 @@
 
 set -e
 
-cd "$( dirname "$0" )/../"
-rm -rf docs 2>/dev/null || true
-mkdir docs
+# First let's make sure we're in the right directory and a tools directory is available
+cd "$( dirname "${BASH_SOURCE[0]}" )/.."
+rm -rf docs docs-parser 2>/dev/null | true
+./vendor/bin/phpdoc.php # configuration is stored in phpdoc.dist.xml
+rm -rf docs-parser 2>/dev/null | true
 
-vendor/bin/phpdoc.php
-
+# Everything worked out fine
 exit 0

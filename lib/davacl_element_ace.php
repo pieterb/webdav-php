@@ -91,8 +91,14 @@ public $inherited;
 
 /**
  * Constructor
- * @param string $URI
- */
+ * 
+ * @param  string   $principal   A path or property or predefined principal
+ * @param  boolean  $invert      Whether the principal should be inverted
+ * @param  array    $privileges  All privileges in this ACE
+ * @param  boolean  $deny        True for a deny clause, false for a grant clause
+ * @param  boolean  $protected   Optionally, whether the ACE is protected or not (default = false)
+ * @param  string   $inherited   Optionally, a path
+ */ 
 public function __construct(
   $principal, $invert, $privileges, $deny,
   $protected = false, $inherited = null

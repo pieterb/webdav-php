@@ -257,6 +257,9 @@ protected function user_set_acl($aces) {
 
 /**
  * Set or delete a property when a PROPPATCH request was made
+ * 
+ * @param string $propname the name of the property to be set.
+ * @param string $value an XML fragment, or null to unset the property.
  * @see DAV_Resource::method_PROPPATCH()
  */
 public function method_PROPPATCH($propname, $value = null) {
@@ -302,7 +305,7 @@ public function user_prop_owner() {
 /**
  * Sets the DAV: owner property
  * 
- * @param   type        $owner  A piece of XML with exactly one <D:href> piece
+ * @param   string      $owner  A piece of XML with exactly one <D:href> piece
  * @throws  DAV_Status          If there is not exactly 1 <D:href> piece
  */
 final public function set_owner($owner) {

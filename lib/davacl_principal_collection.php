@@ -31,7 +31,7 @@ interface DAVACL_Principal_Collection {
 /**
  * Searches for principals within this collection which match the criteria given in a REPORT principal-match request
  * 
- * @param  unknown  $input  Not known; Probably match something within DAV_Request_REPORT::handle_principal_match (which isn't implemented yet)
+ * @param  something  $input  Not known; Probably match something within DAV_Request_REPORT::handle_principal_match (which isn't implemented yet)
  */
 public function report_principal_match ($input);
 

@@ -87,7 +87,7 @@ public static function delete( $resource ) {
  * Callers must check DAV_Multistatus::active() afterwards.
  * @see delete()
  * @param DAV_Collection $resource
- * @param string $memberPath a path
+ * @param string         $memberResource a path
  * @throws DAV_Status
  */
 private static function delete_member( $resource, $memberResource )

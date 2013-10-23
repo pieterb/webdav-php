@@ -38,7 +38,8 @@ public $URIs;
 
 /**
  * Constructor
- * @param string $URI
+ * 
+ * @param string $URIs
  */
 public function __construct($URIs = null) {
   if (is_array($URIs))

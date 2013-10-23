@@ -3,7 +3,7 @@
     "description": "A library to create a webDAV server",
     "require-dev": {
         "phpunit/phpunit": "3.7.*",
-        "phpdocumentor/phpdocumentor": "2.0.*"
+        "phpdocumentor/phpdocumentor": "2.*"
     },
     "authors": [
         {

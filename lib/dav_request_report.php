@@ -213,7 +213,7 @@ private function handle_expand_property($resource) {
 /**
  * Handles all recursive DAV:expand-property elements
  * 
- * @param   DAV_Resource          $resource  The resource to perform the request on
+ * @param   DAV_Resource          $path        The resource to perform the request on
  * @param   array                 $properties
  * @return  DAV_Element_response
  */

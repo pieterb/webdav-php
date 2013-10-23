@@ -75,6 +75,7 @@ public function method_DELETE( $name );
  *   destination collection, was locked. This response SHOULD contain the 
  *   'lock-token-submitted' precondition element.
  * - 507 Insufficient Storage
+ * @param string $member      The name of the member to move
  * @param string $destination the destination path
  * @return void
  */

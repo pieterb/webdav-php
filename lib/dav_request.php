@@ -144,8 +144,7 @@ public function depth() {
 /**
  * Parse the HTTP If header
  * 
- * @param  string  header string to parse
- * @param  int     current parsing position
+ * @param  string  $pos  The position within the if header to continue parsing
  * @return array|null   next token (type and value)
  * @throws DAV_Status on lexer error
  */
