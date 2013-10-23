@@ -1,7 +1,7 @@
 set -e
 
 # First let's make sure we're in the right directory and a tools directory is available
-cd "$( dirname "${BASH_SOURCE[0]}" )"
+cd "$( dirname "${BASH_SOURCE[0]}" )/.."
 rm -rf tools 2>/dev/null | true
 mkdir tools
 
