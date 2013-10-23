@@ -27,6 +27,7 @@ class DAV_MultistatusTest extends PHPUnit_Framework_TestCase {
   
   public function setUp() {
     $_SERVER['SCRIPT_NAME'] = '/path/to/script.php';
+    DAV_Multistatus::reset();
   }
   
 
@@ -94,34 +95,5 @@ EOS
   }
 
 } // class DAV_MultistatusTest
-
-
-class DAV_Test_Multistatus extends DAV_Multistatus {
-  /**
-   * This should be a identical copy of DAV_Multistatus::__construct()
-   */
-  private function __construct()
-  {
-    DAV::header( array(
-      'Content-Type' => 'application/xml; charset="utf-8"',
-      'status' => DAV::HTTP_MULTI_STATUS
-    ) );
-    echo DAV::xml_header() .
-      '<D:multistatus xmlns:D="DAV:">';
-  }
-  /**
-   * @var  DAV_Multistatus  The only instance of this class
-   */
-  protected static $inst = null;
-  /**
-   * Returns the only instance of this class
-   * @return DAV_Multistatus
-   */
-  public static function inst() {
-    if (null === self::$inst)
-      self::$inst = new DAV_Test_Multistatus();
-    return self::$inst;
-  }
-}
 
 // End of file

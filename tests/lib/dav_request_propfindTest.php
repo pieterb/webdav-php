@@ -31,6 +31,7 @@ class DAV_Request_PROPFINDTest extends PHPUnit_Framework_TestCase {
     DAV::$REGISTRY->setResourceClass( 'DAVACL_Test_Resource' );
     DAV::$LOCKPROVIDER = null;
     DAV_Test_Request_PROPFIND::setInputstring( '' );
+    DAV_Multistatus::reset();
   }
 
 
@@ -239,7 +240,10 @@ EOS
     $obj = DAV_Test_Request_PROPFIND::inst();
     DAV::$REGISTRY->setResourceClass( 'DAVACL_Test_Resource' );
     $expectedOutput = <<<EOS
-
+Content-Type: application/xml; charset="utf-8"
+HTTP/1.1 207 Multi-Status
+<?xml version="1.0" encoding="utf-8"?>
+<D:multistatus xmlns:D="DAV:">
 <D:response><D:href>/some_collection/</D:href>
 <D:propstat><D:prop>
 <D:supported-report-set><D:supported-report><D:expand-property/></D:supported-report></D:supported-report-set>
@@ -247,6 +251,7 @@ EOS
 <D:status>HTTP/1.1 200 OK</D:status>
 </D:propstat>
 </D:response>
+</D:multistatus>
 EOS
     ;
     $this->expectOutputString( $expectedOutput );
@@ -271,7 +276,10 @@ EOS
     $obj = DAV_Test_Request_PROPFIND::inst();
     DAV::$REGISTRY->setResourceClass( 'DAVACL_Test_Resource' );
     $expectedOutput = <<<EOS
-
+Content-Type: application/xml; charset="utf-8"
+HTTP/1.1 207 Multi-Status
+<?xml version="1.0" encoding="utf-8"?>
+<D:multistatus xmlns:D="DAV:">
 <D:response><D:href>/some_collection/</D:href>
 <D:propstat><D:prop>
 <ns:prop1 xmlns:ns="http://ns.example.com/tests/"/>
@@ -282,6 +290,7 @@ EOS
 <D:status>HTTP/1.1 404 Not Found</D:status>
 </D:propstat>
 </D:response>
+</D:multistatus>
 EOS
     ;
     $this->expectOutputString( $expectedOutput );
@@ -290,28 +299,5 @@ EOS
 
 
 } // class DAV_Request_PROPFINDTest
-
-
-class DAV_Test_Request_PROPFIND extends DAV_Request_PROPFIND {
-
-  public static function inst() {
-    $class = __CLASS__;
-    return new $class();
-  }
-
-  
-  private static $inputstring = '';
-
-
-  public static function setInputstring( $inputstring ) {
-    self::$inputstring = $inputstring;
-  }
-
-
-  protected static function inputstring() {
-    return self::$inputstring;
-  }
-
-} // Class DAV_Test_Request_PROPFIND
 
 // End of file

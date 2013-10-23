@@ -29,6 +29,7 @@ class DAV_Request_REPORTTest extends PHPUnit_Framework_TestCase {
     $_SERVER['REQUEST_METHOD'] = 'REPORT';
     DAV::$REGISTRY = new DAV_Test_Registry();
     DAV::$REGISTRY->setResourceClass( 'DAVACL_Test_Resource' );
+    DAV_Multistatus::reset();
   }
 
 
@@ -144,7 +145,10 @@ EOS
    */
   public function testHandle_expand_property( $obj ) {
     $this->expectOutputString( <<<EOS
-
+Content-Type: application/xml; charset="utf-8"
+HTTP/1.1 207 Multi-Status
+<?xml version="1.0" encoding="utf-8"?>
+<D:multistatus xmlns:D="DAV:">
 <D:response><D:href>/path</D:href>
 <D:propstat><D:prop>
 <D:version-history/>
@@ -152,6 +156,7 @@ EOS
 <D:status>HTTP/1.1 200 OK</D:status>
 </D:propstat>
 </D:response>
+</D:multistatus>
 EOS
     );
     $obj->handleRequest();
@@ -173,7 +178,10 @@ EOS
              ->will( $this->returnValue( $acl ) );
     DAV::$REGISTRY->setResourceClass( $resource );
     $this->expectOutputString( <<<EOS
-
+Content-Type: application/xml; charset="utf-8"
+HTTP/1.1 207 Multi-Status
+<?xml version="1.0" encoding="utf-8"?>
+<D:multistatus xmlns:D="DAV:">
 <D:response><D:href>/path/to/user</D:href>
 <D:propstat><D:prop>
 <D:displayname/>
@@ -188,6 +196,7 @@ EOS
 <D:status>HTTP/1.1 200 OK</D:status>
 </D:propstat>
 </D:response>
+</D:multistatus>
 EOS
     );
     $obj->handleRequest();
@@ -206,7 +215,10 @@ EOS
              ->will( $this->returnValue( array( '/path/to/principal', '/path/to/other/principal' ) ) );
     DAV::$REGISTRY->setResourceClass( $resource );
     $this->expectOutputString( <<<EOS
-
+Content-Type: application/xml; charset="utf-8"
+HTTP/1.1 207 Multi-Status
+<?xml version="1.0" encoding="utf-8"?>
+<D:multistatus xmlns:D="DAV:">
 <D:response><D:href>/path/to/principal</D:href>
 <D:propstat><D:prop>
 <D:displayname/>
@@ -221,6 +233,7 @@ EOS
 <D:status>HTTP/1.1 200 OK</D:status>
 </D:propstat>
 </D:response>
+</D:multistatus>
 EOS
     );
     $obj->handleRequest();
@@ -256,31 +269,5 @@ EOS
   }
 
 } // Class DAV_Request_REPORTTest
-
-
-class DAV_Test_Request_REPORT extends DAV_Request_REPORT {
-
-  /**
-   * @return \DAV_Test_Request_REPORT
-   */
-  public static function inst() {
-    $class = __CLASS__;
-    return new $class();
-  }
-
-
-  private static $inputstring = '';
-
-
-  public static function setInputstring( $inputstring ) {
-    self::$inputstring = $inputstring;
-  }
-
-
-  protected static function inputstring() {
-    return self::$inputstring;
-  }
-
-} // Class DAV_Test_Request_REPORT
 
 // End of file

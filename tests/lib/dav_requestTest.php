@@ -96,24 +96,4 @@ class DAV_RequestTest extends PHPUnit_Framework_TestCase {
 
 } // class DAV_Request
 
-
-/**
- * Implements the abstract classes of DAV_Request for testing purposes
- * @package DAV
- * @subpackage tests
- */
-class DAV_Test_Request extends DAV_Request {
-
-  public static function inst() {
-    $class = __CLASS__;
-    return new $class();
-  }
-
-
-  protected function handle( $resource ) {
-    print( 'DAV_Request::handle() called for path: ' . $resource->path . "\n" );
-  }
-
-} // class DAV_Test_Request
-
 // End of file

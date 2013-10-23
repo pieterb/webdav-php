@@ -359,27 +359,4 @@ EOS
 
 } // class DAV_Request_LOCKTest
 
-
-class DAV_Test_Request_LOCK extends DAV_Request_LOCK {
-
-  public static function inst() {
-    $class = __CLASS__;
-    return new $class();
-  }
-
-
-  private static $inputstring = '';
-
-
-  public static function setInputstring( $inputstring ) {
-    self::$inputstring = $inputstring;
-  }
-
-
-  protected static function inputstring() {
-    return self::$inputstring;
-  }
-
-} // Class DAV_Test_Request_LOCK
-
 // End of file

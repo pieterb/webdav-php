@@ -215,5 +215,19 @@ public static function active() {
 }
 
 
+/**
+ * Resets the current multistatus output
+ * 
+ * Because the multistatus is output streaming, this should only be used for
+ * testing purposes. In other cases there are already headers and parts XML sent
+ * out, which will interfere with a new multistatus response.
+ * 
+ * @return  void
+ */
+public static function reset() {
+  self::$inst = null;
+}
+
+
 } // class DAV_Status
 

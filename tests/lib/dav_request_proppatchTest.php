@@ -30,6 +30,7 @@ class DAV_Request_PROPPATCHTest extends PHPUnit_Framework_TestCase {
     DAV::$REGISTRY = new DAV_Test_Registry();
     DAV::$REGISTRY->setResourceClass( 'DAVACL_Test_Resource' );
     DAV::$LOCKPROVIDER = null;
+    DAV_Multistatus::reset();
   }
 
 
@@ -109,7 +110,10 @@ EOS
 DAVACL_Test_Resource::method_PROPPATCH() called for /path and parameters http://ns.example.com/tests/ prop1 - 'Some value for prop1'
 DAVACL_Test_Resource::method_PROPPATCH() called for /path and parameters http://ns.example.com/tests/ old-property - NULL
 DAVACL_Test_Resource::storeProperties() called for /path
-
+Content-Type: application/xml; charset="utf-8"
+HTTP/1.1 207 Multi-Status
+<?xml version="1.0" encoding="utf-8"?>
+<D:multistatus xmlns:D="DAV:">
 <D:response><D:href>/path</D:href>
 <D:propstat><D:prop>
 <ns:prop1 xmlns:ns="http://ns.example.com/tests/"/>
@@ -118,6 +122,7 @@ DAVACL_Test_Resource::storeProperties() called for /path
 <D:status>HTTP/1.1 200 OK</D:status>
 </D:propstat>
 </D:response>
+</D:multistatus>
 EOS
     );
     $obj = DAV_Test_Request_PROPPATCH::inst();
@@ -141,7 +146,10 @@ EOS
     );
     $this->expectOutputString( <<<EOS
 DAVACL_Test_Resource::method_PROPPATCH() called for /path and parameters http://ns.example.com/tests/ prop1 - 'Some value for prop1'
-
+Content-Type: application/xml; charset="utf-8"
+HTTP/1.1 207 Multi-Status
+<?xml version="1.0" encoding="utf-8"?>
+<D:multistatus xmlns:D="DAV:">
 <D:response><D:href>/path</D:href>
 <D:propstat><D:prop>
 <D:creationdate/>
@@ -155,6 +163,7 @@ DAVACL_Test_Resource::method_PROPPATCH() called for /path and parameters http://
 <D:status>HTTP/1.1 424 Failed Dependency</D:status>
 </D:propstat>
 </D:response>
+</D:multistatus>
 EOS
     );
     $obj = DAV_Test_Request_PROPPATCH::inst();
@@ -162,28 +171,5 @@ EOS
   }
 
 } // class DAV_Request_PROPPATCHTest
-
-
-class DAV_Test_Request_PROPPATCH extends DAV_Request_PROPPATCH {
-
-  public static function inst() {
-    $class = __CLASS__;
-    return new $class();
-  }
-
-
-  private static $inputstring = '';
-
-
-  public static function setInputstring( $inputstring ) {
-    self::$inputstring = $inputstring;
-  }
-
-
-  protected static function inputstring() {
-    return self::$inputstring;
-  }
-
-} // Class DAV_Test_Request_PROPPATCH
 
 // End of file

@@ -166,39 +166,6 @@ EOS
     DAV_Request_GET::range_header( 7 );
   }
 
-} // Class DAV_Request_GET
-
-
-class DAVACL_Test_Get_Resource extends DAVACL_Test_Resource {
-
-  private $outputType = 'stream';
-
-
-  public function setOutputType( $type ) {
-    if ( in_array( $type, array( 'direct', 'string' ) ) ) {
-      $this->outputType = $type;
-    }else{
-      $this->outputType = 'stream';
-    }
-  }
-
-
-  public function method_GET() {
-    $output = 'DAVACL_Test_Get_Resource::method_GET() called with output as ' . $this->outputType . ' for resource ' . $this->path . "\n";
-    switch ( $this->outputType ) {
-      case 'direct':
-        print( $output );
-        return;
-      case 'string':
-        return $output;
-      default:
-        $fp = fopen( 'php://temp/GET_body', 'r+' );
-        fwrite( $fp, $output );
-        rewind( $fp );
-      return $fp;
-    }
-  }
-
-}
+} // Class DAV_Request_GETTest
 
 // End of file

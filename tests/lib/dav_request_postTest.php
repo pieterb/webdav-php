@@ -66,34 +66,6 @@ EOS
     $this->obj->handleRequest();
   }
 
-} // Class DAV_Request_POST
-
-
-class DAVACL_Test_Post_Resource extends DAVACL_Test_Resource {
-
-  private $outputType = 'direct';
-
-
-  public function setOutputType( $type ) {
-    if ( $type === 'string' ) {
-      $this->outputType = $type;
-    }else{
-      $this->outputType = 'direct';
-    }
-  }
-
-
-  public function method_POST() {
-    $output = 'DAVACL_Test_Post_Resource::method_POST() called with output as ' . $this->outputType . ' for resource ' . $this->path . "\n";
-    switch ( $this->outputType ) {
-      case 'string':
-        return $output;
-      default:
-        print( $output );
-      return;
-    }
-  }
-
-}
+} // Class DAV_Request_POSTTest
 
 // End of file

@@ -104,46 +104,7 @@ EOS
     $this->obj->handleRequest();
   }
 
-} // Class DAV_Request_DELETE
-
-
-class DAVACL_Test_Delete_Resource extends DAVACL_Test_Collection {
-
-  private $children = array();
-  private $position = 0;
-
-
-  public function __construct( $path ) {
-    parent::__construct( $path );
-    if ( $path === '/path/to/resource/' ) {
-      $this->children = array( 'subdir1/', 'subdir2/', 'subdir3/' );
-    }elseif ( $path === '/path/to/resource/subdir1/' ) {
-      $this->children = array( 'subfile1', 'subfile2' );
-    }
-  }
-
-
-  public function rewind() {
-    $this->position = 0;
-  }
-
-  public function current() {
-    return $this->children[ $this->position ];
-  }
-
-  public function key() {
-    return $this->position;
-  }
-
-  public function next() {
-    $this->position++;
-  }
-
-  public function valid() {
-    return isset( $this->children[ $this->position ] );
-  }
-
-}
+} // Class DAV_Request_DELETETest
 
 
 // End of file

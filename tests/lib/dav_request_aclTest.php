@@ -104,44 +104,4 @@ EOS
 
 } // class DAV_Request_ACLTest
 
-
-class DAV_Test_Request_ACL extends DAV_Request_ACL {
-
-  public static function inst() {
-    $class = __CLASS__;
-    return new $class();
-  }
-
-
-  protected static function inputstring() {
-    return <<<EOS
-<?xml version="1.0" encoding="utf-8" ?>
-<acl xmlns="DAV:">
-  <ace>
-    <principal>
-      <all />
-    </principal>
-    <grant>
-      <privilege>
-        <read/>
-      </privilege>
-    </grant>
-  </ace>
-  <ace>
-    <principal>
-      <href><![CDATA[/path/to/user]]></href>
-    </principal>
-    <grant>
-      <privilege>
-        <all/>
-      </privilege>
-    </grant>
-  </ace>
-</acl>
-EOS
-    ;
-  }
-
-} // Class DAV_Test_Request_ACL
-
 // End of file

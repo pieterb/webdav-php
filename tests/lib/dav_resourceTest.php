@@ -74,7 +74,7 @@ class DAV_ResourceTest extends PHPUnit_Framework_TestCase {
     DAV::$LOCKPROVIDER = $lockProviderStub;
     
     DAV::$SUBMITTEDTOKENS[ 'thelocktoken' ] = 'thelocktoken';
-    $obj = new DAV_Resource_DAV_Collection_TestImplementation( '/collection/child' );
+    $obj = new DAVACL_Test_Collection( '/collection/child' );
     $obj->assertMemberLocks(); // No need to assert anything; if the resource is locked (which it should not be), an exception will be thrown
     
     unset( DAV::$SUBMITTEDTOKENS[ 'thelocktoken' ] );
@@ -438,8 +438,8 @@ class DAV_ResourceTest extends PHPUnit_Framework_TestCase {
          ->will( $this->returnValue( '<D:unexisting_type/>' ) );
     $this->assertSame( '<D:unexisting_type/>', $stub->prop_resourcetype(), 'DAV_Resource::prop_resourcetype() should return the value returned by DAV_Resource::user_prop_resourcetype()' );
     
-    $collection = new DAV_Resource_DAV_Collection_TestImplementation( '/path' );
-    $principal = new DAV_Resource_DAVACL_Principal_TestImplementation( '/path' );
+    $collection = new DAVACL_Test_Collection( '/path' );
+    $principal = new DAVACL_Test_Principal( '/path' );
     $this->assertSame( DAV_Collection::RESOURCETYPE, $collection->prop_resourcetype(), 'DAV_Resource::prop_resourcetype should indicate being a collection if DAV_Collection is implemented' );
     $this->assertSame( DAVACL_Principal::RESOURCETYPE, $principal->prop_resourcetype(), 'DAV_Resource::prop_resourcetype should indicate being a collection if DAVACL_Principal is implemented' );
   }
@@ -448,7 +448,7 @@ class DAV_ResourceTest extends PHPUnit_Framework_TestCase {
   public function testProp_supported_report_set() {
     $this->assertSame( '<D:supported-report><D:expand-property/></D:supported-report>', $this->obj->prop_supported_report_set(), 'DAV_Resource::prop_supported_report_set() should return the correct value' );
     
-    $principalCollection = new DAV_Resource_DAVACL_Principal_Collection_TestImplementation( '/path' );
+    $principalCollection = new DAVACL_Test_Principal_Collection( '/path' );
     $this->assertSame( "<D:supported-report><D:expand_property/></D:supported-report>\n<D:supported-report><D:acl_principal_prop_set/></D:supported-report>\n<D:supported-report><D:principal_match/></D:supported-report>\n<D:supported-report><D:principal_property_search/></D:supported-report>\n<D:supported-report><D:principal_search_property_set/></D:supported-report>", $principalCollection->prop_supported_report_set(), 'DAV_Resource::prop_supported_report_set() should return the correct value when the resource is a principal collection' );
   }
 
@@ -480,63 +480,5 @@ class DAV_ResourceTest extends PHPUnit_Framework_TestCase {
   }
 
 } // class DAV_ResourceTest
-
-
-/**
- * Nothing is implemented as this class is only needed to test DAV_Resource::prop_resourcetype()
- */
-class DAV_Resource_DAV_Collection_TestImplementation extends DAV_Resource implements DAV_Collection {
-  
-  public function create_member($name) {}
-
-  public function current() {}
-
-  public function key() {}
-
-  public function method_DELETE($name) {}
-
-  public function method_MKCOL($name) {}
-
-  public function method_MOVE($member, $destination) {}
-
-  public function next() {}
-
-  public function rewind() {}
-
-  public function valid() {}
-  
-} // class DAV_Resource_DAV_Collection_TestImplementation
-
-
-/**
- * Nothing is implemented as this class is only needed to test DAV_Resource::prop_resourcetype()
- */
-class DAV_Resource_DAVACL_Principal_TestImplementation extends DAV_Resource implements DAVACL_Principal {
-  
-  public function user_prop_alternate_uri_set() {}
-
-  public function user_prop_group_member_set() {}
-
-  public function user_prop_group_membership() {}
-
-  public function user_prop_principal_url() {}
-
-  public function user_set_group_member_set($set) {}
-  
-} // class DAV_Resource_DAV_Collection_TestImplementation
-
-
-/**
- * Nothing is implemented as this class is only needed to test DAV_Resource::prop_resourcetype()
- */
-class DAV_Resource_DAVACL_Principal_Collection_TestImplementation extends DAV_Resource implements DAVACL_Principal_Collection {
-
-  public function report_principal_match($input) {}
-
-  public function report_principal_property_search($input) {}
-
-  public function report_principal_search_property_set() {}
-
-} // class DAV_Resource_DAVACL_Principal_Collection_TestImplementation
 
 // End of file

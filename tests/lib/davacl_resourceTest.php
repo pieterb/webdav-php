@@ -432,26 +432,73 @@ EOS
   
   
   public function testPropname() {
-    $expected = array(
-        'DAV: lockdiscovery' => true,
-        'DAV: resourcetype' => true,
-        'DAV: supportedlock' => true,
-        'DAV: supported-report-set' => true,
-        'DAV: owner' => false,
-        'DAV: group' => false,
-        'DAV: supported-privilege-set' => false,
-        'DAV: current-user-privilege-set' => false,
+    DAV::$LOCKPROVIDER = $this->getMock( 'DAV_Lock_Provider' );
+    $expectedBasic = array(
         'DAV: acl' => false,
         'DAV: acl-restrictions' => false,
-        'DAV: inherited-acl-set' => false,
-        'DAV: principal-collection-set' => false,
-        'DAV: current-user-principal' => false,
         'DAV: alternate-URI-set' => false,
-        'DAV: principal-URL' => false,
+        'DAV: current-user-principal' => false,
+        'DAV: current-user-privilege-set' => false,
+        'DAV: group' => false,
         'DAV: group-member-set' => false,
-        'DAV: group-membership' => false
+        'DAV: group-membership' => false,
+        'DAV: inherited-acl-set' => false,
+        'DAV: lockdiscovery' => true,
+        'DAV: owner' => false,
+        'DAV: principal-URL' => false,
+        'DAV: principal-collection-set' => false,
+        'DAV: resourcetype' => true,
+        'DAV: supported-privilege-set' => false,
+        'DAV: supported-report-set' => true,
+        'DAV: supportedlock' => true
     );
-    $this->assertSame( $expected, $this->obj->propname(), 'DAVACL_Resource::propname() should return all properties correctly' );
+    ksort( $expectedBasic );
+    $returnedBasic = $this->obj->propname();
+    ksort( $returnedBasic );
+    $this->assertSame( $expectedBasic, $returnedBasic, 'The default implementation of DAV_Resource::propname() should only return DAV: supported-report-set' );
+    
+    // Mock it, so we can test some more
+    $userProps = array(
+        'NS prop1' => true,
+        'NS prop2' => false,
+        'NS prop3' => true
+    );
+    $stub = $this->getMock( 'DAVACL_Test_Principal', array( 'user_propname', 'user_prop_displayname' ), array( '/path' ) );
+    $stub->expects( $this->once() )
+         ->method( 'user_propname' )
+         ->will( $this->returnValue( $userProps ) );
+    $stub->expects( $this->once() )
+         ->method( 'user_prop_displayname' )
+         ->will( $this->returnValue( 'Some displayname' ) );
+    
+    // And check whether we get back what we expect
+    $expected = array(
+        'NS prop1' => true,
+        'NS prop2' => false,
+        'NS prop3' => true,
+        'DAV: displayname' => true,
+        'DAV: acl' => false,
+        'DAV: acl-restrictions' => false,
+        'DAV: alternate-URI-set' => false,
+        'DAV: current-user-principal' => false,
+        'DAV: current-user-privilege-set' => false,
+        'DAV: group' => false,
+        'DAV: group-member-set' => false,
+        'DAV: group-membership' => false,
+        'DAV: inherited-acl-set' => false,
+        'DAV: lockdiscovery' => true,
+        'DAV: owner' => false,
+        'DAV: principal-URL' => false,
+        'DAV: principal-collection-set' => false,
+        'DAV: resourcetype' => true,
+        'DAV: supported-privilege-set' => false,
+        'DAV: supported-report-set' => true,
+        'DAV: supportedlock' => true
+    );
+    ksort( $expected );
+    $returned = $stub->propname();
+    ksort( $returned );
+    $this->assertSame( $expected, $returned, 'DAV_Resource::propname should return the correct values' );
   }
   
   
