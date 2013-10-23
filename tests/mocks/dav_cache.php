@@ -1,6 +1,6 @@
 <?php
 /**
- * Sets up an environment to emulate a webserver environment
+ * Contains a mocked version of the DAV_Cache class
  * 
  * Copyright ©2013 SURFsara b.v., Amsterdam, The Netherlands
  *

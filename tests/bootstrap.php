@@ -1,6 +1,6 @@
 <?php
 /**
- * Sets up an environment to emulate a webserver environment
+ * Bootstraps the test environment
  * 
  * Copyright ©2013 SURFsara b.v., Amsterdam, The Netherlands
  *

@@ -1,6 +1,6 @@
 <?php
 /**
- * Sets up an environment to emulate a webserver environment
+ * Contains the DAVACL_Test_Collection class
  * 
  * Copyright ©2013 SURFsara b.v., Amsterdam, The Netherlands
  *
