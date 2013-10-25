@@ -99,6 +99,18 @@ class DAVTest extends PHPUnit_Framework_TestCase {
   }
 
 
+  public function testAddSupported_Properties() {
+    $expectedResult = array_merge(
+      DAV::$WEBDAV_PROPERTIES,
+      DAV::$PRINCIPAL_PROPERTIES,
+      DAV::$ACL_PROPERTIES
+    );
+    $expectedResult['namespace property'] = 'name';
+
+    $this->assertSame( $expectedResult, DAV::addSupported_Properties( 'namespace property', 'name' ) );
+  }
+
+
   public function testHeader() {
     ob_start();
     DAV::header( array( 

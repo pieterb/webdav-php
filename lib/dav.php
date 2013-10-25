@@ -950,6 +950,22 @@ const CLIENT_WINDOWS_WEBFOLDER = 0x200; // 0b0010 0000 0000;
 
 
   /**
+   * Adds a supported property
+   *
+   * @param   string  $property  The property as 'namespace property'
+   * @param   string  $value     The name of the property (or of its get and set functions?)
+   * @return  array              All supported properties
+   */
+  public static function addSupported_Properties( $property, $name ) {
+    $SUPPORTED_PROPERTIES = self::getSupported_Properties();
+    $SUPPORTED_PROPERTIES[ $property ] = $name;
+    $cache = DAV_Cache::inst( 'DAV' );
+    $cache->set( 'supported_properties', $SUPPORTED_PROPERTIES );
+    return $SUPPORTED_PROPERTIES;
+  }
+
+
+  /**
    * Returns the current (requested) path
    * @return  string  The path
    */
