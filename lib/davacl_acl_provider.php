@@ -47,7 +47,7 @@ public function user_prop_current_user_principal();
 
 
 /**
- * Return all principals the currently logged in user is/is member of
+ * Return a set of URLs that identify the root collections that contain the principals that are available
  * 
  * @return array an array of paths
  */
