@@ -108,7 +108,7 @@ protected function __construct()
   $xpath->registerNamespace('D', 'DAV:');
 
   if ( (int)($xpath->evaluate('count(/D:lockinfo/D:lockscope/D:shared)')) > 0 )
-    throw new DAV_Status(DAV::HTTP_BAD_REQUEST, 'Shared locks are not supported.');
+    throw new DAV_Status(DAV::HTTP_NOT_IMPLEMENTED, 'Shared locks are not supported.');
   elseif ( (int)($xpath->evaluate('count(/D:lockinfo/D:lockscope/D:exclusive)')) !== 1 ) {
     throw new DAV_Status(DAV::HTTP_BAD_REQUEST, 'No &lt;lockscope/&gt; element in LOCK request, hmm.');
   }
