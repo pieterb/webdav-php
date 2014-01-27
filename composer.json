@@ -20,5 +20,8 @@
             "name": "Niek Bosch",
             "email": "niek.bosch@surfsara.nl"
         }
-    ]
+    ],
+    "autoload": {
+        "psr-4": { "": "lib/" }
+    }
 }

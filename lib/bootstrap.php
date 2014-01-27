@@ -1,7 +1,12 @@
 <?php
-/*·************************************************************************
- * Copyright ©2007-2011 Pieter van Beek, Almere, The Netherlands
- * 		    <http://purl.org/net/6086052759deb18f4c0c9fb2c3d3e83e>
+/**
+ * Bootstraps the library
+ *
+ * This is still here to keep backward compatibility. If you load this library
+ * using Composer, you can run \DAV::bootstrap() from your own bootstrapping
+ * code instead.
+ *
+ * Copyright ©2014 SURFsara b.v., Amsterdam, The Netherlands
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may
  * not use this file except in compliance with the License. You may obtain
@@ -13,24 +18,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * $Id: dav.php 3364 2011-08-04 14:11:03Z pieterb $
- **************************************************************************/
-
-/**
- * Bootstraps the library
- * @package DAV
+ * @package pieterb\dav
  */
 
-// PHP messages destroy XML output -> switch them off.
-ini_set('display_errors', 0);
+namespace pieterb\dav;
 
-// magic quotes spoil everything.
-if ( ini_get('magic_quotes_gpc') ) {
-  trigger_error('Please disable magic_quotes_gpc first.', E_USER_ERROR);
+/**
+ * An autoloader for if this library is not used through Composer
+ *
+ * @param   string  $class  The class to load
+ * @return  void
+ */
+function autoloader( $class ) {
+  $elements = \explode( '\\', $class );
+  $classLocalName = $elements[ \count( $elements) - 1 ];
+  $localPath = __DIR__ . \DIRECTORY_SEPARATOR . $classLocalName . '.php';
+  if ( is_readable( $localPath ) ) {
+    require_once( $localPath );
+  }
 }
+\spl_autoload_register( 'pieterb\dav\autoloader' );
 
-// We use autoloading of classes:
-set_include_path( dirname(__FILE__) . PATH_SEPARATOR . get_include_path() );
-spl_autoload_register( 'spl_autoload' );
+
+// Then, let's call the \DAV::bootstrap() function to make sure this file is
+// backwards compatible
+\DAV::bootstrap();
 
 // End of file

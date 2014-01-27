@@ -299,6 +299,23 @@ public static $SUBMITTEDTOKENS = array();
 
 
 /**
+ * Bootstraps the library
+ *
+ * This runs several tests to make sure you've configured PHP correctly for
+ * usage with this library. You might want to have this done before using it.
+ */
+public static function bootstrap() {
+  // PHP messages destroy XML output -> switch them off.
+  ini_set('display_errors', 0);
+
+  // magic quotes spoil everything.
+  if ( ini_get('magic_quotes_gpc') ) {
+    trigger_error('Please disable magic_quotes_gpc first.', E_USER_ERROR);
+  }
+}
+
+
+/**
  * Remake of PHP's var_dump().
  * Returns the output instead of outputting it.
  * @param mixed $var
@@ -317,11 +334,18 @@ public static function var_dump($var) {
  * @see DAV::$DEBUG_FILE
  */
 public static function debug() {
+  $config = self::getConfig();
+
+  // If no debug file is given or it is not writable, then we don't do anything
+  if ( ! touch ( $config['debug']['file'] ) ) {
+    return;
+  }
+
   $data = '';
   foreach (func_get_args() as $arg)
     //$data .= "\n" . ( is_string($arg) ? $arg : self::var_dump($arg) );
     $data .= "\n" . ( is_string($arg) ? $arg : var_export($arg, true) );
-  $fh = fopen( DAV::$CONFIG['debug']['file'], 'a' );
+  $fh = fopen( $config['debug']['file'], 'a' );
   fwrite($fh, date('r') . ":$data\n\n");
   fclose ($fh);
 }
@@ -994,7 +1018,7 @@ const CLIENT_WINDOWS_WEBFOLDER = 0x200; // 0b0010 0000 0000;
    * An array with the parsed config.ini file
    * @var  array  <code>array( <section> => array( <key> => <value,... ) )</code>
    */
-  private static $CONFIG = null;
+  private static $config = array();
 
 
   /**
@@ -1002,13 +1026,18 @@ const CLIENT_WINDOWS_WEBFOLDER = 0x200; // 0b0010 0000 0000;
    * @return  array  The configuration: <code>array( <section> => array( <key> => <value,... ) )</code>
    */
   public static function getConfig() {
-    $cache = DAV_Cache::inst( 'DAV' );
-    $CONFIG = $cache->get( 'config' );
-    if ( is_null( $CONFIG ) ) {
-      $CONFIG = parse_ini_file( dirname( dirname( __FILE__ ) ) . DIRECTORY_SEPARATOR . 'config.ini', true );
-      $cache->set( 'config', $CONFIG );
-    }
-    return $CONFIG;
+    return self::$config;
+  }
+
+
+  /**
+   * Sets the configuration option with the path to the debug file
+   * 
+   * @param   string  $file  Path to the debug file
+   * @return  void
+   */
+  public static function setDebugFile( $file ) {
+    self::$config['debug']['file'] = $file;
   }
 
 } // namespace DAV

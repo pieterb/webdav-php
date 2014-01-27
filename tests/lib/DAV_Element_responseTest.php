@@ -26,7 +26,7 @@
 class DAV_Element_responseTest extends PHPUnit_Framework_TestCase {
   
   public function testContructor() {
-    $obj = new DAV_Element_Response( '/path' );
+    $obj = new DAV_Element_response( '/path' );
     $this->assertSame( '<D:response><D:href>/path</D:href></D:response>', str_replace( "\n", '', $obj->toXML() ) , 'DAV_Element_response: the path set by the constructor should be used in toXML()' );
     return $obj;
   }

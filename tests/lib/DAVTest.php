@@ -2,7 +2,7 @@
 /**
  * Contains tests for the DAV class
  * 
- * Copyright ©2013 SURFsara b.v., Amsterdam, The Netherlands
+ * Copyright ©2013-2014 SURFsara b.v., Amsterdam, The Netherlands
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may
  * not use this file except in compliance with the License. You may obtain
@@ -75,11 +75,10 @@ class DAVTest extends PHPUnit_Framework_TestCase {
   }
   
   
-  public function testGetConfig() {
-    // Because DAV::getConfig() does very little, this test is more a configuration file syntax check, but at least it's something
-    $this->assertFileExists( dirname( dirname( dirname( __FILE__ ) ) ) . DIRECTORY_SEPARATOR . 'config.ini', 'Configuration file should exist' );
-    $this->assertArrayHasKey( 'debug', DAV::getConfig(), 'DAV::getConfig() should contain the key \'debug\'' );
-
+  public function testConfig() {
+    $this->assertSame( array(), DAV::getConfig(), 'DAV::getConfig() should return an empty array before setting any configuration options' );
+    DAV::setDebugFile( '/tmp/debug.txt' );
+    $this->assertSame( array( 'debug' => array( 'file' => '/tmp/debug.txt' ) ), DAV::getConfig(), 'DAV::getConfig() should contain a 2 dimensional array containing the path to the de bug file' );
   }
   
   

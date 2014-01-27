@@ -18,7 +18,6 @@
  * @subpackage tests
  */
 
-require_once( dirname( dirname( __FILE__ ) ) . '/lib/bootstrap.php' );
 DAV::$testMode = true; // Turn on test mode, so headers won't be sent, because sending headers won't work as all tests are run from the commandline
 
 $_SERVER = array();
@@ -32,6 +31,9 @@ $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:24.0) 
 
 function loadMocks() {
   $mockPath = realpath( dirname( __FILE__ ) ) . DIRECTORY_SEPARATOR . 'mocks' . DIRECTORY_SEPARATOR;
+  // These two are required by other classes, so let's load them now manually so they are there at least in time
+  require_once( $mockPath . 'DAVACL_Test_Resource.php' );
+  require_once( $mockPath . 'DAVACL_Test_Collection.php' );
   $dir = new DirectoryIterator( $mockPath );
   foreach ( $dir as $file ) {
     if ( ( substr( $file, 0, 1 ) !== '.' ) && ( substr( $file, -4 ) === '.php' ) ) {
