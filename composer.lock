@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "86311ff09b1bba859fdd8319e168ffc1",
+    "hash": "1bf40e4b2d90a5331713db6004ad7ee7",
     "packages": [
 
     ],
@@ -2803,7 +2803,8 @@
 
     ],
     "platform": {
-        "php": ">=5.3.3"
+        "php": ">=5.3.3",
+        "ext-dom": "*"
     },
     "platform-dev": [
 

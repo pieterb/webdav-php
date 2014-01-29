@@ -1,3 +1,6 @@
+v1.0.2
+- Specified an extra dependency in composer.json
+
 v1.0.1
 - If you are using Composer to load the library, just run \DAV::bootstrap() otherwise include lib\bootstrap.php (and don't run \DAV::bootstrap() seperately)
 - Set the configuration with \DAV::setDebugFile() instead of the config.ini
