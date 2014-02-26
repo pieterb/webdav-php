@@ -1,3 +1,6 @@
+v1.0.3
+- Changed the implementation of a PUT request without a range header; if no content-type is specified by the request header, then any already existing getcontenttype property will be cleared
+
 v1.0.2
 - Specified an extra dependency in composer.json
 

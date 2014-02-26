@@ -117,10 +117,14 @@ protected function handle( $resource ) {
     $resource->assertLock();
 
   if (is_null($this->range_start)) {
-    if ( isset($_SERVER['CONTENT_TYPE']) &&
-         'application/octet-stream' !== $_SERVER['CONTENT_TYPE'] )
-      try { $resource->set_getcontenttype($_SERVER['CONTENT_TYPE']); }
-      catch (DAV_Status $e) {}
+    try {
+      if ( isset($_SERVER['CONTENT_TYPE']) &&
+           'application/octet-stream' !== $_SERVER['CONTENT_TYPE'] ) {
+        $resource->set_getcontenttype($_SERVER['CONTENT_TYPE']); 
+      }else{
+        $resource->set_getcontenttype( null );
+      }
+    } catch (DAV_Status $e) {}
     if ( isset($_SERVER['HTTP_CONTENT_LANGUAGE']) )
       try { $resource->set_getcontentlanguage($_SERVER['HTTP_CONTENT_LANGUAGE']); }
       catch (DAV_Status $e) {}
