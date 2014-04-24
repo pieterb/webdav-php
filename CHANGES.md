@@ -1,5 +1,18 @@
-v1.0.4
+v1.1.0
 - You can no longer assert 'aggregate privileges'
+- No privilege assertions are automatically done anymore; you should assert that the user has the appropriate privileges explicitely. e.g. in the method_GET() method, call $this->assert( DAVACL::PRIV_READ ); Privilege assertions are removed from the following methods:
+   * DAVACL_Resource::property_priv_read()
+   * DAVACL_Resource::property_priv_write()
+   * DAVACL_Resource::method_HEAD()
+   * DAV_Request_ACL::handle()
+   * DAV_Request_COPY::handle()
+   * DAV_Request_COPY::copy_recursively()
+   * DAV_Request_DELETE::delete()
+   * DAV_Request_DELETE::delete_member()
+   * DAV_Request_GET::handle()
+   * DAV_Request_HEAD::handle()
+   * DAV_Request_LOCK::handleCreateLock()
+   * DAV_Request_MKCOL::handle()
 
 v1.0.3
 - Changed the implementation of a PUT request without a range header; if no content-type is specified by the request header, then any already existing getcontenttype property will be cleared

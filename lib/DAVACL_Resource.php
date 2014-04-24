@@ -181,50 +181,6 @@ public function assert($privileges) {
 
 
 /**
- * By default, properties are readable if the current user has PRIV_READ_PROPERTIES.
- * @param array $properties
- * @return array an array of (property => isWritable) pairs.
- */
-public function property_priv_read($properties) {
-  $retval = parent::property_priv_read($properties);
-  if (isset($properties[DAV::PROP_ACL]))
-    try {
-      $this->assert(DAVACL::PRIV_READ_ACL);
-    }
-    catch( DAV_Status $e ) {
-      $properties[DAV::PROP_ACL] = false;
-    }
-  if (isset($properties[DAV::PROP_CURRENT_USER_PRIVILEGE_SET]))
-    try {
-      $this->assert(DAVACL::PRIV_READ_CURRENT_USER_PRIVILEGE_SET);
-    }
-    catch( DAV_Status $e ) {
-      $properties[DAV::PROP_CURRENT_USER_PRIVILEGE_SET] = false;
-    }
-  return $retval;
-}
-
-
-/**
- * By default, properties are writeble if the current user has PRIV_WRITE_PROPERTIES.
- * @param array $properties
- * @return array an array of (property => isWritable) pairs.
- */
-public function property_priv_write($properties) {
-  try {
-    $this->assert(DAVACL::PRIV_WRITE_PROPERTIES);
-    $allow = true;
-  }
-  catch( DAV_Status $e ) {
-    $allow = false;
-  }
-  $retval = array();
-  foreach ($properties as $prop) $retval[$prop] = $allow;
-  return $retval;
-}
-
-
-/**
  * Overwrites DAV_Resource::propname()
  * 
  * @return array
@@ -293,16 +249,6 @@ public function method_PROPPATCH($propname, $value = null) {
        ( $method = @DAV::$PRINCIPAL_PROPERTIES[$propname] ) )
     return call_user_func(array($this, "set_$method"), $value);
   return parent::method_PROPPATCH($propname, $value);
-}
-
-
-/**
- * Return all the resource specific response headers for the HEAD request
- * @see DAV_Resource::method_HEAD()
- */
-public function method_HEAD() {
-  $this->assert(DAVACL::PRIV_READ);
-  return parent::method_HEAD();
 }
 
 

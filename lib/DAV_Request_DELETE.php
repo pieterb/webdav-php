@@ -77,7 +77,6 @@ public static function delete( $resource ) {
   if (!$parent)
     throw new DAV_Status(DAV::HTTP_FORBIDDEN);
   $parent->assertLock();
-  $parent->assert(DAVACL::PRIV_UNBIND);
   self::delete_member( $parent, $resource );
 }
 
@@ -94,7 +93,6 @@ private static function delete_member( $resource, $memberResource )
 {
   if ( $memberResource instanceof DAV_Collection ) {
     $failure = false;
-    $first = true;
     foreach ($memberResource as $child)
       try {
         $childResource = DAV::$REGISTRY->resource(
@@ -106,10 +104,6 @@ private static function delete_member( $resource, $memberResource )
             "Registry didn't generate resource for path " .
               $memberResource->path . $child
           );
-        if ($first) {
-          $memberResource->assert( DAVACL::PRIV_UNBIND );
-          $first = false;
-        }
         self::delete_member( $memberResource, $childResource );
       }
       catch (DAV_Status $e) {

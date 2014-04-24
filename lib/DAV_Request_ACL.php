@@ -139,10 +139,8 @@ protected function handle( $resource ) {
   $resource->assertLock();
   if ( ! $resource instanceof DAVACL_Resource )
     throw new DAV_Status(DAV::HTTP_METHOD_NOT_ALLOWED);
-  $resource->assert(DAVACL::PRIV_WRITE_ACL);
   $supported = $resource->user_prop_supported_privilege_set();
   $supported = DAVACL_Element_supported_privilege::flatten($supported);
-  $restrictions = $resource->user_prop_acl_restrictions();
   foreach ($this->aces as $ace) {
     foreach ($ace->privileges as $privilege)
       // Check if the privilege is supported...

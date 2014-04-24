@@ -85,7 +85,6 @@ protected function handle( $resource ) {
   $resourceCollection = $resource->collection();
   if ( $this instanceof DAV_Request_MOVE ) {
     $resourceCollection->assertLock();
-    $resourceCollection->assert(DAVACL::PRIV_UNBIND);
     $resource->assertLock();
     $resource->assertMemberLocks();
   }
@@ -136,7 +135,6 @@ protected function handle( $resource ) {
   } else {
     $destinationCollection->assertLock();
   }
-  $destinationCollection->assert(DAVACL::PRIV_BIND);
 
   if ($this instanceof DAV_Request_MOVE) {
     if ( DAV::$LOCKPROVIDER ) {
@@ -191,7 +189,6 @@ protected function handle( $resource ) {
 private function copy_recursively( $resource, $destination, $dr = null ) {
   if (!$dr) $dr = $destination;
   elseif ($dr === $resource->path) return;
-  $resource->assert(DAVACL::PRIV_READ);
   $resource->method_COPY($destination);
   if ( ! $resource instanceof DAV_Collection ||
        DAV::DEPTH_INF !== $this->depth() )

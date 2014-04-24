@@ -82,7 +82,6 @@ protected static function common($resource) {
  */
 protected function handle( $resource )
 {
-  $resource->assert(DAVACL::PRIV_READ);
   $headers = self::common($resource);
   DAV::header($headers);
   return;

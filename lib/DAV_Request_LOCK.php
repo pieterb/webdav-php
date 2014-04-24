@@ -203,7 +203,6 @@ private function handleCreateLock($resource) {
     if (!$parent || !$parent->isVisible())
       throw new DAV_Status(DAV::HTTP_CONFLICT, 'Unable to LOCK unexisting parent collection');
     $parent->assertLock();
-    $parent->assert(DAVACL::PRIV_BIND);
     $resource = $parent->create_member(basename(DAV::getPath()));
 
     if ( false !== strpos($_SERVER['HTTP_USER_AGENT'], 'Microsoft') ) {
@@ -213,9 +212,6 @@ private function handleCreateLock($resource) {
       $headers['status'] = DAV::HTTP_CREATED;
       $headers['Location'] = DAV::getPath();
     }
-  }
-  else {
-    $resource->assert(DAVACL::PRIV_WRITE);
   }
 
   if ( $resource instanceof DAV_Collection &&

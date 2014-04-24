@@ -39,7 +39,6 @@ class DAV_Request_GET extends DAV_Request_HEAD {
  */
 protected function handle( $resource )
 {
-  $resource->assert(DAVACL::PRIV_READ);
   $headers = self::common($resource);
 
   try {
