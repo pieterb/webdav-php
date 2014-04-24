@@ -1,3 +1,6 @@
+v1.0.4
+- You can no longer assert 'aggregate privileges'
+
 v1.0.3
 - Changed the implementation of a PUT request without a range header; if no content-type is specified by the request header, then any already existing getcontenttype property will be cleared
 

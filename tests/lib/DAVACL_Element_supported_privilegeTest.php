@@ -33,6 +33,16 @@ class DAVACL_Element_supported_privilegeTest extends PHPUnit_Framework_TestCase 
   }
 
 
+  public function testGetNamespace() {
+    $this->assertSame( 'NS1', $this->obj->getNamespace() );
+  }
+
+
+  public function testGetName() {
+    $this->assertSame( 'privilege1', $this->obj->getName() );
+  }
+
+
   public function testToXML() {
     $this->assertSame( <<<EOS
 <D:supported-privilege xmlns:ns1="NS1">
@@ -90,6 +100,58 @@ EOS
       )
     );
     $this->assertSame( $expected, DAVACL_Element_supported_privilege::flatten( array( $this->obj ) ), 'DAVACL_Element_supported_privilege::flatten() should return a correctly flattened array' );
+  }
+
+
+  public function testIsAggregatePrivilege() {
+    $this->assertFalse( $this->obj->isAggregatePrivilege() );
+
+    $this->obj->add_supported_privilege( new DAVACL_Element_supported_privilege( 'NS1 privilege2', false, 'useless privilege' ) );
+    $this->assertTrue( $this->obj->isAggregatePrivilege() );
+  }
+
+
+  public function testGetSubPrivileges() {
+    $this->assertSame( array(), $this->obj->getSubPrivileges() );
+
+    $subPrivilege = new DAVACL_Element_supported_privilege( 'NS1 privilege2', false, 'useless privilege' );
+    $this->obj->add_supported_privilege( $subPrivilege );
+    $this->assertSame( array( $subPrivilege ), $this->obj->getSubPrivileges() );
+  }
+
+
+  public function testFindSubPrivilege() {
+    $this->assertSame( $this->obj, $this->obj->findSubPrivilege( 'NS1 privilege1' ) );
+
+    $subPrivilege = new DAVACL_Element_supported_privilege( 'NS1 privilege2', false, 'useless privilege' );
+    $this->obj->add_supported_privilege( $subPrivilege );
+    $this->assertSame( $subPrivilege, $this->obj->findSubPrivilege( 'NS1 privilege2' ) );
+
+    $subSubPrivilege = new DAVACL_Element_supported_privilege( 'NS1 privilege3', false, 'useless privilege' );
+    $subPrivilege->add_supported_privilege( $subSubPrivilege );
+    $this->assertSame( $subSubPrivilege, $this->obj->findSubPrivilege( 'NS1 privilege3' ) );
+
+    $this->assertNull( $this->obj->findSubPrivilege( 'NS1 privilege4' ) );
+  }
+
+
+  public function testGetNonAggregatePrivileges(){
+    $this->assertSame( array( $this->obj ), $this->obj->getNonAggregatePrivileges() );
+
+    $subPrivilege = new DAVACL_Element_supported_privilege( 'NS1 privilege2', false, 'useless privilege' );
+    $this->obj->add_supported_privilege( $subPrivilege );
+    $this->assertSame( array( $subPrivilege ), $this->obj->getNonAggregatePrivileges() );
+    
+    $subSubPrivilege = new DAVACL_Element_supported_privilege( 'NS1 privilege3', false, 'useless privilege' );
+    $subPrivilege->add_supported_privilege( $subSubPrivilege );
+    $this->assertSame( array( $subSubPrivilege ), $this->obj->getNonAggregatePrivileges() );
+
+    $subSubPrivilege2 = new DAVACL_Element_supported_privilege( 'NS1 privilege4', false, 'useless privilege' );
+    $subPrivilege->add_supported_privilege( $subSubPrivilege2 );
+    $twoNonAggregatedPrivileges = $this->obj->getNonAggregatePrivileges();
+    $this->assertCount( 2, $twoNonAggregatedPrivileges );
+    $this->assertContains( $subSubPrivilege, $twoNonAggregatedPrivileges);
+    $this->assertContains( $subSubPrivilege2, $twoNonAggregatedPrivileges);
   }
 
 } // class DAVACL_Element_supported_privilegeTest

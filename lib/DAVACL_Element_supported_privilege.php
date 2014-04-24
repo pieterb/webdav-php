@@ -60,21 +60,9 @@ private $supported_privileges = array();
 
 
 /**
- * Add a supported privilege to this element
- * 
- * @param DAVACL_Element_supported_privilege $supported_privilege
- * @return DAVACL_Element_supported_privilege $this
- */
-public function add_supported_privilege($supported_privilege) {
-  $this->supported_privileges[] = $supported_privilege;
-  return $this;
-}
-
-
-/**
  * Constructor
  * 
- * @param  string   $privilege    The name of the privilege: 'namespace privilegename'
+ * @param  string   $privilege    The name of the privilege: 'namespace privilegename', e.g. 'DAV: read'
  * @param  boolean  $abstract     Whether the privilege is abstract or not
  * @param  string   $description  Description of the privilege
  */
@@ -82,6 +70,102 @@ public function __construct($privilege, $abstract, $description) {
   $this->privilege = "$privilege";
   $this->abstract = (bool)$abstract;
   $this->description = "$description";
+}
+
+
+/**
+ * Gets the namespace of the privilege
+ * 
+ * @return  string  The namespace
+ */
+public function getNamespace() {
+  $explodedName = explode( ' ', $this->privilege );
+  return $explodedName[0];
+}
+
+
+/**
+ * Gets the name of the privilege
+ *
+ * @return  string  The name
+ */
+public function getName() {
+  $explodedName = explode( ' ', $this->privilege );
+  return $explodedName[1];
+}
+
+
+/**
+ * Add a supported privilege to this element
+ *
+ * @param   DAVACL_Element_supported_privilege  $supported_privilege
+ * @return  DAVACL_Element_supported_privilege  $this
+ */
+public function add_supported_privilege( DAVACL_Element_supported_privilege $supported_privilege ) {
+  $this->supported_privileges[] = $supported_privilege;
+  return $this;
+}
+
+
+/**
+ * Checks whether this is an aggregate privilege
+ *
+ * A privilege is regarded as being an aggregate privilege if it has
+ * 'sub-privileges'; other privileges added with self::add_supported_privilege()
+ *
+ * @return  boolean  True if this is an aggregate privilege, false otherwise
+ */
+public function isAggregatePrivilege() {
+  return ( count( $this->supported_privileges ) > 0 );
+}
+
+
+/**
+ * Gives all sub-privileges (if any)
+ *
+ * @return  array  An array with DAVACL_Element_supported_privileges, or an empty array if this is not an aggregate privilege
+ */
+public function getSubPrivileges() {
+  return $this->supported_privileges;
+}
+
+
+/**
+ * Gets one specific sub-privilege
+ *
+ * @param   string                              $privilege  The name of the privilege to look for, prefixed by the namespace and a space. e.g. 'DAV: read'
+ * @return  DAVACL_Element_supported_privilege              The privilege or null if it is not found or this is not an aggregate privilege
+ */
+public function findSubPrivilege( $privilege ) {
+  if ( $this->privilege === $privilege ) {
+    return $this;
+  }else{
+    foreach( $this->supported_privileges as $priv ) {
+      $retval = $priv->findSubPrivilege( $privilege );
+      if ( ! is_null( $retval ) ) {
+        return $retval;
+      }
+    }
+  }
+  return null;
+}
+
+
+/**
+ * Get all non-aggregate privileges that reside 'under' this aggregate privilege
+ *
+ * @return  array  An array with non-aggregate privileges, or with this privilege if it is not an aggregate privilege itself
+ */
+public function getNonAggregatePrivileges(){
+  $retval = array();
+  if ( $this->isAggregatePrivilege() ) {
+    foreach( $this->supported_privileges as $privilege ) {
+      $retval = array_merge( $retval, $privilege->getNonAggregatePrivileges() );
+    }
+  }else{
+    $retval[] = $this;
+  }
+  return $retval;
 }
 
 

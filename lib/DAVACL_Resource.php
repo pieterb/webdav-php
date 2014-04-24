@@ -59,9 +59,6 @@ public function effective_acl() {
   $principals = $this->current_user_principals();
 
   $aces = $this->user_prop_acl();
-  $fsps = DAVACL_Element_supported_privilege::flatten(
-    $this->user_prop_supported_privilege_set()
-  );
   foreach ($aces as $ace) {
     $match = false;
     switch($ace->principal) {
@@ -88,8 +85,20 @@ public function effective_acl() {
     if (!$match && !$ace->invert ||
          $match &&  $ace->invert) continue;
     $privs = array();
-    foreach ($ace->privileges as $p)
-      $privs = array_merge($privs, $fsps[$p]['children']);
+    $sps = $this->user_prop_supported_privilege_set();
+    foreach( $ace->privileges as $privilegeName ) {
+      $privilege = null;
+      foreach( $sps as $supportedPrivilege ) {
+        $privilege = $supportedPrivilege->findSubPrivilege( $privilegeName );
+        if ( ! is_null( $privilege ) ) {
+          break;
+        }
+      }
+      $nonAggregatePrivileges = $privilege->getNonAggregatePrivileges();
+      foreach ( $nonAggregatePrivileges as $nonAggregatePrivilege ) {
+        $privs[] = $nonAggregatePrivilege->getNamespace() . ' ' . $nonAggregatePrivilege->getName();
+      }
+    }
     $this->eaclCache[] = array( $ace->deny, array_unique($privs));
   }
   return $this->eaclCache;
@@ -121,8 +130,27 @@ public function clearAssertCache() {
 public function assert($privileges) {
   if (!is_array($privileges))
     $privileges = array((string)$privileges);
-  sort($privileges);
 
+  $flags = array();
+  foreach ( $privileges as $p ) {
+    $supportedPrivileges = DAV::$ACLPROVIDER->user_prop_supported_privilege_set();
+    $privilege = null;
+    foreach ( $supportedPrivileges as $supportedPrivilege ) {
+      $privilege = $supportedPrivilege->findSubPrivilege( $p );
+      if ( ! is_null( $privilege ) ) {
+        break;
+      }
+    }
+    if ( is_null( $privilege ) ) {
+      throw new DAV_Status( DAV::HTTP_INTERNAL_SERVER_ERROR, 'Privilege not found: ' . $p );
+    }
+    if ( $privilege->isAggregatePrivilege() ) {
+      throw new DAV_Status( DAV::HTTP_INTERNAL_SERVER_ERROR, 'You cannot (and should not) assert aggregate privileges: ' . $p );
+    }
+    $flags[$p] = 0;
+  }
+
+  sort($privileges);
   $privstring = implode(',', $privileges);
   if (array_key_exists($privstring, $this->assertCache))
     if ($this->assertCache[$privstring])
@@ -131,9 +159,6 @@ public function assert($privileges) {
       return true;
 
   $eacl = $this->effective_acl();
-  $flags = array();
-  foreach ($privileges as $p)
-    $flags[$p] = 0;
   foreach ($eacl as $ace) {
     list($deny, $privs) = $ace;
     foreach ($privs as $p)

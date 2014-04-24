@@ -44,18 +44,18 @@ class DAVACL_ResourceTest extends PHPUnit_Framework_TestCase {
    */
   private function prepareObjWithAcl() {
     $_SERVER['REQUEST_URI'] = '/path/to/principal';
-    $supportedPrivs = array(
-        new DAVACL_Element_supported_privilege( DAVACL::PRIV_ALL, false, ''),
-        new DAVACL_Element_supported_privilege( DAVACL::PRIV_BIND, false, ''),
-        new DAVACL_Element_supported_privilege( DAVACL::PRIV_READ, false, ''),
-        new DAVACL_Element_supported_privilege( DAVACL::PRIV_READ_ACL, false, ''),
-        new DAVACL_Element_supported_privilege( DAVACL::PRIV_READ_CURRENT_USER_PRIVILEGE_SET, false, ''),
-        new DAVACL_Element_supported_privilege( DAVACL::PRIV_UNBIND, false, ''),
-        new DAVACL_Element_supported_privilege( DAVACL::PRIV_UNLOCK, false, ''),
-        new DAVACL_Element_supported_privilege( DAVACL::PRIV_WRITE_CONTENT, false, '')
-    );
+    $allAce = new DAVACL_Element_supported_privilege( DAVACL::PRIV_ALL, false, '' );
+    $allAce->add_supported_privilege( new DAVACL_Element_supported_privilege( DAVACL::PRIV_BIND, false, '' ) );
+    $allAce->add_supported_privilege( new DAVACL_Element_supported_privilege( DAVACL::PRIV_READ, false, '' ) );
+    $allAce->add_supported_privilege( new DAVACL_Element_supported_privilege( DAVACL::PRIV_READ_ACL, false, '' ) );
+    $allAce->add_supported_privilege( new DAVACL_Element_supported_privilege( DAVACL::PRIV_READ_CURRENT_USER_PRIVILEGE_SET, false, '' ) );
+    $allAce->add_supported_privilege( new DAVACL_Element_supported_privilege( DAVACL::PRIV_UNBIND, false, '' ) );
+    $allAce->add_supported_privilege( new DAVACL_Element_supported_privilege( DAVACL::PRIV_UNLOCK, false, '' ) );
+    $allAce->add_supported_privilege( new DAVACL_Element_supported_privilege( DAVACL::PRIV_WRITE_CONTENT, false, '' ) );
+    $supportedPrivs = array( $allAce );
+    DAV::$ACLPROVIDER = new DAVACL_Test_ACL_Provider();
+    DAV::$ACLPROVIDER->setSupportedPrivilegeSet( $supportedPrivs );
     $acl = array(
-        new DAVACL_Element_ace( '/path/to/principal', false, array( DAVACL::PRIV_ALL ), false), // Effective
         new DAVACL_Element_ace( '/path/to/principal', true, array( DAVACL::PRIV_BIND ), false), // Not effective
         new DAVACL_Element_ace( '/path/to/other/principal', false, array( DAVACL::PRIV_READ ), false), // Not effective
         new DAVACL_Element_ace( '/path/to/other/principal', true, array( DAVACL::PRIV_READ_ACL ), false), // Effective
@@ -82,13 +82,16 @@ class DAVACL_ResourceTest extends PHPUnit_Framework_TestCase {
   public function testAssert() {
     $obj = $this->prepareObjWithAcl();
     $obj->clearAssertCache();
-    $this->assertTrue( $obj->assert( DAVACL::PRIV_ALL )          , 'DAVACL_Resource::assert() should assert that the user has PRIV_ALL privileges' );
-    $obj->clearAssertCache();
     $this->assertTrue( $obj->assert( DAVACL::PRIV_READ_ACL )     , 'DAVACL_Resource::assert() should assert that the user has PRIV_READ_ACL privileges' );
     $obj->clearAssertCache();
     $this->assertTrue( $obj->assert( DAVACL::PRIV_UNBIND )       , 'DAVACL_Resource::assert() should assert that the user has PRIV_UNBIND privileges' );
     $obj->clearAssertCache();
     $this->assertTrue( $obj->assert( DAVACL::PRIV_WRITE_CONTENT ), 'DAVACL_Resource::assert() should assert that the user has PRIV_WRITE_CONTENT privileges' );
+
+    $obj->clearAssertCache();
+    // DAVACL_Resource::assert() should not assert aggregate privileges
+    $this->setExpectedException( 'PHPUnit_Framework_Error_Warning' );
+    $obj->assert( DAVACL::PRIV_ALL );
   }
   
   
@@ -159,7 +162,6 @@ class DAVACL_ResourceTest extends PHPUnit_Framework_TestCase {
     $obj = $this->prepareObjWithAcl();
     
     $expected = array(
-        array( false, array( 'DAV: all' ) ),
         array( false, array( 'DAV: read-acl' ) ),
         array( true , array( 'DAV: read-current-user-privilege-set' ) ),
         array( false, array( 'DAV: unbind' ) ),
