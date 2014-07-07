@@ -351,10 +351,12 @@ public function handleRequest()
     $resource = DAV::$REGISTRY->resource( DAV::getPath() );
     if ( !$resource || !$resource->isVisible() and
          in_array( $_SERVER['REQUEST_METHOD'], array(
-             'ACL', 'COPY', 'DELETE', 'GET', 'HEAD', 'MOVE',
+             'ACL', 'COPY', 'DELETE', 'GET', 'HEAD', 'MOVE', 'OPTIONS',
              'POST', 'PROPFIND', 'PROPPATCH', 'REPORT', 'UNLOCK',
        ) ) )
+    {
       throw new DAV_Status( DAV::HTTP_NOT_FOUND );
+    }
 
     if ( '/' !== substr( DAV::getPath(), -1 ) &&
          ( $resource &&

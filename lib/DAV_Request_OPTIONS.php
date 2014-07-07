@@ -37,19 +37,24 @@ class DAV_Request_OPTIONS extends DAV_Request {
  * @throws DAV_Status
  */
 protected function handle( $resource ) {
-  DAV::header( array( 'DAV' => '1' . (DAV::$LOCKPROVIDER ? ', 2' : '') . ', 3' ) );
-  DAV::header( array( 'DAV' => 'access-control' ), false );
-  DAV::header( array( 'DAV' => '<http://apache.org/dav/propset/fs/1>' ), false );
   $headers = array(
+    'DAV' => '1' . ( DAV::$LOCKPROVIDER ? ', 2' : '' ) . ', 3, access-control, <http://apache.org/dav/propset/fs/1>',
     'MS-Author-Via' => 'DAV',
     'Allow' => implode(', ', self::$ALLOWED_METHODS),
     'Content-Length' => 0
   );
-  if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD']))
+  if ( isset( $_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD'] ) ) {
     $headers['Access-Control-Allow-Methods'] = $_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD'];
-  if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']))
+  }
+  if ( isset( $_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'] ) ) {
     $headers['Access-Control-Allow-Headers'] = $_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'];
-  DAV::header( $headers );
+  }
+
+  if ( $resource instanceof DAV_Resource ) {
+    DAV::header( $resource->method_OPTIONS( $headers ) );
+  }else{
+    DAV::header( $headers );
+  }
 }
 
 
