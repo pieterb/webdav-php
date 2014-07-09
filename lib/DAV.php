@@ -676,7 +676,7 @@ public static function header($properties, $replace = true) {
     $properties['Access-Control-Allow-Origin'] = $_SERVER['HTTP_ORIGIN'];
   $status = null;
   if (isset($properties['status'])) {
-    $status = $properties['status'];
+    $status = intval( $properties['status'] );
     unset( $properties['status'] );
   }
   // RFC2616 §14.16
@@ -686,14 +686,34 @@ public static function header($properties, $replace = true) {
   if ( self::HTTP_REQUESTED_RANGE_NOT_SATISFIABLE === (int)$status &&
        !isset( $properties['Content-Range'] ) )
     $properties['Content-Range'] = 'bytes */*';
-  if ( ( isset( $properties['Location'] ) ) && ( strpos( $properties['Location'], ':' ) === false ) ) {
-    $properties['Location'] = self::path2uri( $properties['Location'] );
+  if ( isset( $properties['Location'] ) ) {
+    if ( is_array( $properties['Location'] ) ) {
+      foreach ( $properties['Location'] as $key => $value ) {
+        if ( strpos( $value, ':' ) === false ) {
+          $properties['Location'][$key] = self::path2uri( $value );
+        }
+      }
+    }elseif ( strpos( $properties['Location'], ':' ) === false ) {
+      $properties['Location'] = self::path2uri( $properties['Location'] );
+    }
   }
   foreach($properties as $key => $value) {
-    if ( self::$testMode ) {
-      print( $key . ': ' . $value . "\n" );
+    if ( is_array( $value ) ) {
+      $firstReplace = $replace;
+      foreach( $value as $singleValue ) {
+        if ( self::$testMode ) {
+          print( $key . ': ' . $singleValue . "\n" );
+        }else{
+          header("$key: $singleValue", $firstReplace);
+        }
+        $firstReplace = false;
+      }
     }else{
-      header("$key: $value", $replace);
+      if ( self::$testMode ) {
+        print( $key . ': ' . $value . "\n" );
+      }else{
+        header("$key: $value", $replace);
+      }
     }
   }
   if ($status !== null) {

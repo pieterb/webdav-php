@@ -38,7 +38,7 @@ class DAV_Request_OPTIONS extends DAV_Request {
  */
 protected function handle( $resource ) {
   $headers = array(
-    'DAV' => '1' . ( DAV::$LOCKPROVIDER ? ', 2' : '' ) . ', 3, access-control, <http://apache.org/dav/propset/fs/1>',
+    'DAV' => array( '1' . ( DAV::$LOCKPROVIDER ? ', 2' : '' ) . ', 3', 'access-control', '<http://apache.org/dav/propset/fs/1>' ),
     'MS-Author-Via' => 'DAV',
     'Allow' => implode(', ', self::$ALLOWED_METHODS),
     'Content-Length' => 0

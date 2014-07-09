@@ -75,8 +75,9 @@ public function effective_acl() {
         $match = isset($principals[$this->path]);
         break;
       default:
-        if ('/' === $ace->principal[0])
+        if ('/' === $ace->principal[0]) {
           $match = isset($principals[$ace->principal]);
+        }
         elseif ( ( $p = $this->prop($ace->principal) ) instanceof DAV_Element_href )
           foreach ( $p->URIs as $URI )
             if ( isset($principals[$URI]) )
@@ -608,8 +609,12 @@ public function user_prop_current_user_principal() {
  * @return  array          An array with all paths (both as key and as value) to principals that apply to this user
  */
 final private static function current_user_principals_recursive($path) {
+  $principal = DAV::$REGISTRY->resource($path);
+  if ( ! ( $principal instanceof DAVACL_Principal ) ) {
+    return array();
+  }
   $retval = array($path => $path);
-  foreach (DAV::$REGISTRY->resource($path)->user_prop_group_membership() as $group)
+  foreach ( $principal->user_prop_group_membership() as $group )
     $retval = array_merge($retval, self::current_user_principals_recursive($group));
   return $retval;
 }
