@@ -1,3 +1,7 @@
+v1.1.1
+- MOVE and COPY do not longer delete the destination resource on overwrite
+- OPTIONS request now require the resource to exist
+
 v1.1.0
 - You can no longer assert 'aggregate privileges'
 - No privilege assertions are automatically done anymore; you should assert that the user has the appropriate privileges explicitely. e.g. in the method_GET() method, call $this->assert( DAVACL::PRIV_READ ); Privilege assertions are removed from the following methods:
