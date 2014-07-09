@@ -331,7 +331,7 @@ public static function var_dump($var) {
 /**
  * Writes $string to some debug file.
  * @param mixed $data
- * @see DAV::$DEBUG_FILE
+ * @see DAV::setDebugFile
  */
 public static function debug() {
   $config = self::getConfig();

@@ -127,7 +127,6 @@ EOS
   public function testHandleNormal() {
     // Check if copying goes right when everything is correct
     $this->expectOutputString(<<<EOS
-DAVACL_Test_Collection::method_DELETE() called for /new and parameter /destination
 DAVACL_Test_Resource::method_COPY_external() called for /path and parameter /new/destination
 HTTP/1.1 204 No Content
 

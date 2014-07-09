@@ -159,7 +159,6 @@ EOS
   public function testHandleNormal() {
     // Check if moving goes right when everything is correct
     $this->expectOutputString(<<<EOS
-DAVACL_Test_Collection::method_DELETE() called for /new and parameter /destination
 DAVACL_Test_Collection::method_MOVE() called for / and parameters path - /new/destination
 HTTP/1.1 204 No Content
 

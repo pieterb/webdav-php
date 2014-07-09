@@ -120,18 +120,9 @@ protected function handle( $resource ) {
     throw new DAV_Status(DAV::HTTP_CONFLICT, 'Unable to COPY to unexisting destination collection' );
 
   if ( $destinationResource ) {
-    if ($this->overwrite()) {
-      DAV_Request_DELETE::delete($destinationResource);
-      if (DAV_Multistatus::active()) {
-        DAV_Multistatus::inst()->addStatus(
-          DAV::getPath(), DAV::forbidden()
-        );
-        DAV_Multistatus::inst()->close();
-        return;
-      }
-    }
-    else
+    if ( ! $this->overwrite() ) {
       throw new DAV_Status(DAV::HTTP_PRECONDITION_FAILED);
+    }
   } else {
     $destinationCollection->assertLock();
   }
