@@ -173,25 +173,6 @@ class DAVACL_ResourceTest extends PHPUnit_Framework_TestCase {
   }
 
 
-  public function testMethod_HEAD() {
-    $objAllow = $this->getMock( 'DAVACL_Test_Principal', array( 'assert' ), array( '/collection/child' ) );
-    $objAllow->expects( $this->once() )
-             ->method( 'assert')
-             ->with( $this->equalTo( DAVACL::PRIV_READ ) )
-             ->will( $this->returnValue( true ) );
-
-    $this->assertSame( array(), $objAllow->method_HEAD(), 'DAVACL_Resource::method_HEAD() should return headers when assert() returns true' );
-
-    $objDeny = $this->getMock( 'DAVACL_Test_Principal', array( 'assert' ), array( '/collection/child' ) );
-    $objDeny->expects( $this->once() )
-            ->method( 'assert')
-            ->with( $this->equalTo( DAVACL::PRIV_READ ) )
-            ->will( $this->returnValue( false ) );
-
-    $this->assertSame( array(), $objDeny->method_HEAD(), 'DAVACL_Resource::method_HEAD() should return headers when assert() returns true' );
-  }
-
-
   public function testProp_acl() {
     $acl = array( new DAVACL_Element_ace( '/path/to/user', false, array( DAVACL::PRIV_ALL ), false ) );
     $acl[] = new DAVACL_Element_ace( '/path/to/other/user', false, array( DAVACL::PRIV_ALL ), false );
@@ -404,32 +385,6 @@ EOS
     ;
     
     $this->assertSame( $expected, $returned, 'DAVACL_Resource::prop_supported_privilege_set should return the right XML description' );
-  }
-  
-  
-  public function testProperty_priv_read() {
-    $properties = array(
-        DAV::PROP_DISPLAYNAME,
-        DAV::PROP_GETCONTENTLENGTH
-    );
-    $expected = array(
-        DAV::PROP_DISPLAYNAME => true,
-        DAV::PROP_GETCONTENTLENGTH => true
-    );
-    $this->assertSame( $expected, $this->obj->property_priv_read( $properties ), 'DAVACL_Resource::property_priv_read() should return the right properties as readable' );
-  }
-  
-  
-  public function testProperty_priv_write() {
-    $properties = array(
-        DAV::PROP_DISPLAYNAME,
-        DAV::PROP_GETCONTENTLENGTH
-    );
-    $expected = array(
-        DAV::PROP_DISPLAYNAME => true,
-        DAV::PROP_GETCONTENTLENGTH => true
-    );
-    $this->assertSame( $expected, $this->obj->property_priv_write( $properties ), 'DAVACL_Resource::property_priv_write() should return the right properties as writable' );
   }
   
   

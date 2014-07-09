@@ -80,7 +80,14 @@ class DAVACL_Test_Resource extends DAVACL_Resource {
 
 
   public function property_priv_write($properties) {
-    $retval = parent::property_priv_write($properties);
+    try {
+      $this->assert( DAVACL::PRIV_WRITE_PROPERTIES );
+      $allow = true;
+    }catch( DAV_Status $e ) {
+      $allow = false;
+    }
+    $retval = array();
+    foreach ($properties as $prop) $retval[$prop] = $allow;
     if ( isset( $retval['test: forbidden_to_write'] ) ) {
       $retval['test: forbidden_to_write'] = false;
     }
