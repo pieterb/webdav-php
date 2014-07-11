@@ -75,7 +75,7 @@ class DAV_Request_LOCKTest extends PHPUnit_Framework_TestCase {
 
 
   public function testConstructorSharedLock() {
-    $this->setExpectedException( 'PHPUnit_Framework_Error_Warning', 'Shared locks are not supported.' );
+    $this->setExpectedException( 'DAV_Status', 'Shared locks are not supported.', DAV::HTTP_NOT_IMPLEMENTED );
     DAV_Test_Request_LOCK::setInputstring( <<<EOS
 <?xml version="1.0" encoding="utf-8" ?>
 <D:lockinfo xmlns:D='DAV:'>

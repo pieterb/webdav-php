@@ -90,14 +90,8 @@ EOS
   public function testHandleToParent() {
     // Check: Won't move a resource to one of its parents.
     $_SERVER['HTTP_DESTINATION'] = dirname( $_SERVER['REQUEST_URI'] );
-    try {
-      $this->obj->handleRequest();
-      $this->assertTrue( false, 'DAV_Request_MOVE::handle() should throw a DAV_Status exception when trying to move a resource to one of its parents' );
-    }catch ( PHPUnit_Framework_Error_Warning $exception ) {
-      if ( $exception->getCode() !== 512 ) {
-        $this->assertTrue( false, 'DAV_Request_MOVE::handle() should throw a DAV_Status exception with code 512 when trying to move a resource to one of its parents' );
-      }
-    }
+    $this->expectOutputRegex( '|^HTTP/1\\.1 501 Not Implemented|m' );
+    $this->obj->handleRequest();
   }
 
 

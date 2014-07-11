@@ -102,8 +102,9 @@ public function __construct(
     }
   }
   parent::__construct("$info", $status);
-  if ($status >= 500)
+  if ( ( $status >= 500 ) && ( $status !== DAV::HTTP_NOT_IMPLEMENTED ) && ( $status !== DAV::HTTP_SERVICE_UNAVAILABLE ) ) {
     trigger_error("{$info}\n{$this}", E_USER_WARNING);
+  }
 }
 
 

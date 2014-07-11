@@ -101,22 +101,19 @@ class DAV_ResourceTest extends PHPUnit_Framework_TestCase {
 
 
   public function testMethod_COPY() {
-    // We expect an error instead of a DAV_Status because DAV_Status with a code >= 500 will trigger an error too
-    $this->setExpectedException( 'PHPUnit_Framework_Error_Warning', '', 512 );
+    $this->setExpectedException( 'DAV_Status', null, DAV::HTTP_NOT_IMPLEMENTED );
     $this->obj->method_COPY( '/destination/path' );
   }
 
 
   public function testMethod_COPY_external() {
-    // We expect an error instead of a DAV_Status because DAV_Status with a code >= 500 will trigger an error too
-    $this->setExpectedException( 'PHPUnit_Framework_Error_Warning', '', 512 );
+    $this->setExpectedException( 'DAV_Status', null, DAV::HTTP_NOT_IMPLEMENTED );
     $this->obj->method_COPY_external( '/destination/path', true );
   }
 
 
   public function testMethod_GET() {
-    // We expect an error instead of a DAV_Status because DAV_Status with a code >= 500 will trigger an error too
-    $this->setExpectedException( 'PHPUnit_Framework_Error_Warning', '', 512 );
+    $this->setExpectedException( 'DAV_Status', null, DAV::HTTP_NOT_IMPLEMENTED );
     $this->obj->method_GET();
   }
 
@@ -133,8 +130,7 @@ class DAV_ResourceTest extends PHPUnit_Framework_TestCase {
 
 
   public function testMethod_POST() {
-    // We expect an error instead of a DAV_Status because DAV_Status with a code >= 500 will trigger an error too
-    $this->setExpectedException( 'PHPUnit_Framework_Error_Warning', '', 512 );
+    $this->setExpectedException( 'DAV_Status', null, DAV::HTTP_NOT_IMPLEMENTED );
     $param = array();
     $this->obj->method_POST( $param );
   }
@@ -148,15 +144,13 @@ class DAV_ResourceTest extends PHPUnit_Framework_TestCase {
 
 
   public function testMethod_PUT() {
-    // We expect an error instead of a DAV_Status because DAV_Status with a code >= 500 will trigger an error too
-    $this->setExpectedException( 'PHPUnit_Framework_Error_Warning', '', 512 );
+    $this->setExpectedException( 'DAV_Status', null, DAV::HTTP_NOT_IMPLEMENTED );
     $this->obj->method_PUT( STDIN );
   }
 
   
   public function testMethod_PUT_range() {
-    // We expect an error instead of a DAV_Status because DAV_Status with a code >= 500 will trigger an error too
-    $this->setExpectedException( 'PHPUnit_Framework_Error_Warning', '', 512 );
+    $this->setExpectedException( 'DAV_Status', null, DAV::HTTP_NOT_IMPLEMENTED );
     $this->obj->method_PUT_range( STDIN, 1, 5, 10 );
   }
 
