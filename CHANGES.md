@@ -1,3 +1,6 @@
+v1.1.2
+- No longer trigger an error when a 501 Not Implemented status is returned
+
 v1.1.1
 - MOVE and COPY do not longer delete the destination resource on overwrite
 - OPTIONS request now require the resource to exist
