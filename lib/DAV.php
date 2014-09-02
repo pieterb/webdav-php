@@ -672,8 +672,6 @@ private static $statusHeader = null;
 public static function header($properties, $replace = true) {
   if (is_string($properties))
     $properties = array( 'Content-Type' => $properties );
-  if (isset($_SERVER['HTTP_ORIGIN']))
-    $properties['Access-Control-Allow-Origin'] = $_SERVER['HTTP_ORIGIN'];
   $status = null;
   if (isset($properties['status'])) {
     $status = intval( $properties['status'] );
