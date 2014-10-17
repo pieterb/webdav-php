@@ -1015,7 +1015,7 @@ const CLIENT_WINDOWS_WEBFOLDER = 0x200; // 0b0010 0000 0000;
     $cache = DAV_Cache::inst( 'DAV' );
     $PATH = $cache->get( 'path' );
     if ( is_null( $PATH ) ) {
-      $PATH = DAV::parseURI( $_SERVER['REQUEST_URI'], true );
+      $PATH = DAV::parseURI( urldecode( $_SERVER['REQUEST_URI'] ), true );
       $cache->set( 'path', $PATH );
     }
     return $PATH;
