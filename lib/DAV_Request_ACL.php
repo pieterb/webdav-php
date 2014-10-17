@@ -49,10 +49,11 @@ protected function __construct() {
 //    );
 
   // DEBUG
+  $input = $this->inputstring();
   $document = new DOMDocument();
   if ( preg_match( '/xmlns:[a-zA-Z0-9]*=""/', $input ) ||
        ! $document->loadXML(
-           $this->inputstring(),
+           $input,
            LIBXML_NOCDATA | LIBXML_NOENT | LIBXML_NSCLEAN | LIBXML_NOWARNING
          ) )
     throw new DAV_Status(

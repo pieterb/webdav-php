@@ -44,10 +44,11 @@ public $props = array();
 protected function __construct() {
   parent::__construct();
 
+  $input = $this->inputString();
   $document = new DOMDocument();
   if ( preg_match( '/xmlns:[a-zA-Z0-9]*=""/', $input ) ||
        ! @$document->loadXML(
-           $this->inputstring(),
+           $input,
            LIBXML_NOCDATA | LIBXML_NOENT | LIBXML_NSCLEAN | LIBXML_NOWARNING | LIBXML_NOERROR
          ) )
     throw new DAV_Status(
