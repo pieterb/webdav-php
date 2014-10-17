@@ -104,7 +104,7 @@ public static function destination() {
   $destinationCache = $cache->get( 'destinationCache' );
   if ( is_null( $destinationCache ) ) {
     $destinationCache = @$_SERVER['HTTP_DESTINATION'] ?
-      DAV::parseURI($_SERVER['HTTP_DESTINATION'], false) : false;
+      DAV::parseURI( urldecode( $_SERVER['HTTP_DESTINATION'] ), false) : false;
     $cache->get( 'destinationCache', $destinationCache );
   }
   return ( $destinationCache === false ? null : $destinationCache );
