@@ -61,9 +61,10 @@ protected function __construct() {
   }
 
   $document = new DOMDocument();
-  if ( ! @$document->loadXML(
+  if ( preg_match( '/xmlns:[a-zA-Z0-9]*=""/', $input ) ||
+       ! @$document->loadXML(
            $input,
-           LIBXML_NOCDATA | LIBXML_NOENT | LIBXML_NSCLEAN | LIBXML_NOWARNING
+           LIBXML_NOCDATA | LIBXML_NOENT | LIBXML_NSCLEAN
          ) )
     throw new DAV_Status(
       DAV::HTTP_BAD_REQUEST,

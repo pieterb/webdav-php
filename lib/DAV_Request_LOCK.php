@@ -94,15 +94,16 @@ protected function __construct()
   $this->newlock = true;
 
   $document = new DOMDocument();
-  $result = $document->loadXML(
-    $input,
-    LIBXML_NOCDATA | LIBXML_NOENT | LIBXML_NSCLEAN | LIBXML_NOWARNING | LIBXML_NOERROR
-  );
-
-  if (!$result)
+  if ( preg_match( '/xmlns:[a-zA-Z0-9]*=""/', $input ) ||
+       ! @$document->loadXML(
+          $input,
+          LIBXML_NOCDATA | LIBXML_NOENT | LIBXML_NSCLEAN | LIBXML_NOWARNING | LIBXML_NOERROR
+        ) )
+  {
     throw new DAV_Status(
       DAV::HTTP_BAD_REQUEST, 'Request body is not well-formed XML.'
     );
+  }
 
   $xpath = new DOMXPath($document);
   $xpath->registerNamespace('D', 'DAV:');

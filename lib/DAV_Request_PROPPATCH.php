@@ -45,7 +45,8 @@ protected function __construct() {
   parent::__construct();
 
   $document = new DOMDocument();
-  if ( ! @$document->loadXML(
+  if ( preg_match( '/xmlns:[a-zA-Z0-9]*=""/', $input ) ||
+       ! @$document->loadXML(
            $this->inputstring(),
            LIBXML_NOCDATA | LIBXML_NOENT | LIBXML_NSCLEAN | LIBXML_NOWARNING | LIBXML_NOERROR
          ) )
