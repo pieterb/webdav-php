@@ -122,6 +122,8 @@ protected function handle( $resource ) {
   if ( $destinationResource ) {
     if ( ! $this->overwrite() ) {
       throw new DAV_Status(DAV::HTTP_PRECONDITION_FAILED);
+    }else{
+      $destinationResource->assertLock();
     }
   } else {
     $destinationCollection->assertLock();
