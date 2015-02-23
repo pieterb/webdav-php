@@ -78,7 +78,6 @@ private function init_range() {
 /**
  * Makes sure the Content-Range header is parsed
  *
- * @param string $path
  * @throws DAV_Status
  */
 protected function __construct()

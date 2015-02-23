@@ -38,8 +38,6 @@ public $props = array();
 
 /**
  * Parse the request body
- *
- * @param string $path
  */
 protected function __construct() {
   parent::__construct();

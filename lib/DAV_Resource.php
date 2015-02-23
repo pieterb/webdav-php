@@ -32,8 +32,6 @@ class DAV_Resource {
 
 /**
  * Asserts whether this resource is locked
- * 
- * @param string $path
  */
 public function assertLock() {
   if ( !DAV::$LOCKPROVIDER ) return null;
@@ -51,7 +49,6 @@ public function assertLock() {
 /**
  * Asserts whether members of this resource are locked
  * 
- * @param string $path
  * @return mixed one of the following:
  * - DAV_Element_href of the lockroot of the missing token
  * - null if no lock was found.

@@ -33,7 +33,6 @@ class DAV_Request_HEAD extends DAV_Request {
 /**
  * Enter description here...
  *
- * @param string $path
  * @throws DAV_Status
  */
 protected function __construct()

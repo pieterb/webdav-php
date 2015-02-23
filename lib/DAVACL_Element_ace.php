@@ -145,7 +145,7 @@ public function toXML() {
   if ($this->protected)
     $retval .= "\n<D:protected/>";
   if ($this->inherited)
-    $retval .= "\n<D:inherited><D:href>{$this->inherited}</D:href></D:inherited>";
+    $retval .= "\n<D:inherited><D:href>" . DAV::encodeURIFullPath( $this->inherited ) . "</D:href></D:inherited>";
   $retval .= "\n</D:ace>";
   return $retval;
 }

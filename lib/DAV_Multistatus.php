@@ -142,8 +142,9 @@ public function addResponse($response) {
 private function flushStatus() {
   echo "\n<D:response>";
 
-  foreach ($this->paths as $path)
-    echo "\n<D:href>{$path}</D:href>";
+  foreach ($this->paths as $path) {
+    echo "\n<D:href>" . DAV::xmlescape( DAV::encodeURIFullPath( $path ) ) . "</D:href>";
+  }
 
   $status = DAV::status_code($this->currentStatus->getCode());
   echo "\n<D:status>HTTP/1.1 $status</D:status>";
@@ -164,7 +165,7 @@ private function flushStatus() {
   }
 
   if (!empty($this->currentStatus->location))
-    echo "\n<D:location><D:href>" . $this->currentStatus->location .
+    echo "\n<D:location><D:href>" . DAV::xmlescape( DAV::encodeURIFullPath( $this->currentStatus->location ) ) .
       "</D:href></D:location>";
 
   echo "\n</D:response>";

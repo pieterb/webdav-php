@@ -131,8 +131,9 @@ public function output() {
       'status' => $status,
       'Content-Type' => 'application/xml; charset="UTF-8"'
     );
-    if ( $this->location )
-      $headers['Location'] = $this->location;
+    if ( $this->location ) {
+      $headers['Location'] = DAV::encodeURIFullPath( $this->location );
+    }
     DAV::header($headers);
     echo DAV::xml_header() . '<D:error xmlns:D="DAV:">';
     foreach ($this->conditions as $condition => $xml) {
@@ -140,10 +141,9 @@ public function output() {
       echo $xml ? ">$xml</D:$condition>" : "/>";
     }
     echo "\n</D:error>";
-  }
-  elseif ( $this->location )
-    DAV::redirect($status, $this->location);
-  else {
+  }elseif ( $this->location ) {
+    DAV::redirect($status, $this->location );
+  }else {
     if ( self::$RESPONSE_GENERATOR &&
          in_array( $_SERVER['REQUEST_METHOD'],
                    array( 'GET', 'POST' ) ) ) {

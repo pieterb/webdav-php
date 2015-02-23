@@ -85,8 +85,8 @@ public static function delete( $resource ) {
  * Recursive helper function.
  * Callers must check DAV_Multistatus::active() afterwards.
  * @see delete()
- * @param DAV_Collection $resource
- * @param string         $memberResource a path
+ * @param DAV_Collection  $resource
+ * @param DAV_Resource    $memberResource  The resource to delete
  * @throws DAV_Status
  */
 private static function delete_member( $resource, $memberResource )

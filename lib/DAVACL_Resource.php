@@ -287,7 +287,7 @@ final public function set_owner($owner) {
       DAV::HTTP_BAD_REQUEST,
       'Illegal value for property DAV:owner.'
     );
-  $this->user_set_owner(DAV::parseURI($owner->URIs[0]));
+  $this->user_set_owner($owner->URIs[0]);
 }
 
 
@@ -333,7 +333,7 @@ final public function set_group($group) {
       DAV::HTTP_BAD_REQUEST,
       'Illegal value for property DAV:group.'
     );
-  $this->user_set_group(DAV::parseURI($group->URIs[0]));
+  $this->user_set_group($group->URIs[0]);
 }
 
 
@@ -445,7 +445,7 @@ final public function prop_acl_restrictions() {
         if ($p = @DAVACL::$PRINCIPALS[$principal])
           $retval .= "\n$p";
         elseif ('/' === $principal[0] )
-          $retval .= "\n<D:href>" . $principal . '</D:href>';
+          $retval .= "\n<D:href>" . DAV::xmlescape( DAV::encodeURIFullPath( $principal ) ) . '</D:href>';
         else
           $retval .= "\n<D:property><" . DAV::expand($principal) . '/></D:property>';
       $retval .= "\n</D:required-principal>";
@@ -551,8 +551,6 @@ final public function prop_group_member_set() {
  */
 final public function set_group_member_set($set) {
   $set = DAVACL::parse_hrefs($set)->URIs;
-  foreach ( $set as &$uri )
-    $uri = DAV::parseURI($uri, false);
   return $this->user_set_group_member_set($set);
 }
 

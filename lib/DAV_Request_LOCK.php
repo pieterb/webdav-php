@@ -79,7 +79,6 @@ private function init_timeout() {
 /**
  * Enter description here...
  *
- * @param string $path
  * @throws DAV_Status
  */
 protected function __construct()
@@ -211,7 +210,7 @@ private function handleCreateLock($resource) {
       $headers['status'] = DAV::HTTP_OK;
     } else {
       $headers['status'] = DAV::HTTP_CREATED;
-      $headers['Location'] = DAV::getPath();
+      $headers['Location'] = DAV::encodeURIFullPath( DAV::getPath() );
     }
   }
 
@@ -257,7 +256,7 @@ private function handleRefreshLock($resource) {
        !$if_header[DAV::getPath()]['lock'] )
     throw new DAV_Status(
       DAV::HTTP_BAD_REQUEST, array(
-        DAV::COND_LOCK_TOKEN_SUBMITTED => new DAV_Element_href(DAV::getPath())
+        DAV::COND_LOCK_TOKEN_SUBMITTED => new DAV_Element_href( DAV::getPath() )
       )
     );
   // I think this can never evaluate to true, because DAV_Request already checks

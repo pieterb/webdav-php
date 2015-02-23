@@ -479,7 +479,7 @@ public static function recursiveSerialize(
  * @param string $url the URL to translate
  * @param bool $fail Should this method fail if the URL is outside this server's
  * realm?
- * @return string
+ * @return  string  The URL decoded local path
  * @throws DAV_Status
  */
 public static function parseURI($url, $fail = true) {
@@ -501,20 +501,22 @@ public static function parseURI($url, $fail = true) {
   if ( preg_match( $URI_REGEXP, $url, $matches ) ) {
     $retval = preg_replace( '@//+@', '/', $matches[1] );
     if ( preg_match( '@(?:^|/)\\.\\.?(?:$|/)@', $retval ) ||
-         preg_match( '@%(?:0|1|2f|7f)@i', $retval ) )
+         preg_match( '@%(?:0|1|2f|7f)@i', $retval ) ) {
       throw new DAV_Status(
         DAV::HTTP_FORBIDDEN,
         'This hacking attempt will be investigated.'
       );
-    return $retval;
+    }
+    return rawurldecode( $retval );
   }
-  if ($fail)
+  if ($fail) {
     throw new DAV_Status(
       DAV::HTTP_BAD_REQUEST,
       "Resource $url is not within the scope of this server."
     );
-  else
+  }else{
     trigger_error("Resource $url is not within the scope of this server.", E_USER_WARNING);
+  }
   return $url;
 }
 
@@ -555,40 +557,15 @@ public static function xmlunescape($xml) {
 
 
 /**
- * Yet another URL encoder.
- * @param string $path
- * @return string
- * @deprecated PHP's built-in rawurlencode is correctly implemented since 5.3.
- */
-public static function rawurlencode($path) {
-  $newurl = '';
-  for ($i = 0; $i < strlen($path); $i++) {
-    $ord = ord($path[$i]);
-    if ( $ord >= ord('a') && $ord <= ord('z') ||
-         $ord >= ord('A') && $ord <= ord('Z') ||
-         $ord >= ord('0') && $ord <= ord('9') ||
-         strpos( '/-_.~', $path[$i] ) !== false )
-         // Strictly spoken, the tilde ~ should be encoded as well, but I
-         // don't do that. This makes sure URL's like http://some.com/~user/
-         // don't get mangled, at the risk of problems during transport.
-      $newurl .= $path[$i];
-    else
-      $newurl .= sprintf('%%%2X', $ord);
-  }
-  return $newurl;
-}
-
-
-/**
  * Translate a path to a full URI.
  * @param string $path
- * @return string
+ * @return string  The (rawurlencoded) full URI to the path
  */
 public static function path2uri( $path ) {
   if ( substr( $path, 0, 1 ) === '/' ) {
-    return self::urlbase() . $path;
+    return self::urlbase() . self::encodeURIFullPath( $path );
   }else{
-    return self::urlbase() . self::slashify( $_SERVER['REQUEST_URI'] ) . $path;
+    return self::urlbase() . self::slashify( $_SERVER['REQUEST_URI'] ) . self::encodeURIFullPath( $path );
   }
 }
 
@@ -692,7 +669,7 @@ public static function header($properties, $replace = true) {
         }
       }
     }elseif ( strpos( $properties['Location'], ':' ) === false ) {
-      $properties['Location'] = self::path2uri( $properties['Location'] );
+      $properties['Location'] = rawurldecode( self::path2uri( $properties['Location'] ) ); // path2uri rawurlencodes the path, but in this case, the method caller should have done this before, so I rawurldecode it here to prevent double encoding
     }
   }
   foreach($properties as $key => $value) {
@@ -1015,7 +992,7 @@ const CLIENT_WINDOWS_WEBFOLDER = 0x200; // 0b0010 0000 0000;
     $cache = DAV_Cache::inst( 'DAV' );
     $PATH = $cache->get( 'path' );
     if ( is_null( $PATH ) ) {
-      $PATH = DAV::parseURI( urldecode( $_SERVER['REQUEST_URI'] ), true );
+      $PATH = DAV::parseURI( $_SERVER['REQUEST_URI'], true );
       $cache->set( 'path', $PATH );
     }
     return $PATH;
@@ -1024,12 +1001,12 @@ const CLIENT_WINDOWS_WEBFOLDER = 0x200; // 0b0010 0000 0000;
 
   /**
    * Set the (requested) path
-   * @param   string  $path  The path
+   * @param   string  $urlencodedPath  The URL encoded path
    * @return  void
    */
-  public static function setPath( $path ) {
+  public static function setPath( $urlencodedPath ) {
     $cache = DAV_Cache::inst( 'DAV' );
-    $cache->set( 'path', DAV::parseURI( $path, true ) );
+    $cache->set( 'path', DAV::parseURI( $urlencodedPath, true ) );
   }
 
   /**
@@ -1056,6 +1033,45 @@ const CLIENT_WINDOWS_WEBFOLDER = 0x200; // 0b0010 0000 0000;
    */
   public static function setDebugFile( $file ) {
     self::$config['debug']['file'] = $file;
+  }
+
+
+  /**
+   * Converts a full path to an URL encoded version, while keeping the path delimiters in place
+   * 
+   * @param   String  $path  The path to URL encode
+   * @return  String         The path with all elements URL encoded
+   */
+  public static function encodeURIFullPath( $path ) {
+    if ( !empty( $path ) && ( ( substr( $path, 0, 7 ) === 'http://' ) || ( substr( $path, 0, 8 ) === 'https://' ) ) ) {
+      $urlParts = parse_url( $path );
+      $location = $urlParts['scheme'] . '://';
+      if ( isset( $urlParts['user'] ) ) {
+        $location .= $urlParts['user'];
+        if ( isset( $urlParts['pass'] ) ) {
+          $location .= ':' . $urlParts['pass'];
+        }
+        $location .= '@';
+      }
+      $location .= $urlParts['host'];
+      if ( isset( $urlParts['port'] ) ) {
+        $location .= ':' . $urlParts['port'];
+      }
+      if ( isset( $urlParts['path'] ) ) {
+        $location .= DAV::encodeURIFullPath( $urlParts['path'] );
+      }
+      if ( isset( $urlParts['query'] ) ) {
+        $location .= '?' . $urlParts['query'];
+      }
+      if ( isset( $urlParts['fragment'] ) ) {
+        $location .= '#' . $urlParts['fragment'];
+      }
+      return $location;
+    }else{
+      $pathElements = explode( '/', $path );
+      $encodedPathElements = array_map( 'rawurlencode', $pathElements );
+      return implode( '/', $encodedPathElements );
+    }
   }
 
 } // namespace DAV

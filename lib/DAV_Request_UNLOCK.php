@@ -39,7 +39,6 @@ public $locktoken;
 /**
  * Enter description here...
  *
- * @param string $path
  * @throws DAV_Status
  */
 protected function __construct()

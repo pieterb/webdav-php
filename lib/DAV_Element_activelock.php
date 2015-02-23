@@ -98,7 +98,7 @@ public function __construct($arg = array()) {
  * @return string an XML element
  */
 public function toXML() {
-  $t_lockroot = "\n<D:lockroot><D:href>{$this->lockroot}</D:href></D:lockroot>";
+  $t_lockroot = "\n<D:lockroot><D:href>" . DAV::xmlescape( DAV::encodeURIFullPath( $this->lockroot ) ) . "</D:href></D:lockroot>";
   if ( $this->timeout === 0 )
     $t_timeout = 'Infinite';
   else {
@@ -106,7 +106,7 @@ public function toXML() {
     $t_timeout = ( $t_timeout < 0 ) ? 'Second-0' : 'Second-' . $t_timeout;
   }
   $t_locktoken = isset(DAV::$SUBMITTEDTOKENS[$this->locktoken])
-     ? "\n<D:locktoken>\n<D:href>{$this->locktoken}</D:href>\n</D:locktoken>"
+     ? "\n<D:locktoken>\n<D:href>" . DAV::xmlescape( $this->locktoken ) . "</D:href>\n</D:locktoken>"
      : '';
   $t_owner = empty($this->owner)
     ? ''

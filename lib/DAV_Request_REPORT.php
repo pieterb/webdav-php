@@ -142,8 +142,9 @@ private function parse_expand_property_recursively($element) {
  */
 private function parse_acl_principal_prop_set($document, $xpath) {
   $this->entity = array();
-  foreach ($xpath->query('/D:acl-principal-prop-set/D:prop/*') as $prop)
+  foreach ($xpath->query('/D:acl-principal-prop-set/D:prop/*') as $prop) {
     $this->entity[] = $prop->namespaceURI . ' ' . $prop->localName;
+  }
 }
 
 
@@ -229,7 +230,7 @@ private function handle_expand_property_recursively($path, $properties) {
         $newprop = '';
         foreach ($oldprop->URIs as $URI) {
           $tmp = $this->handle_expand_property_recursively( $URI, $children );
-          $newprop .= $tmp ? $tmp->toXML() : "<D:href>{$URI}</D:href>";
+          $newprop .= $tmp ? $tmp->toXML() : "<D:href>" . DAV::encodeURIFullPath( $URI ) . "</D:href>";
         }
       }
       $retval->setProperty($parent, $newprop);

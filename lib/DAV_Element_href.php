@@ -39,7 +39,7 @@ public $URIs;
 /**
  * Constructor
  * 
- * @param string $URIs
+ * @param  array|string  $URIs  Either an array of strings or a single string with the URI's to add
  */
 public function __construct($URIs = null) {
   if (is_array($URIs))
@@ -65,9 +65,14 @@ public function addURI($URI) {
  * @return string
  */
 public function __toString() {
-  return empty($this->URIs) ? '' :
+  if ( empty( $this->URIs ) ) {
+    return '';
+  }
+  $urlEncodedURIs = array_map( array( 'DAV', 'encodeURIFullPath' ), $this->URIs );
+  $xmlEncodedURIs = array_map( array( 'DAV', 'xmlescape'), $urlEncodedURIs );
+  return
     '<D:href>' . implode(
-      "</D:href>\n<D:href>", array_unique($this->URIs)
+      "</D:href>\n<D:href>", array_unique($xmlEncodedURIs)
     ). '</D:href>';
 }
 

@@ -141,9 +141,7 @@ public function toXML() {
   }
 
   // Start generating some XML:
-  $pathElements = explode( '/', $this->path );
-  $pathElements = array_map( 'rawurlencode', $pathElements );
-  $xml = "\n<D:response><D:href>" . DAV::xmlescape( implode( '/', $pathElements ) ) . "</D:href>";
+  $xml = "\n<D:response><D:href>" . DAV::xmlescape( DAV::encodeURIFullPath( $this->path ) ) . "</D:href>";
   // Each defined status gets its own <D:propstat> element:
   foreach ($hashed_statusses as $hash => $status) {
     $xml .= "\n<D:propstat><D:prop>";

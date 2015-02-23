@@ -104,7 +104,7 @@ public static function destination() {
   $destinationCache = $cache->get( 'destinationCache' );
   if ( is_null( $destinationCache ) ) {
     $destinationCache = @$_SERVER['HTTP_DESTINATION'] ?
-      DAV::parseURI( urldecode( $_SERVER['HTTP_DESTINATION'] ), false) : false;
+      DAV::parseURI( $_SERVER['HTTP_DESTINATION'], false) : false;
     $cache->get( 'destinationCache', $destinationCache );
   }
   return ( $destinationCache === false ? null : $destinationCache );
@@ -308,7 +308,6 @@ EOS
 /**
  * The constructor
  *
- * @param string $path
  * @throws DAV_Status
  */
 protected function __construct()
@@ -363,7 +362,7 @@ public function handleRequest()
            $resource instanceof DAV_Collection ||
            'MKCOL' === $_SERVER['REQUEST_METHOD'] ) ) {
       $newPath = DAV::getPath() . '/';
-      DAV::setPath( $newPath );
+      DAV::setPath( DAV::encodeURIFullPath( $newPath ) );
       DAV::header( array( 'Content-Location' => DAV::path2uri( $newPath ) ) );
     }
 
