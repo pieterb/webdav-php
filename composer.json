@@ -4,7 +4,7 @@
     "description": "A library to create a webDAV server",
     "keywords": ["webdav"],
     "homepage": "https://github.com/pieterb/webdav-php",
-    "license": "Apache License Version 2.0",
+    "license": "Apache-2.0",
     "require": {
         "php": ">=5.3.3",
         "ext-dom": "*"
@@ -19,7 +19,7 @@
         },
         {
             "name": "Niek Bosch",
-            "email": "niek.bosch@surfsara.nl"
+            "email": "code@niekbosch.nl"
         }
     ],
     "autoload": {
